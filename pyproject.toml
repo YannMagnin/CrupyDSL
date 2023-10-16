@@ -1,0 +1,22 @@
+[tool.poetry]
+name        = "crupy"
+version     = "0.0.0"
+description = "Crupy language PoC"
+readme      = "README.md"
+authors     = [
+    "Yann MAGNIN <yann.magnin@ecole2600.com>",
+    "Yann MAJEROWICZ <yann.majerowicz@ecole2600.com>",
+    "Joel RABAH <joel.rabah@ecole2600.com>",
+]
+packages    = [
+    { include = "crupy", from='Crupy' },
+]
+
+[tool.poetry.dependencies]
+python  = "3.11.*"
+click   = "8.1.*"
+
+[tool.poetry.dev-dependencies]
+pynvim  = "0.4.*"
+pylint  = "2.17.*"
+mypy    = "1.5.*"
