@@ -1,10 +1,16 @@
 """
-crupy.core.stream.strea     - crupy stream abstraction
+crupydslparser.core.stream.strea     - crupy stream abstraction
 """
+# Since we should support the CPython 3.8 which does not expose the 'Self'
+# type needed for the `__enter__` magic method, we use this workaround to
+# allow using the class name as return type before the said class is finished
+# to be declared (same behaviours than the 'Self' type)
+from __future__ import annotations
+
 __all__ = [
     'CrupyStream',
 ]
-from typing import Any
+from typing import Any, IO
 from mmap import mmap, ACCESS_READ, ACCESS_WRITE
 
 #---
@@ -40,7 +46,7 @@ class CrupyStream(mmap):
     #---
 
     @classmethod
-    def from_string(cls, text: str) -> Any:
+    def from_string(cls, text: str) -> CrupyStream:
         """ create a CrupyStream for an string input """
         stream = CrupyStream(
             fileno  = -1,
@@ -50,3 +56,21 @@ class CrupyStream(mmap):
         stream.seek(0)
         stream.write(bytes(text, encoding='utf8'))
         return stream
+
+    @classmethod
+    def from_file(cls, file: IO[str]) -> CrupyStream:
+        """ create a CrupyStream for a file """
+        stream = CrupyStream(
+            fileno  = file.fileno(),
+            lenght  = 0,
+            access  = ACCESS_READ
+        )
+        stream.seek(0)
+        return stream
+
+    @classmethod
+    def from_any(cls, stream: IO[str]|str) -> CrupyStream:
+        """ nexus for file or string """
+        if isinstance(stream, str):
+            return cls.from_string(stream)
+        return cls.from_file(stream)

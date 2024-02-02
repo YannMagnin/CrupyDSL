@@ -1,15 +1,13 @@
 [tool.poetry]
-name        = "crupy"
+name        = "crupydslparser"
 version     = "0.0.0"
-description = "Crupy language PoC"
+description = "Crupy DSL parser"
 readme      = "README.md"
 authors     = [
     "Yann MAGNIN <yann.magnin@ecole2600.com>",
-    "Yann MAJEROWICZ <yann.majerowicz@ecole2600.com>",
-    "Joel RABAH <joel.rabah@ecole2600.com>",
 ]
 packages    = [
-    { include = "crupy", from='Crupy' },
+    { include = "crupydslparser", from='CrupyDSLParser' },
 ]
 
 [tool.poetry.dependencies]
