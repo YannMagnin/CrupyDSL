@@ -6,7 +6,7 @@ __all__ = [
 ]
 import click
 
-from crupydslparser.cli.doctor import crupydslparser_cli_doctor_entry
+from crupydslparser.cli.unittest import crupydslparser_cli_unittest_entry
 
 #---
 # Public
@@ -15,7 +15,7 @@ from crupydslparser.cli.doctor import crupydslparser_cli_doctor_entry
 @click.group(
     name     = 'crupydslparser',
     commands = [
-        crupydslparser_cli_doctor_entry,
+        crupydslparser_cli_unittest_entry,
     ],
 )
 def crupydslparser_cli_entry() -> None:

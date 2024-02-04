@@ -10,6 +10,11 @@ packages    = [
     { include = "crupydslparser", from='CrupyDSLParser' },
 ]
 
+
+[tool.poetry.scripts]
+crupydsl    = 'crupydslparser.cli:crupydslparser_cli_entry'
+
+
 [tool.poetry.dependencies]
 python  = "3.11.*"
 click   = "8.1.*"
