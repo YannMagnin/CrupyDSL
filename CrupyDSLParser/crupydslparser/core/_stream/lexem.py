@@ -4,7 +4,9 @@ crupydslparser.core._stream.lexem   - lexem abstraction
 __all__ = [
     'CrupyStreamLexem',
 ]
-from typing import Any
+from typing import Any, cast
+
+from crupydslparser.core._stream.context import CrupyStreamContext
 
 #---
 # Public
@@ -15,6 +17,7 @@ class CrupyStreamLexem():
     """
     def __init__(self, stream: Any) -> None:
         self._stream = stream
+        self._stream_ctx = stream.context_copy()
         self._readed = 0
 
     #---
@@ -23,10 +26,11 @@ class CrupyStreamLexem():
 
     ## utils
 
-    def validate(self) -> None:
-        """ validate the context
+    def validate(self) -> CrupyStreamContext:
+        """ validate the context and return a copy of the current context
         """
         self._stream.context_validate()
+        return cast(CrupyStreamContext, self._stream_ctx)
 
     ## read operation
 

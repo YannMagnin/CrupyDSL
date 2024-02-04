@@ -26,10 +26,11 @@ class CrupyLexerString(CrupyLexer):
     def __call__(self, stream: CrupyStream) -> CrupyLexerToken|None:
         """ try to strictly match the text
         """
-        with stream as stream_ctx:
-            if stream.peek_string(self._text):
-                return CrupyLexerTokenString(
-                    stream_ctx  = stream_ctx.validate(),
-                    text        = self._text,
-                )
-        return None
+        with stream as lexem:
+            for char in self._text:
+                if lexem.read_char() != char:
+                    return None
+            return CrupyLexerTokenString(
+                stream_ctx  = lexem.validate(),
+                text        = self._text,
+            )

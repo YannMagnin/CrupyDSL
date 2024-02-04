@@ -42,7 +42,7 @@ class CrupyUnittestBase():
         super().__init_subclass__(**kwargs)
         if not (
             info := re.match(
-                "(?P<cls>^CrupyUnittest(?P<key>[A-Z][a-z]+)$)",
+                "(?P<cls>^CrupyUnittest(?P<key>[a-zA-Z]+)$)",
                 cls.__name__,
             )
         ):
@@ -77,6 +77,7 @@ class CrupyUnittestBase():
         """
         test_prefix = Path(f"{__file__}/../../../../tests").resolve()
         for test_file in test_prefix.rglob('*.py'):
+            print(test_file)
             try:
                 sys.path.append(str(test_file.parent))
                 import_module(test_file.stem)
@@ -110,6 +111,10 @@ class CrupyUnittestBase():
     def assertIsNone(self, obj: Any) -> None:
         """ simply check if the object is None """
         assert obj is None
+
+    def assertIsNotNone(self, obj: Any) -> None:
+        """ simply check if the object is None """
+        assert obj is not None
 
     # Allow method to catch too general exception
     # pylint: disable=locally-disabled,W0718
