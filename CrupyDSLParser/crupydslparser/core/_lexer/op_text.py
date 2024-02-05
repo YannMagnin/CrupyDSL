@@ -1,8 +1,9 @@
 """
-crupydslparser.core._lexer.string    - Lexer string tool
+crupydslparser.core._lexer.op_text  - Lexer text tool
 """
 __all__ = [
-    'CrupyLexerString',
+    'CrupyLexerTokenText',
+    'CrupyLexerText',
 ]
 
 from crupydslparser.core._lexer._lexer import CrupyLexer
@@ -13,11 +14,11 @@ from crupydslparser.core._stream import CrupyStream
 # Public
 #---
 
-class CrupyLexerTokenString(CrupyLexerToken):
+class CrupyLexerTokenText(CrupyLexerToken):
     """ string token information """
     text: str
 
-class CrupyLexerString(CrupyLexer):
+class CrupyLexerText(CrupyLexer):
     """ strict string matcher
     """
     def __init__(self, text: str) -> None:
@@ -30,7 +31,7 @@ class CrupyLexerString(CrupyLexer):
             for char in self._text:
                 if lexem.read_char() != char:
                     return None
-            return CrupyLexerTokenString(
+            return CrupyLexerTokenText(
                 stream_ctx  = lexem.validate(),
                 text        = self._text,
             )

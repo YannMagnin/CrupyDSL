@@ -49,7 +49,6 @@ class CrupyUnittestBase():
             raise CrupyUnittestException(
                 f"Subclass name '{cls.__name__}' is not valid, abord",
             )
-        print(f"register unittest subclass '{cls.__name__}'")
         if cls.__name__ in CrupyUnittestBase._testsuit_list:
             raise CrupyUnittestException(
                 f"Subclass '{cls.__name__}' already exists"
@@ -77,7 +76,6 @@ class CrupyUnittestBase():
         """
         test_prefix = Path(f"{__file__}/../../../../tests").resolve()
         for test_file in test_prefix.rglob('*.py'):
-            print(test_file)
             try:
                 sys.path.append(str(test_file.parent))
                 import_module(test_file.stem)

@@ -1,20 +1,20 @@
 """
-tests.lexer.string  - test the CrupyLexerString
+tests.lexer.op_text     - test the CrupyLexerText
 """
 __all__ = [
-    'CrupyUnittestLexerString',
+    'CrupyUnittestLexerText',
 ]
 
 from crupydslparser.core.unittest import CrupyUnittestBase
-from crupydslparser.core._lexer import CrupyLexerString
+from crupydslparser.core._lexer import CrupyLexerText
 from crupydslparser.core._stream import CrupyStream
 
 #---
 # Public
 #---
 
-class CrupyUnittestLexerString(CrupyUnittestBase):
-    """ unittest suite for the crupy lexer string operation
+class CrupyUnittestLexerText(CrupyUnittestBase):
+    """ unittest suite for the crupy lexer text operation
     """
 
     #---
@@ -24,10 +24,10 @@ class CrupyUnittestLexerString(CrupyUnittestBase):
     def test_simple_success(self) -> None:
         """ simple valid cases """
         stream = CrupyStream.from_any('abcdef ijkl')
-        strop0 = CrupyLexerString('abcdef')
-        strop1 = CrupyLexerString('i')
-        strop2 = CrupyLexerString('jkc')
-        strop3 = CrupyLexerString('jkl')
+        strop0 = CrupyLexerText('abcdef')
+        strop1 = CrupyLexerText('i')
+        strop2 = CrupyLexerText('jkc')
+        strop3 = CrupyLexerText('jkl')
         self.assertIsNotNone(strop0(stream))
         self.assertIsNotNone(strop1(stream))
         self.assertIsNone(strop2(stream))
