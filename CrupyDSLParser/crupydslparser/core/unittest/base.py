@@ -121,6 +121,7 @@ class CrupyUnittestBase():
         """ check if the request raise exception """
         try:
             getattr(request[0], request[1])(*request[2:])
+            print(f"WARNING: No exception {type(exc_obj).__name__} occured")
         except exc_obj.__class__ as err:
             if str(exc_obj) != str(err):
                 print(f"assertRaises:  mismatch '{exc_obj}' != '{err}'")

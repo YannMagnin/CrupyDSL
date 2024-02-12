@@ -7,10 +7,7 @@ __all__ = [
 from typing import Tuple
 
 from crupydslparser.core.unittest import CrupyUnittestBase
-from crupydslparser.core._stream import (
-    CrupyStream,
-    CrupyStreamException,
-)
+from crupydslparser.core._stream import CrupyStream
 
 #---
 # Public
@@ -86,7 +83,6 @@ class CrupyUnittestStream(CrupyUnittestBase):
         """ check the end of file exception
         """
         stream = CrupyStream.from_any('abcd      func_name(oui)  ')
-        # only validate the first two chars
         with stream as lexem:
             self.assertEqual(lexem.read_char(), 'a')
             self.assertEqual(lexem.read_char(), 'b')
@@ -103,7 +99,9 @@ class CrupyUnittestStream(CrupyUnittestBase):
         with stream as lexem:
             self.assertEqual(lexem.read(), 'func_name(oui)')
             lexem.validate()
-        self.assertRaises(
-            CrupyStreamException('EOF reached'),
-            (stream, 'context_save'),
-        )
+        with stream as lexem:
+            self.assertIsNone(lexem.read())
+            lexem.validate()
+        with stream as lexem:
+            self.assertIsNone(lexem.read())
+            lexem.validate()

@@ -90,7 +90,7 @@ class CrupyStream():
         """
         while True:
             if not (curr := self.peek_char()):
-                raise CrupyStreamException("EOF reached")
+                break
             if curr not in CrupyStream._LEXEM_SEPARATOR:
                 break
             self.read_char()

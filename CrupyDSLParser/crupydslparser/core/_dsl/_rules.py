@@ -4,12 +4,13 @@ crupydslparser.core._dsl._rules  - define manually all grammar rule of DSL
 __all__ = [
     'CRUPY_DSL_RULES',
 ]
-from typing import Dict, Any
+from typing import Dict
 
 from crupydslparser.core._lexer import (
+    CrupyLexer,
     CrupyLexerSeq,
+    CrupyLexerText,
     CrupyLexerMatcher,
-    CrupyLexerString,
     CrupyLexerRule,
     CrupyLexerRep0N,
     CrupyLexerRep1N,
@@ -21,7 +22,7 @@ from crupydslparser.core._lexer import (
 # Public
 #---
 
-CRUPY_DSL_RULES: Dict[str,Any] = {
+CRUPY_DSL_RULES: Dict[str,CrupyLexer] = {
     #
     # Production (rule) declaration
     # > crupy_dsl_production ::= \
@@ -29,7 +30,7 @@ CRUPY_DSL_RULES: Dict[str,Any] = {
     #
     'crupy_dsl_production' : CrupyLexerSeq(
         CrupyLexerRule('crupy_dsl_rulename'),
-        CrupyLexerString("::="),
+        CrupyLexerText("::="),
         CrupyLexerRule('crupy_dsl_stmts'),
     ),
 
@@ -41,7 +42,7 @@ CRUPY_DSL_RULES: Dict[str,Any] = {
     'crupy_dsl_stmts' : CrupyLexerSeq(
         CrupyLexerRule('crupy_dsl_alts'),
         CrupyLexerRep0N(
-            CrupyLexerString('|'),
+            CrupyLexerText('|'),
             CrupyLexerRule('crupy_dsl_alts'),
         ),
     ),
@@ -67,17 +68,14 @@ CRUPY_DSL_RULES: Dict[str,Any] = {
     # String operation (support regex)
     # > crupy_dsl_strop ::= "\"" --special regex abstract-- "\""
     #
-    'crupy_dsl_strop' : CrupyLexerSeq(
-        CrupyLexerString('"'),
-        CrupyLexerUntil('"'),
-    ),
+    'crupy_dsl_strop' : CrupyLexerUntil('"'),
 
     #
     # Group operation in production's alternatives
     # > crupy_dsl_group ::= "(" <crupy_dsl_stmts> ")[+?-]"
     #
     'crupy_dsl_group' : CrupyLexerSeq(
-        CrupyLexerString('('),
+        CrupyLexerText('('),
         CrupyLexerRule('crupy_dsl_stmts'),
         CrupyLexerMatcher(')[+?-]'),
     ),
