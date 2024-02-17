@@ -8,7 +8,7 @@ __all__ = [
 
 from crupydslparser.core._lexer._lexer import CrupyLexer
 from crupydslparser.core._lexer._token import CrupyLexerToken
-from crupydslparser.core._stream import CrupyStream
+from crupydslparser.core._parser._base import CrupyParserBase
 
 #---
 # Public
@@ -24,10 +24,10 @@ class CrupyLexerUntil(CrupyLexer):
     def __init__(self, delimiter: str) -> None:
         self._delimiter = delimiter
 
-    def __call__(self, stream: CrupyStream) -> CrupyLexerToken|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyLexerToken|None:
         """ try to strictly match the text
         """
-        with stream as lexem:
+        with parser.stream as lexem:
             if lexem.read_char() != self._delimiter:
                 return None
             content = ''

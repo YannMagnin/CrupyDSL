@@ -6,7 +6,7 @@ __all__ = [
 ]
 
 from crupydslparser.core.unittest import CrupyUnittestBase
-from crupydslparser.core._stream import CrupyStream
+from crupydslparser.core._parser._test import CrupyParserTest
 from crupydslparser.core._lexer import (
     CrupyLexerOr,
     CrupyLexerText,
@@ -26,31 +26,41 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
 
     def test_simple_success0(self) -> None:
         """ simple valid case """
-        stream = CrupyStream.from_any('abcdef ijkl')
-        oroper = CrupyLexerOr(
-            CrupyLexerText('abc'),
-            CrupyLexerText('abcdef'),
-        )(stream)
-        self.assertIsNotNone(oroper)
-        if oroper is None:
+        parser = CrupyParserTest(
+            production_test     = 'abcdef ijkl',
+            production_book     = {
+                'entry' : CrupyLexerOr(
+                    CrupyLexerText('abc'),
+                    CrupyLexerText('abcdef'),
+                ),
+            }
+        )
+        or_op = parser.execute('entry')
+        self.assertIsNotNone(or_op)
+        if or_op is None:
             return
-        self.assertEqual(oroper['text'], 'abc')
-        with stream as lexem:
+        self.assertEqual(or_op['text'], 'abc')
+        with parser.stream as lexem:
             self.assertEqual(lexem.read(), 'def')
 
     def test_simple_success1(self) -> None:
         """ simple valid case """
-        stream = CrupyStream.from_any('abcdef ijkl')
-        oroper = CrupyLexerOr(
-            CrupyLexerText('zzz'),
-            CrupyLexerText('zzz'),
-            CrupyLexerText('zzz'),
-            CrupyLexerText('zzz'),
-            CrupyLexerText('abcdef'),
-        )(stream)
-        self.assertIsNotNone(oroper)
-        if oroper is None:
+        parser = CrupyParserTest(
+            production_test     = 'abcdef ijkl',
+            production_book     = {
+                'entry' : CrupyLexerOr(
+                    CrupyLexerText('zzz'),
+                    CrupyLexerText('zzz'),
+                    CrupyLexerText('zzz'),
+                    CrupyLexerText('zzz'),
+                    CrupyLexerText('abcdef'),
+                ),
+            },
+        )
+        or_op = parser.execute('entry')
+        self.assertIsNotNone(or_op)
+        if or_op is None:
             return
-        self.assertEqual(oroper['text'], 'abcdef')
-        with stream as lexem:
+        self.assertEqual(or_op['text'], 'abcdef')
+        with parser.stream as lexem:
             self.assertEqual(lexem.read(), 'ijkl')

@@ -9,7 +9,7 @@ from typing import List, Any
 from crupydslparser.core._lexer._lexer import CrupyLexer
 from crupydslparser.core._lexer._token import CrupyLexerToken
 from crupydslparser.core._lexer.exception import CrupyLexerException
-from crupydslparser.core._stream import CrupyStream
+from crupydslparser.core._parser._base import CrupyParserBase
 
 #---
 # Internals
@@ -43,17 +43,17 @@ class _CrupyLexerRepxN(CrupyLexer):
 
     def _core_rep(
         self,
-        stream: CrupyStream,
+        parser: CrupyParserBase,
     ) -> List[List[CrupyLexerToken]]:
         """ execute all lexer operation
         """
         rep: List[List[CrupyLexerToken]] = []
         while True:
-            with stream as lexem:
+            with parser.stream as lexem:
                 valid = True
                 token_list: List[CrupyLexerToken] = []
                 for lexer in self._seq:
-                    if token := lexer(stream):
+                    if token := lexer(parser):
                         token_list.append(token)
                         continue
                     valid = False
@@ -75,23 +75,23 @@ class CrupyLexerTokenRep(CrupyLexerToken):
 class CrupyLexerRep0N(_CrupyLexerRepxN):
     """ required at least one repetition
     """
-    def __call__(self, stream: CrupyStream) -> CrupyLexerToken|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyLexerToken|None:
         """ execute lexer operation and require at least one sequence
         """
-        with stream as lexem:
+        with parser.stream as lexem:
             return CrupyLexerTokenRep(
                 stream_ctx  = lexem.validate(),
-                rep         = self._core_rep(stream),
+                rep         = self._core_rep(parser),
             )
 
 class CrupyLexerRep1N(_CrupyLexerRepxN):
     """ required at least one repetition
     """
-    def __call__(self, stream: CrupyStream) -> CrupyLexerToken|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyLexerToken|None:
         """ execute lexer operation and require at least one sequence
         """
-        with stream as lexem:
-            if len(req := self._core_rep(stream)) < 1:
+        with parser.stream as lexem:
+            if len(req := self._core_rep(parser)) < 1:
                 return None
             return CrupyLexerTokenRep(
                 stream_ctx  = lexem.validate(),

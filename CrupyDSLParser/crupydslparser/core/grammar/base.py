@@ -4,14 +4,11 @@ crupydslparser.core.grammar.base     - base grammar class
 __all__ = [
     'CrupyGrammarBase',
 ]
-from typing import Optional, Dict, Any, IO
+from typing import Optional, Any, IO
 
+from crupydslparser.core._parser import CrupyParserBase
 from crupydslparser.core._stream import CrupyStream
 from crupydslparser.core.grammar.exception import CrupyGrammarException
-from crupydslparser.core._dsl import (
-    crupy_dsl_parse,
-    crupy_dsl_compile,
-)
 
 #---
 # Public
@@ -29,7 +26,6 @@ class CrupyGrammarBase():
 
     grammar:            str
     production_entry:   Optional[str]
-    _rules:             Dict[str,Any]
 
     def __init_subclass__(cls, /, **kwargs: Any) -> None:
         """ register the main base class
@@ -45,7 +41,10 @@ class CrupyGrammarBase():
                 'Missing `production_entry` class attribute in subclass'
                 f"{cls.__name__}"
             )
-        crupy_dsl_parse(cls._rules, cls.grammar)
+
+    def __init__(self) -> None:
+        self._parser = CrupyParserBase()
+        self._parser.dsl_compile(self.grammar)
 
     #---
     # Public methods
@@ -54,10 +53,12 @@ class CrupyGrammarBase():
     def parse(self, stream_origin: IO[str]|str) -> Any:
         """ parse the stream using the current grammar state
         """
-        crupy_dsl_compile(self._rules)
         stream = CrupyStream.from_any(stream_origin)
         print(stream)
 
-    def grammar_add(self, grammar: str) -> None:
+    def grammar_add(self, grammar_shard: CrupyGrammarBase) -> None:
         """ aggregate the current grammar with an other piece of grammar
         """
+        # (todo) : check `grammar` class information
+        # (todo) : check "hooks" methods
+        #self._parser.dsl_compile(grammar_shard)

@@ -2,10 +2,10 @@
 crupydslparser.core._dsl._rules  - define manually all grammar rule of DSL
 """
 __all__ = [
-    'CRUPY_DSL_RULES',
+    'CRUPY_DSL_PARSER',
 ]
-from typing import Dict
 
+from crupydslparser.core._parser._base import CrupyParserBase
 from crupydslparser.core._lexer import (
     CrupyLexer,
     CrupyLexerSeq,
@@ -22,7 +22,7 @@ from crupydslparser.core._lexer import (
 # Public
 #---
 
-CRUPY_DSL_RULES: Dict[str,CrupyLexer] = {
+CRUPY_DSL_PARSER = CrupyParserBase({
     #
     # Production (rule) declaration
     # > crupy_dsl_production ::= \
@@ -85,4 +85,4 @@ CRUPY_DSL_RULES: Dict[str,CrupyLexer] = {
     # > crupy_dsl_production_name ::= "<[a-z_]+>"
     #
     'crupy_dsl_production_name' : CrupyLexerMatcher("<[a-z_]+>"),
-}
+})

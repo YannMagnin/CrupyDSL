@@ -18,5 +18,6 @@ from crupydslparser.cli.unittest import crupydslparser_cli_unittest_entry
         crupydslparser_cli_unittest_entry,
     ],
 )
+@click.version_option()
 def crupydslparser_cli_entry() -> None:
     """ Crupy DSL parser """

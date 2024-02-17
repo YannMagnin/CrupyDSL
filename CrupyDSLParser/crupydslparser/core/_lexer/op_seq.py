@@ -10,7 +10,7 @@ from typing import List, Any
 from crupydslparser.core._lexer._lexer import CrupyLexer
 from crupydslparser.core._lexer._token import CrupyLexerToken
 from crupydslparser.core._lexer.exception import CrupyLexerException
-from crupydslparser.core._stream import CrupyStream
+from crupydslparser.core._parser._base import CrupyParserBase
 
 #---
 # Public
@@ -39,13 +39,13 @@ class CrupyLexerSeq(CrupyLexer):
                 'sequence has been presented'
             )
 
-    def __call__(self, stream: CrupyStream) -> CrupyLexerToken|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyLexerToken|None:
         """ execute all lexer operation
         """
-        with stream as lexem:
+        with parser.stream as lexem:
             token_list: List[CrupyLexerToken] = []
             for lexer in self._seq:
-                if not (token := lexer(stream)):
+                if not (token := lexer(parser)):
                     return None
                 token_list.append(token)
             return CrupyLexerTokenSeq(

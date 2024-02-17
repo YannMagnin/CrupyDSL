@@ -7,7 +7,7 @@ import sys
 
 import click
 
-from crupy.core.grammar import CrupyGrammarBase
+from crupydslparser.core.grammar import CrupyGrammarBase
 
 #---
 # Internals

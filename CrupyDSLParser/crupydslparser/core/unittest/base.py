@@ -4,7 +4,7 @@ crupydslparser.core.unittest    - unittest abstraction
 __all__ = [
     'CrupyUnittestBase',
 ]
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, Generator, Optional, List
 from pathlib import Path
 from importlib import import_module
 import sys
@@ -71,8 +71,12 @@ class CrupyUnittestBase():
     #---
 
     @classmethod
-    def run_all_tests(cls) -> None:
+    def __generate_testsuit_list(cls) -> None:
         """ scan the `tests/` folder and load all unittest
+
+        each time the `import_module()` will load a class that inherite from
+        our class, this will trigger the `__init_subclass__()` magic method
+        and the test will be magically added to our `_testsuit_list()`
         """
         test_prefix = Path(f"{__file__}/../../../../tests").resolve()
         for test_file in test_prefix.rglob('*.py'):
@@ -84,12 +88,28 @@ class CrupyUnittestBase():
                 raise CrupyUnittestException(
                     f"Unable to load external python file ({err})"
                 ) from err
+
+    @classmethod
+    def run_tests(cls, target_tests: Optional[List[str]]) -> None:
+        """ scan the `tests/` folder and load all unittest and test
+        """
+        CrupyUnittestBase.__generate_testsuit_list()
         for test in CrupyUnittestBase._testsuit_list.items():
+            if target_tests and test[0] not in target_tests:
+                continue
             print(f"Testing '{test[0]}'...")
             obj = test[1]['class']()
             for test_name in test[1]['tests']:
                 print(f"- {test_name}...")
                 getattr(obj, test_name)()
+
+    @classmethod
+    def iter_tests(cls) -> Generator[str,None,None]:
+        """ iterate over all registered test
+        """
+        CrupyUnittestBase.__generate_testsuit_list()
+        for test_name in CrupyUnittestBase._testsuit_list:
+            yield test_name
 
     #---
     # Public methods

@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 
 from crupydslparser.core._lexer.exception import CrupyLexerException
 from crupydslparser.core._lexer._token import CrupyLexerToken
-from crupydslparser.core._stream import CrupyStream
+from crupydslparser.core._parser._base import CrupyParserBase
 
 #---
 # Public
@@ -39,7 +39,7 @@ class CrupyLexer(ABC):
     #---
 
     @abstractmethod
-    def __call__(self, stream: CrupyStream) -> CrupyLexerToken|None:
+    def __call__(self, stream: CrupyParserBase) -> CrupyLexerToken|None:
         pass
 
     #---
