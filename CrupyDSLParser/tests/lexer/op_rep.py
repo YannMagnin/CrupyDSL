@@ -6,7 +6,7 @@ __all__ = [
 ]
 
 from crupydslparser.core.unittest import CrupyUnittestBase
-from crupydslparser.core._stream import CrupyStream
+from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core._lexer import (
     CrupyLexerText,
     CrupyLexerRep0N,
@@ -29,12 +29,16 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
 
     def test_rep0n_simple_success(self) -> None:
         """ simple valid case """
-        stream = CrupyStream.from_any('abcdef ij abc def ijklnm')
-        reptok = CrupyLexerRep0N(
-            CrupyLexerText('abc'),
-            CrupyLexerText('def'),
-            CrupyLexerText('ij'),
-        )(stream)
+        reptok = CrupyParserBase({
+            'entry' : CrupyLexerRep0N(
+                CrupyLexerText('abc'),
+                CrupyLexerText('def'),
+                CrupyLexerText('ij'),
+            ),
+        }).execute(
+            'entry',
+            'abcdef ij abc def ijklnm',
+        )
         self.assertIsNotNone(reptok)
         if reptok is None:
             return
@@ -50,12 +54,16 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
 
     def test_rep0n_empty(self) -> None:
         """ simple empty """
-        stream = CrupyStream.from_any('  abcdef ij abc def ijklnm')
-        reptok = CrupyLexerRep0N(
-            CrupyLexerText('zzz'),
-            CrupyLexerText('def'),
-            CrupyLexerText('ijk'),
-        )(stream)
+        reptok = CrupyParserBase({
+            'entry' : CrupyLexerRep0N(
+                CrupyLexerText('zzz'),
+                CrupyLexerText('def'),
+                CrupyLexerText('ijk'),
+            ),
+        }).execute(
+            'entry',
+            '  abcdef ij abc def ijklnm',
+        )
         self.assertIsNotNone(reptok)
         if reptok is None:
             return
@@ -66,12 +74,16 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
 
     def test_rep1n_simple_success(self) -> None:
         """ simple valid case """
-        stream = CrupyStream.from_any('abcdef ij')
-        reptok = CrupyLexerRep1N(
-            CrupyLexerText('abc'),
-            CrupyLexerText('def'),
-            CrupyLexerText('ij'),
-        )(stream)
+        reptok = CrupyParserBase({
+            'entry' : CrupyLexerRep1N(
+                CrupyLexerText('abc'),
+                CrupyLexerText('def'),
+                CrupyLexerText('ij'),
+            ),
+        }).execute(
+            'entry',
+            'abcdef ij',
+        )
         self.assertIsNotNone(reptok)
         if reptok is None:
             return
@@ -84,10 +96,14 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
 
     def test_rep1n_empty(self) -> None:
         """ simple empty """
-        stream = CrupyStream.from_any('  abcdef ij abc def ijklnm')
-        reptok = CrupyLexerRep1N(
-            CrupyLexerText('zzz'),
-            CrupyLexerText('def'),
-            CrupyLexerText('ijk'),
-        )(stream)
+        reptok = CrupyParserBase({
+            'entry' : CrupyLexerRep1N(
+                CrupyLexerText('zzz'),
+                CrupyLexerText('def'),
+                CrupyLexerText('ijk'),
+            ),
+        }).execute(
+            'entry',
+            '  abcdef ij abc def ijklnm',
+        )
         self.assertIsNone(reptok)

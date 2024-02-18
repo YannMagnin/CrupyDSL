@@ -6,7 +6,7 @@ __all__ = [
 ]
 
 from crupydslparser.core.unittest import CrupyUnittestBase
-from crupydslparser.core.parser._test import CrupyParserTest
+from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core._lexer import (
     CrupyLexerOr,
     CrupyLexerText,
@@ -26,16 +26,13 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
 
     def test_simple_success0(self) -> None:
         """ simple valid case """
-        parser = CrupyParserTest(
-            production_test     = 'abcdef ijkl',
-            production_book     = {
-                'entry' : CrupyLexerOr(
-                    CrupyLexerText('abc'),
-                    CrupyLexerText('abcdef'),
-                ),
-            }
-        )
-        or_op = parser.execute('entry')
+        parser = CrupyParserBase({
+            'entry' : CrupyLexerOr(
+                CrupyLexerText('abc'),
+                CrupyLexerText('abcdef'),
+            ),
+        })
+        or_op = parser.execute('entry', 'abcdef ijkl')
         self.assertIsNotNone(or_op)
         if or_op is None:
             return
@@ -45,19 +42,16 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
 
     def test_simple_success1(self) -> None:
         """ simple valid case """
-        parser = CrupyParserTest(
-            production_test     = 'abcdef ijkl',
-            production_book     = {
-                'entry' : CrupyLexerOr(
-                    CrupyLexerText('zzz'),
-                    CrupyLexerText('zzz'),
-                    CrupyLexerText('zzz'),
-                    CrupyLexerText('zzz'),
-                    CrupyLexerText('abcdef'),
-                ),
-            },
-        )
-        or_op = parser.execute('entry')
+        parser = CrupyParserBase({
+            'entry' : CrupyLexerOr(
+                CrupyLexerText('zzz'),
+                CrupyLexerText('zzz'),
+                CrupyLexerText('zzz'),
+                CrupyLexerText('zzz'),
+                CrupyLexerText('abcdef'),
+            ),
+        })
+        or_op = parser.execute('entry', 'abcdef ijkl')
         self.assertIsNotNone(or_op)
         if or_op is None:
             return

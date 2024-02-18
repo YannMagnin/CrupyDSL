@@ -8,7 +8,7 @@ from __future__ import annotations
 __all__ = [
     'CrupyParserBase',
 ]
-from typing import Dict, Optional, TYPE_CHECKING
+from typing import List, Dict, Optional, Callable, IO, TYPE_CHECKING
 
 from crupydslparser.core._stream import CrupyStream
 from crupydslparser.core.parser.exception import CrupyParserException
@@ -37,12 +37,21 @@ class CrupyParserBase():
     """
     def __init__(
         self,
-        production_book:    Optional[Dict[str,CrupyLexer]] = None,
+        production_book: Optional[Dict[str,CrupyLexer]] = None,
     ) -> None:
         self._stream: CrupyStream|None = None
         self._production_book: Dict[str,CrupyLexer] = {}
         if production_book:
             self._production_book = production_book
+        self._hook_book: Dict[
+            str,
+            List[
+                Callable[
+                    [CrupyParserBase, CrupyParserNode],
+                    CrupyParserNode,
+                ],
+            ],
+        ]= {}
 
     #---
     # Public properties
@@ -64,12 +73,45 @@ class CrupyParserBase():
     # Public methods
     #---
 
-    def execute(self, production_name: str) -> CrupyParserNode|None:
+    def execute(
+        self,
+        production_name: str,
+        stream: Optional[CrupyStream|IO[str]|str] = None,
+    ) -> CrupyParserNode|None:
         """ execute a particular production name
+        """
+        if stream:
+            if isinstance(stream, CrupyStream):
+                self._stream = stream
+            else:
+                self._stream = CrupyStream.from_any(stream)
+        if production_name not in self._production_book:
+            raise CrupyParserException(
+                'Unable to find the primary production entry name '
+                f"'{production_name}'"
+            )
+        if not (node := self._production_book[production_name](self)):
+            return None
+        if production_name in self._hook_book:
+            for hook in self._hook_book[production_name]:
+                node = hook(self, node)
+        return node
+
+    def register_hook(
+        self,
+        production_name: str,
+        handler: Callable[
+            [CrupyParserBase, CrupyParserNode],
+            CrupyParserNode,
+        ],
+    ) -> None:
+        """ register a new hook for a production
         """
         if production_name not in self._production_book:
             raise CrupyParserException(
                 'Unable to find the primary production entry name '
                 f"'{production_name}'"
             )
-        return self._production_book[production_name](self)
+        if production_name not in self._hook_book:
+            self._hook_book[production_name] = []
+        self._hook_book[production_name].append(handler)

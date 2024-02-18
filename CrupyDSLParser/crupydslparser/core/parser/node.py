@@ -22,7 +22,7 @@ class CrupyParserNode():
     with typing information
 
     But, each node should have default information that we want to
-    "auto-matically" generate :
+    "auto-magically" generate :
 
         * `name`        : node name
         * `stream_ctx`  : stream context (which contain cursor information)
@@ -41,7 +41,6 @@ class CrupyParserNode():
             with `isinstance()` because it will raise the `TypeError`
             exception
         """
-        stream_context = None
         cls_annotations = self.__class__.__annotations__
         cls_annotations['stream_ctx'] = CrupyStreamContext
         for item in kwargs.items():
@@ -87,17 +86,36 @@ class CrupyParserNode():
             if self._name and letter.isupper():
                 self._name += '_'
             self._name += letter.lower()
-        self._stream_context = stream_context
+        self._stream_context: CrupyStreamContext = getattr(
+            self,
+            'stream_ctx',
+        )
 
     #---
     # Magic operation
     #---
 
+    def __str__(self) -> str:
+        """ generate the string information about the object
+        """
+        content = f"<{self.__class__.__name__}("
+        attributes = ['name'] + list(self.__class__.__annotations__)
+        for i, keyname in enumerate(attributes):
+            if i != 0:
+                content += ', '
+            content += f"{keyname}={getattr(self, keyname)}"
+        content += ')>'
+        return content
+
+    def __repr__(self) -> str:
+        """ small representation of the object """
+        return self.__str__()
+
     def __getitem__(self, key: str) -> Any:
         """ return the 'key' attribute
         """
-        if key in self.__dict__:
-            return self.__dict__[key]
+        if (attr := getattr(self, key, None)) is not None:
+            return attr
         raise CrupyParserException(f"Unable to fetch the attribute '{key}'")
 
     #---

@@ -6,8 +6,11 @@ __all__ = [
 ]
 
 from crupydslparser.core.unittest import CrupyUnittestBase
-from crupydslparser.core._lexer import CrupyLexerSeq, CrupyLexerText
-from crupydslparser.core._stream import CrupyStream
+from crupydslparser.core.parser._base import CrupyParserBase
+from crupydslparser.core._lexer import (
+    CrupyLexerSeq,
+    CrupyLexerText,
+)
 
 #---
 # Public
@@ -23,12 +26,17 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
 
     def test_simple_success(self) -> None:
         """ simple valid case """
-        stream = CrupyStream.from_any('abcdef ijkl')
-        seqtok = CrupyLexerSeq(
-            CrupyLexerText('abc'),
-            CrupyLexerText('def'),
-            CrupyLexerText('ij'),
-        )(stream)
+        parser = CrupyParserBase({
+            'entry' : CrupyLexerSeq(
+                CrupyLexerText('abc'),
+                CrupyLexerText('def'),
+                CrupyLexerText('ij'),
+            ),
+        })
+        seqtok = parser.execute(
+            'entry',
+            'abcdef ijkl',
+        )
         self.assertIsNotNone(seqtok)
         if seqtok is None:
             return
@@ -37,28 +45,34 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
         self.assertEqual(seqtok['seq'][0]['text'], 'abc')
         self.assertEqual(seqtok['seq'][1]['text'], 'def')
         self.assertEqual(seqtok['seq'][2]['text'], 'ij')
-        with stream as lexem:
+        with parser.stream as lexem:
             self.assertEqual(lexem.read(), 'kl')
             lexem.validate()
 
     def test_simple_fail(self) -> None:
         """ simple fail """
-        stream = CrupyStream.from_any('abcdef ijkl')
-        seqtok = CrupyLexerSeq(
-            CrupyLexerText('abc'),
-            CrupyLexerText('dex'),
-            CrupyLexerText('ijkl'),
-        )(stream)
+        seqtok = CrupyParserBase({
+            'entry' : CrupyLexerSeq(
+                CrupyLexerText('abc'),
+                CrupyLexerText('dex'),
+                CrupyLexerText('ijkl'),
+            ),
+        }).execute(
+            'entry',
+            'abcdef ijkl',
+        )
         self.assertIsNone(seqtok)
 
     def test_retrograde_fail(self) -> None:
         """ partial valid sequence """
-        stream = CrupyStream.from_any('abcdef ijkl')
-        seqtok = CrupyLexerSeq(
-            CrupyLexerText('abc'),
-            CrupyLexerText('def'),
-            CrupyLexerText('ijxl'),
-        )(stream)
+        parser = CrupyParserBase({
+            'entry' : CrupyLexerSeq(
+                CrupyLexerText('abc'),
+                CrupyLexerText('def'),
+                CrupyLexerText('ijxl'),
+            ),
+        })
+        seqtok = parser.execute('entry', 'abcdef ijkl')
         self.assertIsNone(seqtok)
-        with stream as lexem:
+        with parser.stream as lexem:
             self.assertEqual(lexem.read(), 'abcdef')

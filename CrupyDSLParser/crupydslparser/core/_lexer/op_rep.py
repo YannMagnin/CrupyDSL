@@ -2,7 +2,7 @@
 crupydslparser.core._lexer.op_rep0  - zero or more lexer operation
 """
 __all__ = [
-    'CrupyParerNodeLexRep',
+    'CrupyParserNodeLexRep',
     'CrupyLexerRep0N',
     'CrupyLexerRep1N',
 ]
@@ -72,7 +72,7 @@ class _CrupyLexerRepxN(CrupyLexer):
 
 ## nodes
 
-class CrupyParerNodeLexRep(CrupyParserNode):
+class CrupyParserNodeLexRep(CrupyParserNode):
     """ sequence token information """
     rep: List[List[CrupyParserNode]]
 
@@ -85,7 +85,7 @@ class CrupyLexerRep0N(_CrupyLexerRepxN):
         """ execute lexer operation and require at least one sequence
         """
         with parser.stream as lexem:
-            return CrupyParerNodeLexRep(
+            return CrupyParserNodeLexRep(
                 stream_ctx  = lexem.validate(),
                 rep         = self._core_rep(parser),
             )
@@ -99,7 +99,7 @@ class CrupyLexerRep1N(_CrupyLexerRepxN):
         with parser.stream as lexem:
             if len(req := self._core_rep(parser)) < 1:
                 return None
-            return CrupyParserNode(
+            return CrupyParserNodeLexRep(
                 stream_ctx  = lexem.validate(),
                 rep         = req,
             )

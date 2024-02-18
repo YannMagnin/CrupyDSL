@@ -15,10 +15,15 @@ from crupydslparser.core._lexer import (
     CrupyLexerOr,
     CrupyLexerBetween,
 )
+from crupydslparser.core._dsl._hook_dsl_production_name import (
+    hook_dsl_production_name,
+)
 
 #---
 # Public
 #---
+
+## productions description
 
 CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     #
@@ -137,3 +142,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
             CrupyLexerText('z'),
         ),
 })
+CRUPY_DSL_PARSER_OBJ.register_hook(
+    'crupy_dsl_production_name',
+    hook_dsl_production_name,
+)

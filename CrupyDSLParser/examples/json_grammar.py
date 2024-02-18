@@ -52,6 +52,6 @@ class _CrupyGrammarJSON(CrupyGrammarBase):
 def jsonparser_cli_entry(json_file_path: Path) -> NoReturn:
     """ parse a simple JSON grammar """
     grammar = _CrupyGrammarJSON()
-    grammar.parse(json_file_path)
+    #grammar.parse(json_file_path)
     print(grammar)
     sys.exit(0)
