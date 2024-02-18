@@ -6,7 +6,7 @@ __all__ = [
 ]
 
 from crupydslparser.core.unittest import CrupyUnittestBase
-from crupydslparser.core._lexer import CrupyLexerUntil
+from crupydslparser.core._lexer import CrupyLexerBetween
 from crupydslparser.core._stream import CrupyStream
 
 #---
@@ -24,8 +24,8 @@ class CrupyUnittestLexerUntil(CrupyUnittestBase):
     def test_simple_success(self) -> None:
         """ simple valid cases """
         stream = CrupyStream.from_any('"abcdef" "ijkl')
-        strop0 = CrupyLexerUntil('"')(stream)
-        strop1 = CrupyLexerUntil('"')(stream)
+        strop0 = CrupyLexerBetween('"')(stream)
+        strop1 = CrupyLexerBetween('"')(stream)
         self.assertIsNotNone(strop0)
         self.assertIsNone(strop1)
         if not strop0:

@@ -5,7 +5,7 @@ __all__ = [
     'CRUPY_DSL_PARSER_OBJ',
 ]
 
-from crupydslparser.core._parser._base import CrupyParserBase
+from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core._lexer import (
     CrupyLexerSeq,
     CrupyLexerText,
@@ -13,7 +13,7 @@ from crupydslparser.core._lexer import (
     CrupyLexerRep0N,
     CrupyLexerRep1N,
     CrupyLexerOr,
-    CrupyLexerUntil,
+    CrupyLexerBetween,
 )
 
 #---
@@ -69,7 +69,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     # String operation (support regex)
     # > crupy_dsl_strop ::= "\"" --special regex abstract-- "\""
     #
-    'crupy_dsl_strop' : CrupyLexerUntil('"'),
+    'crupy_dsl_strop' : CrupyLexerBetween('"'),
 
     #
     # Group operation in production's alternatives

@@ -8,8 +8,8 @@ from typing import Dict, Any
 from abc import ABC, abstractmethod
 
 from crupydslparser.core._lexer.exception import CrupyLexerException
-from crupydslparser.core._lexer._token import CrupyLexerToken
-from crupydslparser.core._parser._base import CrupyParserBase
+from crupydslparser.core.parser.node import CrupyParserNode
+from crupydslparser.core.parser._base import CrupyParserBase
 
 #---
 # Public
@@ -39,7 +39,7 @@ class CrupyLexer(ABC):
     #---
 
     @abstractmethod
-    def __call__(self, stream: CrupyParserBase) -> CrupyLexerToken|None:
+    def __call__(self, stream: CrupyParserBase) -> CrupyParserNode|None:
         pass
 
     #---

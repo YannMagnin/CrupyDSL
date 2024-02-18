@@ -1,30 +1,30 @@
 """
-crupydslparser.core._lexer.op_until - Lexer read until operation
+crupydslparser.core._lexer.op_between   - Lexer between delimiter operation
 """
 __all__ = [
-    'CrupyLexerTokenUntil',
-    'CrupyLexerUntil',
+    'CrupyParserNodeLexBetween',
+    'CrupyLexerBetween',
 ]
 
 from crupydslparser.core._lexer._lexer import CrupyLexer
-from crupydslparser.core._lexer._token import CrupyLexerToken
-from crupydslparser.core._parser._base import CrupyParserBase
+from crupydslparser.core.parser._base import CrupyParserBase
+from crupydslparser.core.parser.node import CrupyParserNode
 
 #---
 # Public
 #---
 
-class CrupyLexerTokenUntil(CrupyLexerToken):
-    """ string token information """
+class CrupyParserNodeLexBetween(CrupyParserNode):
+    """ string node information """
     text: str
 
-class CrupyLexerUntil(CrupyLexer):
-    """ strict string matcher
+class CrupyLexerBetween(CrupyLexer):
+    """ capture between delimiter
     """
     def __init__(self, delimiter: str) -> None:
         self._delimiter = delimiter
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyLexerToken|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
         """ try to strictly match the text
         """
         with parser.stream as lexem:
@@ -37,7 +37,7 @@ class CrupyLexerUntil(CrupyLexer):
                 if curr == self._delimiter:
                     break
                 content += curr
-            return CrupyLexerTokenUntil(
+            return CrupyParserNodeLexBetween(
                 stream_ctx  = lexem.validate(),
                 text        = content,
             )

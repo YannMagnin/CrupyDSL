@@ -8,7 +8,7 @@ __all__ = [
     'CrupyLexerOr',
     'CrupyLexerRep0N',
     'CrupyLexerRep1N',
-    'CrupyLexerUntil',
+    'CrupyLexerBetween',
     'CrupyLexerProduction',
 ]
 from crupydslparser.core._lexer.exception import CrupyLexerException
@@ -19,5 +19,5 @@ from crupydslparser.core._lexer.op_rep import (
     CrupyLexerRep0N,
     CrupyLexerRep1N,
 )
-from crupydslparser.core._lexer.op_until import CrupyLexerUntil
+from crupydslparser.core._lexer.op_between import CrupyLexerBetween
 from crupydslparser.core._lexer.op_production import CrupyLexerProduction

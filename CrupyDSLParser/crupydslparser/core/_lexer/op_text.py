@@ -2,19 +2,19 @@
 crupydslparser.core._lexer.op_text  - Lexer text tool
 """
 __all__ = [
-    'CrupyLexerTokenText',
+    'CrupyParserNodeLexText',
     'CrupyLexerText',
 ]
 
 from crupydslparser.core._lexer._lexer import CrupyLexer
-from crupydslparser.core._lexer._token import CrupyLexerToken
-from crupydslparser.core._parser._base import CrupyParserBase
+from crupydslparser.core.parser._base import CrupyParserBase
+from crupydslparser.core.parser.node import CrupyParserNode
 
 #---
 # Public
 #---
 
-class CrupyLexerTokenText(CrupyLexerToken):
+class CrupyParserNodeLexText(CrupyParserNode):
     """ string token information """
     text: str
 
@@ -24,14 +24,14 @@ class CrupyLexerText(CrupyLexer):
     def __init__(self, text: str) -> None:
         self._text = text
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyLexerToken|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
         """ try to strictly match the text
         """
         with parser.stream as lexem:
             for char in self._text:
                 if lexem.read_char() != char:
                     return None
-            return CrupyLexerTokenText(
+            return CrupyParserNodeLexText(
                 stream_ctx  = lexem.validate(),
                 text        = self._text,
             )

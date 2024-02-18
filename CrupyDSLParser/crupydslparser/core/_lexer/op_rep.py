@@ -2,14 +2,16 @@
 crupydslparser.core._lexer.op_rep0  - zero or more lexer operation
 """
 __all__ = [
+    'CrupyParerNodeLexRep',
     'CrupyLexerRep0N',
+    'CrupyLexerRep1N',
 ]
 from typing import List, Any
 
 from crupydslparser.core._lexer._lexer import CrupyLexer
-from crupydslparser.core._lexer._token import CrupyLexerToken
 from crupydslparser.core._lexer.exception import CrupyLexerException
-from crupydslparser.core._parser._base import CrupyParserBase
+from crupydslparser.core.parser._base import CrupyParserBase
+from crupydslparser.core.parser.node import CrupyParserNode
 
 #---
 # Internals
@@ -44,14 +46,14 @@ class _CrupyLexerRepxN(CrupyLexer):
     def _core_rep(
         self,
         parser: CrupyParserBase,
-    ) -> List[List[CrupyLexerToken]]:
+    ) -> List[List[CrupyParserNode]]:
         """ execute all lexer operation
         """
-        rep: List[List[CrupyLexerToken]] = []
+        rep: List[List[CrupyParserNode]] = []
         while True:
             with parser.stream as lexem:
                 valid = True
-                token_list: List[CrupyLexerToken] = []
+                token_list: List[CrupyParserNode] = []
                 for lexer in self._seq:
                     if token := lexer(parser):
                         token_list.append(token)
@@ -68,18 +70,22 @@ class _CrupyLexerRepxN(CrupyLexer):
 # Public
 #---
 
-class CrupyLexerTokenRep(CrupyLexerToken):
+## nodes
+
+class CrupyParerNodeLexRep(CrupyParserNode):
     """ sequence token information """
-    rep: List[List[CrupyLexerToken]]
+    rep: List[List[CrupyParserNode]]
+
+## operations
 
 class CrupyLexerRep0N(_CrupyLexerRepxN):
     """ required at least one repetition
     """
-    def __call__(self, parser: CrupyParserBase) -> CrupyLexerToken|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
         """ execute lexer operation and require at least one sequence
         """
         with parser.stream as lexem:
-            return CrupyLexerTokenRep(
+            return CrupyParerNodeLexRep(
                 stream_ctx  = lexem.validate(),
                 rep         = self._core_rep(parser),
             )
@@ -87,13 +93,13 @@ class CrupyLexerRep0N(_CrupyLexerRepxN):
 class CrupyLexerRep1N(_CrupyLexerRepxN):
     """ required at least one repetition
     """
-    def __call__(self, parser: CrupyParserBase) -> CrupyLexerToken|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
         """ execute lexer operation and require at least one sequence
         """
         with parser.stream as lexem:
             if len(req := self._core_rep(parser)) < 1:
                 return None
-            return CrupyLexerTokenRep(
+            return CrupyParserNode(
                 stream_ctx  = lexem.validate(),
                 rep         = req,
             )

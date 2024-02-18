@@ -6,7 +6,7 @@ __all__ = [
 ]
 from typing import Any
 
-from crupydslparser.core._parser._base import CrupyParserBase
+from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core._stream import CrupyStream
 
 #---

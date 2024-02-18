@@ -7,9 +7,9 @@ __all__ = [
 from typing import List, Any
 
 from crupydslparser.core._lexer._lexer import CrupyLexer
-from crupydslparser.core._lexer._token import CrupyLexerToken
 from crupydslparser.core._lexer.exception import CrupyLexerException
-from crupydslparser.core._parser._base import CrupyParserBase
+from crupydslparser.core.parser._base import CrupyParserBase
+from crupydslparser.core.parser.node import CrupyParserNode
 
 #---
 # Public
@@ -34,7 +34,7 @@ class CrupyLexerOr(CrupyLexer):
                 'sequence has been presented'
             )
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyLexerToken|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
         """ try to match at least one of the two lexer operation
         """
         for lexer in self._seq:

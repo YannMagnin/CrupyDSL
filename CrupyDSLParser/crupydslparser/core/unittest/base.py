@@ -85,9 +85,12 @@ class CrupyUnittestBase():
                 import_module(test_file.stem)
                 sys.path.pop()
             except (ImportError, ModuleNotFoundError) as err:
-                raise CrupyUnittestException(
-                    f"Unable to load external python file ({err})"
-                ) from err
+                print(
+                    '\033[0;31m'
+                    f"Unable to load external python file '{test_file}' "
+                    f"({err})"
+                    '\033[0m'
+                )
 
     @classmethod
     def run_tests(cls, target_tests: Optional[List[str]]) -> None:

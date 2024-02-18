@@ -6,8 +6,8 @@ __all__ = [
 ]
 
 from crupydslparser.core._lexer._lexer import CrupyLexer
-from crupydslparser.core._lexer._token import CrupyLexerToken
-from crupydslparser.core._parser._base import CrupyParserBase
+from crupydslparser.core.parser._base import CrupyParserBase
+from crupydslparser.core.parser.node import CrupyParserNode
 
 #---
 # Public
@@ -19,8 +19,7 @@ class CrupyLexerProduction(CrupyLexer):
     def __init__(self, production_name: str) -> None:
         self._production_name = production_name
 
-
-    def __call__(self, parser: CrupyParserBase) -> CrupyLexerToken|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
         """ invoke another production rule
         """
         return parser.execute(self._production_name)

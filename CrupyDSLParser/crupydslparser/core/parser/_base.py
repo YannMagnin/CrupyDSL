@@ -11,7 +11,8 @@ __all__ = [
 from typing import Dict, Optional, TYPE_CHECKING
 
 from crupydslparser.core._stream import CrupyStream
-from crupydslparser.core._parser import CrupyParserException
+from crupydslparser.core.parser.exception import CrupyParserException
+from crupydslparser.core.parser.node import CrupyParserNode
 
 # @note : Design mistake
 #
@@ -26,7 +27,6 @@ from crupydslparser.core._parser import CrupyParserException
 # - import the missing `CrupyLexer` type
 if TYPE_CHECKING:
     from crupydslparser.core._lexer._lexer import CrupyLexer
-    from crupydslparser.core._lexer._token import CrupyLexerToken
 
 #---
 # Public
@@ -64,7 +64,7 @@ class CrupyParserBase():
     # Public methods
     #---
 
-    def execute(self, production_name: str) -> CrupyLexerToken|None:
+    def execute(self, production_name: str) -> CrupyParserNode|None:
         """ execute a particular production name
         """
         if production_name not in self._production_book:
