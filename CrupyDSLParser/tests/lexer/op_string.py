@@ -1,5 +1,5 @@
 """
-tests.lexer.op_text     - test the CrupyLexerText
+tests.lexer.op_text     - test the CrupyLexerOpText
 """
 __all__ = [
     'CrupyUnittestLexerText',
@@ -7,7 +7,7 @@ __all__ = [
 
 from crupydslparser.core.unittest import CrupyUnittestBase
 from crupydslparser.core.parser._base import CrupyParserBase
-from crupydslparser.core._lexer import CrupyLexerText
+from crupydslparser.core._lexer import CrupyLexerOpText
 
 #---
 # Public
@@ -24,10 +24,10 @@ class CrupyUnittestLexerText(CrupyUnittestBase):
     def test_simple_success(self) -> None:
         """ simple valid cases """
         parser = CrupyParserBase({
-            'entry0' : CrupyLexerText('abcdef'),
-            'entry1' : CrupyLexerText('i'),
-            'entry2' : CrupyLexerText('jkc'),
-            'entry3' : CrupyLexerText('jkl'),
+            'entry0' : CrupyLexerOpText('abcdef'),
+            'entry1' : CrupyLexerOpText('i'),
+            'entry2' : CrupyLexerOpText('jkc'),
+            'entry3' : CrupyLexerOpText('jkl'),
         })
         strop0 = parser.execute('entry0', 'abcdef ijkl')
         strop1 = parser.execute('entry1')

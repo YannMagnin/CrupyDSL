@@ -1,12 +1,12 @@
 """
-crupydslparser.core._lexer.op_text  - Lexer text tool
+crupydslparser.core._lexer._operation.text  - Lexer text tool
 """
 __all__ = [
     'CrupyParserNodeLexText',
-    'CrupyLexerText',
+    'CrupyLexerOpText',
 ]
 
-from crupydslparser.core._lexer._lexer import CrupyLexer
+from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core.parser.node import CrupyParserNode
 
@@ -18,7 +18,7 @@ class CrupyParserNodeLexText(CrupyParserNode):
     """ string token information """
     text: str
 
-class CrupyLexerText(CrupyLexer):
+class CrupyLexerOpText(CrupyLexerOpBase):
     """ strict string matcher
     """
     def __init__(self, text: str) -> None:

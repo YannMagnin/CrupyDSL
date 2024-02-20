@@ -1,5 +1,5 @@
 """
-tests.lexer.op_production   - test the CrupyLexerProduction
+tests.lexer.op_production   - test the CrupyLexerOpProduction
 """
 __all__ = [
     'CrupyUnittestLexerProd'
@@ -9,8 +9,8 @@ from crupydslparser.core.unittest import CrupyUnittestBase
 from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core.parser.exception import CrupyParserException
 from crupydslparser.core._lexer import (
-    CrupyLexerProduction,
-    CrupyLexerText,
+    CrupyLexerOpProductionCall,
+    CrupyLexerOpText,
 )
 
 #---
@@ -28,8 +28,8 @@ class CrupyUnittestLexerProd(CrupyUnittestBase):
     def test_simple_success(self) -> None:
         """ simple success test """
         parser = CrupyParserBase({
-            'entry'  : CrupyLexerProduction('entry2'),
-            'entry2' : CrupyLexerText('abcdef')
+            'entry'  : CrupyLexerOpProductionCall('entry2'),
+            'entry2' : CrupyLexerOpText('abcdef')
         })
         test = parser.execute('entry', '\tabcdef ijkl')
         self.assertIsNotNone(test)
@@ -42,7 +42,7 @@ class CrupyUnittestLexerProd(CrupyUnittestBase):
     def test_raise_error(self) -> None:
         """ force production calling that not exists """
         parser = CrupyParserBase({
-            'entry'  : CrupyLexerProduction('entry2'),
+            'entry'  : CrupyLexerOpProductionCall('entry2'),
         })
         self.assertRaises(
             exc_obj     = CrupyParserException(

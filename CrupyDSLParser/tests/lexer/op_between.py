@@ -1,12 +1,12 @@
 """
-tests.lexer.op_until     - test the CrupyLexerUntil
+tests.lexer.op_until     - test the CrupyLexerOpUntil
 """
 __all__ = [
     'CrupyUnittestLexerUntil',
 ]
 
 from crupydslparser.core.unittest import CrupyUnittestBase
-from crupydslparser.core._lexer import CrupyLexerBetween
+from crupydslparser.core._lexer import CrupyLexerOpBetween
 from crupydslparser.core.parser._base import CrupyParserBase
 
 #---
@@ -24,7 +24,7 @@ class CrupyUnittestLexerUntil(CrupyUnittestBase):
     def test_simple_success(self) -> None:
         """ simple valid cases """
         parser = CrupyParserBase({
-            'entry' : CrupyLexerBetween('"'),
+            'entry' : CrupyLexerOpBetween('"'),
         })
         strop0 = parser.execute('entry', '"abcdef" "ijkl')
         strop1 = parser.execute('entry')

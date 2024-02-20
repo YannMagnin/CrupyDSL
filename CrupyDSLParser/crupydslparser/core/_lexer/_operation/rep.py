@@ -1,14 +1,14 @@
 """
-crupydslparser.core._lexer.op_rep0  - zero or more lexer operation
+crupydslparser.core._lexer._operation.rep0  - zero or more lexer operation
 """
 __all__ = [
     'CrupyParserNodeLexRep',
-    'CrupyLexerRep0N',
-    'CrupyLexerRep1N',
+    'CrupyLexerOpRep0N',
+    'CrupyLexerOpRep1N',
 ]
 from typing import List, Any
 
-from crupydslparser.core._lexer._lexer import CrupyLexer
+from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.core._lexer.exception import CrupyLexerException
 from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core.parser.node import CrupyParserNode
@@ -20,13 +20,13 @@ from crupydslparser.core.parser.node import CrupyParserNode
 # Allow to fiew public methods
 # pylint: disable=locally-disabled,R0903
 
-class _CrupyLexerRepxN(CrupyLexer):
+class _CrupyLexerOpRepxN(CrupyLexerOpBase):
     """ execute sequence of lexer operation
     """
     def __init__(self, *args: Any) -> None:
-        self._seq: List[CrupyLexer] = []
+        self._seq: List[CrupyLexerOpBase] = []
         for i, arg in enumerate(args):
-            if CrupyLexer not in type(arg).mro():
+            if CrupyLexerOpBase not in type(arg).mro():
                 raise CrupyLexerException(
                     'Unable to initialise the CrupyLexerSeq because the '
                     f"argument {i} is not of type CrupyLexer "
@@ -78,7 +78,7 @@ class CrupyParserNodeLexRep(CrupyParserNode):
 
 ## operations
 
-class CrupyLexerRep0N(_CrupyLexerRepxN):
+class CrupyLexerOpRep0N(_CrupyLexerOpRepxN):
     """ required at least one repetition
     """
     def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
@@ -90,7 +90,7 @@ class CrupyLexerRep0N(_CrupyLexerRepxN):
                 rep         = self._core_rep(parser),
             )
 
-class CrupyLexerRep1N(_CrupyLexerRepxN):
+class CrupyLexerOpRep1N(_CrupyLexerOpRepxN):
     """ required at least one repetition
     """
     def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:

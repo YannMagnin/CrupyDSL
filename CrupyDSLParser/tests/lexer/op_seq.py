@@ -1,5 +1,5 @@
 """
-tests.lexer.op_seq  - test the CrupyLexerSeq
+tests.lexer.op_seq  - test the CrupyLexerOpSeq
 """
 __all__ = [
     'CrupyUnittestLexerSeq',
@@ -8,8 +8,8 @@ __all__ = [
 from crupydslparser.core.unittest import CrupyUnittestBase
 from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core._lexer import (
-    CrupyLexerSeq,
-    CrupyLexerText,
+    CrupyLexerOpSeq,
+    CrupyLexerOpText,
 )
 
 #---
@@ -27,10 +27,10 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
     def test_simple_success(self) -> None:
         """ simple valid case """
         parser = CrupyParserBase({
-            'entry' : CrupyLexerSeq(
-                CrupyLexerText('abc'),
-                CrupyLexerText('def'),
-                CrupyLexerText('ij'),
+            'entry' : CrupyLexerOpSeq(
+                CrupyLexerOpText('abc'),
+                CrupyLexerOpText('def'),
+                CrupyLexerOpText('ij'),
             ),
         })
         seqtok = parser.execute(
@@ -52,10 +52,10 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
     def test_simple_fail(self) -> None:
         """ simple fail """
         seqtok = CrupyParserBase({
-            'entry' : CrupyLexerSeq(
-                CrupyLexerText('abc'),
-                CrupyLexerText('dex'),
-                CrupyLexerText('ijkl'),
+            'entry' : CrupyLexerOpSeq(
+                CrupyLexerOpText('abc'),
+                CrupyLexerOpText('dex'),
+                CrupyLexerOpText('ijkl'),
             ),
         }).execute(
             'entry',
@@ -66,10 +66,10 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
     def test_retrograde_fail(self) -> None:
         """ partial valid sequence """
         parser = CrupyParserBase({
-            'entry' : CrupyLexerSeq(
-                CrupyLexerText('abc'),
-                CrupyLexerText('def'),
-                CrupyLexerText('ijxl'),
+            'entry' : CrupyLexerOpSeq(
+                CrupyLexerOpText('abc'),
+                CrupyLexerOpText('def'),
+                CrupyLexerOpText('ijxl'),
             ),
         })
         seqtok = parser.execute('entry', 'abcdef ijkl')

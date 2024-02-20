@@ -1,5 +1,5 @@
 """
-tests.lexer.op_or   - test the CrupyLexerOr
+tests.lexer.op_or   - test the CrupyLexerOpOr
 """
 __all__ = [
     'CrupyUnittestLexerOr',
@@ -8,8 +8,8 @@ __all__ = [
 from crupydslparser.core.unittest import CrupyUnittestBase
 from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core._lexer import (
-    CrupyLexerOr,
-    CrupyLexerText,
+    CrupyLexerOpOr,
+    CrupyLexerOpText,
 )
 
 #---
@@ -27,9 +27,9 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
     def test_simple_success0(self) -> None:
         """ simple valid case """
         parser = CrupyParserBase({
-            'entry' : CrupyLexerOr(
-                CrupyLexerText('abc'),
-                CrupyLexerText('abcdef'),
+            'entry' : CrupyLexerOpOr(
+                CrupyLexerOpText('abc'),
+                CrupyLexerOpText('abcdef'),
             ),
         })
         or_op = parser.execute('entry', 'abcdef ijkl')
@@ -43,12 +43,12 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
     def test_simple_success1(self) -> None:
         """ simple valid case """
         parser = CrupyParserBase({
-            'entry' : CrupyLexerOr(
-                CrupyLexerText('zzz'),
-                CrupyLexerText('zzz'),
-                CrupyLexerText('zzz'),
-                CrupyLexerText('zzz'),
-                CrupyLexerText('abcdef'),
+            'entry' : CrupyLexerOpOr(
+                CrupyLexerOpText('zzz'),
+                CrupyLexerOpText('zzz'),
+                CrupyLexerOpText('zzz'),
+                CrupyLexerOpText('zzz'),
+                CrupyLexerOpText('abcdef'),
             ),
         })
         or_op = parser.execute('entry', 'abcdef ijkl')

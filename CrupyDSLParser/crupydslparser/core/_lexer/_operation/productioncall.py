@@ -1,11 +1,11 @@
 """
-crupydslparser.core._lexer.op_rule  - lexer rule operation
+crupydslparser.core._lexer._operation.productioncall  - lexer rule operation
 """
 __all__ = [
-    'CrupyLexerProduction',
+    'CrupyLexerOpProductionCall',
 ]
 
-from crupydslparser.core._lexer._lexer import CrupyLexer
+from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core.parser.node import CrupyParserNode
 
@@ -13,7 +13,7 @@ from crupydslparser.core.parser.node import CrupyParserNode
 # Public
 #---
 
-class CrupyLexerProduction(CrupyLexer):
+class CrupyLexerOpProductionCall(CrupyLexerOpBase):
     """ Rule invocation operation
     """
     def __init__(self, production_name: str) -> None:

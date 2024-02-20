@@ -1,5 +1,5 @@
 """
-tests.lexer.op_rep  - tes for the CrupyLexerRep0N, and CrupyLexerRep1N
+tests.lexer.op_rep  - tes for the CrupyLexerOpRep0N, and CrupyLexerOpRep1N
 """
 __all__ = [
     'CrupyUnittestLexerRep',
@@ -8,9 +8,9 @@ __all__ = [
 from crupydslparser.core.unittest import CrupyUnittestBase
 from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core._lexer import (
-    CrupyLexerText,
-    CrupyLexerRep0N,
-    CrupyLexerRep1N,
+    CrupyLexerOpText,
+    CrupyLexerOpRep0N,
+    CrupyLexerOpRep1N,
 )
 
 #---
@@ -30,10 +30,10 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
     def test_rep0n_simple_success(self) -> None:
         """ simple valid case """
         reptok = CrupyParserBase({
-            'entry' : CrupyLexerRep0N(
-                CrupyLexerText('abc'),
-                CrupyLexerText('def'),
-                CrupyLexerText('ij'),
+            'entry' : CrupyLexerOpRep0N(
+                CrupyLexerOpText('abc'),
+                CrupyLexerOpText('def'),
+                CrupyLexerOpText('ij'),
             ),
         }).execute(
             'entry',
@@ -55,10 +55,10 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
     def test_rep0n_empty(self) -> None:
         """ simple empty """
         reptok = CrupyParserBase({
-            'entry' : CrupyLexerRep0N(
-                CrupyLexerText('zzz'),
-                CrupyLexerText('def'),
-                CrupyLexerText('ijk'),
+            'entry' : CrupyLexerOpRep0N(
+                CrupyLexerOpText('zzz'),
+                CrupyLexerOpText('def'),
+                CrupyLexerOpText('ijk'),
             ),
         }).execute(
             'entry',
@@ -75,10 +75,10 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
     def test_rep1n_simple_success(self) -> None:
         """ simple valid case """
         reptok = CrupyParserBase({
-            'entry' : CrupyLexerRep1N(
-                CrupyLexerText('abc'),
-                CrupyLexerText('def'),
-                CrupyLexerText('ij'),
+            'entry' : CrupyLexerOpRep1N(
+                CrupyLexerOpText('abc'),
+                CrupyLexerOpText('def'),
+                CrupyLexerOpText('ij'),
             ),
         }).execute(
             'entry',
@@ -97,10 +97,10 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
     def test_rep1n_empty(self) -> None:
         """ simple empty """
         reptok = CrupyParserBase({
-            'entry' : CrupyLexerRep1N(
-                CrupyLexerText('zzz'),
-                CrupyLexerText('def'),
-                CrupyLexerText('ijk'),
+            'entry' : CrupyLexerOpRep1N(
+                CrupyLexerOpText('zzz'),
+                CrupyLexerOpText('def'),
+                CrupyLexerOpText('ijk'),
             ),
         }).execute(
             'entry',

@@ -1,13 +1,12 @@
 """
-crupydslparser.core._lexer.op_seq   - sequence operation
+crupydslparser.core._lexer._operation.choice    - lexer or operation
 """
 __all__ = [
-    'CrupyParserNodeLexSeq',
-    'CrupyLexerSeq',
+    'CrupyLexerOpOr',
 ]
 from typing import List, Any
 
-from crupydslparser.core._lexer._lexer import CrupyLexer
+from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.core._lexer.exception import CrupyLexerException
 from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core.parser.node import CrupyParserNode
@@ -16,17 +15,13 @@ from crupydslparser.core.parser.node import CrupyParserNode
 # Public
 #---
 
-class CrupyParserNodeLexSeq(CrupyParserNode):
-    """ sequence token information """
-    seq: List[CrupyParserNode]
-
-class CrupyLexerSeq(CrupyLexer):
-    """ execute sequence of lexer operation
+class CrupyLexerOpOr(CrupyLexerOpBase):
+    """ OR lexer operation
     """
     def __init__(self, *args: Any) -> None:
-        self._seq: List[CrupyLexer] = []
+        self._seq: List[CrupyLexerOpBase] = []
         for i, arg in enumerate(args):
-            if CrupyLexer not in type(arg).mro():
+            if CrupyLexerOpBase not in type(arg).mro():
                 raise CrupyLexerException(
                     'Unable to initialise the CrupyLexerSeq because the '
                     f"argument {i} is not of type CrupyLexer "
@@ -40,15 +35,9 @@ class CrupyLexerSeq(CrupyLexer):
             )
 
     def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
-        """ execute all lexer operation
+        """ try to match at least one of the two lexer operation
         """
-        with parser.stream as lexem:
-            token_list: List[CrupyParserNode] = []
-            for lexer in self._seq:
-                if not (token := lexer(parser)):
-                    return None
-                token_list.append(token)
-            return CrupyParserNodeLexSeq(
-                stream_ctx  = lexem.validate(),
-                seq         = token_list
-            )
+        for lexer in self._seq:
+            if (token := lexer(parser)):
+                return token
+        return None

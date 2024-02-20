@@ -1,8 +1,8 @@
 """
-crupydslparser.core._lexer._lexer    - Lexer abstraction
+crupydslparser.core._lexer._operation._base - Lexer operation abstraction
 """
 __all__ = [
-    'CrupyLexer',
+    'CrupyLexerOpBase',
 ]
 from typing import Dict, Any
 from abc import ABC, abstractmethod
@@ -15,8 +15,8 @@ from crupydslparser.core.parser._base import CrupyParserBase
 # Public
 #---
 
-class CrupyLexer(ABC):
-    """ Lexer abstraction
+class CrupyLexerOpBase(ABC):
+    """ Lexer capture operation
     """
 
     #---
@@ -28,11 +28,13 @@ class CrupyLexer(ABC):
     def __init_subclass__(cls, /, **kwargs: Dict[str,Any]) -> None:
         """ guess token name based on class name
         """
-        if cls.__name__.find('CrupyLexerToken') == 0:
+        if cls.__name__[0] == '_':
+            return
+        if cls.__name__.find('CrupyLexerOp') != 0:
             raise CrupyLexerException(
-                f"Malformated token class name '{cls.__name__}'"
+                f"Malformated lexer operation class name '{cls.__name__}'"
             )
-        cls._name = cls.__name__[15:].lower()
+        cls._name = cls.__name__[12:].lower()
 
     #---
     # Pulic methods

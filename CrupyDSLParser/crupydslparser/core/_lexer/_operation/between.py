@@ -1,12 +1,12 @@
 """
-crupydslparser.core._lexer.op_between   - Lexer between delimiter operation
+crupydslparser.core._lexer._operation.between   - Lexer between operation
 """
 __all__ = [
     'CrupyParserNodeLexBetween',
-    'CrupyLexerBetween',
+    'CrupyLexerOpBetween',
 ]
 
-from crupydslparser.core._lexer._lexer import CrupyLexer
+from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core.parser.node import CrupyParserNode
 
@@ -18,7 +18,7 @@ class CrupyParserNodeLexBetween(CrupyParserNode):
     """ string node information """
     text: str
 
-class CrupyLexerBetween(CrupyLexer):
+class CrupyLexerOpBetween(CrupyLexerOpBase):
     """ capture between delimiter
     """
     def __init__(self, delimiter: str) -> None:
