@@ -5,9 +5,10 @@ __all__ = [
     'CrupyParserNodeLexSeq',
     'CrupyLexerOpSeq',
 ]
-from typing import List, Any
+from typing import List, Any, cast
 
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
+from crupydslparser.core._lexer._assert._base import CrupyLexerAssertBase
 from crupydslparser.core._lexer.exception import CrupyLexerException
 from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core.parser.node import CrupyParserNode
@@ -24,13 +25,16 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
     """ execute sequence of lexer operation
     """
     def __init__(self, *args: Any) -> None:
-        self._seq: List[CrupyLexerOpBase] = []
+        self._seq: List[CrupyLexerOpBase|CrupyLexerAssertBase] = []
         for i, arg in enumerate(args):
-            if CrupyLexerOpBase not in type(arg).mro():
+            if (
+                    CrupyLexerOpBase not in type(arg).mro()
+                and CrupyLexerAssertBase not in type(arg).mro()
+            ):
                 raise CrupyLexerException(
-                    'Unable to initialise the CrupyLexerSeq because the '
+                    'Unable to initialise the CrupyLexerOpSeq because the '
                     f"argument {i} is not of type CrupyLexer "
-                    f"({type(arg)})"
+                    f"({type(arg).mro()})"
                 )
             self._seq.append(arg)
         if not self._seq:
@@ -45,9 +49,15 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
         with parser.stream as lexem:
             token_list: List[CrupyParserNode] = []
             for lexer in self._seq:
-                if not (token := lexer(parser)):
-                    return None
-                token_list.append(token)
+                if issubclass(type(lexer), CrupyLexerAssertBase):
+                    if not lexer(parser):
+                        return None
+                else:
+                    if not (token := lexer(parser)):
+                        return None
+                    token_list.append(
+                        cast(CrupyParserNode, token),
+                    )
             return CrupyParserNodeLexSeq(
                 stream_ctx  = lexem.validate(),
                 seq         = token_list

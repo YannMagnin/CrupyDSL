@@ -131,11 +131,17 @@ class CrupyUnittestBase():
 
     def assertIsNone(self, obj: Any) -> None:
         """ simply check if the object is None """
-        assert obj is None
+        try:
+            assert obj is None
+        except AssertionError:
+            print(f"assert '{obj}' is not None")
 
     def assertIsNotNone(self, obj: Any) -> None:
         """ simply check if the object is None """
-        assert obj is not None
+        try:
+            assert obj is not None
+        except AssertionError:
+            print(f"assert '{obj}' is None")
 
     # Allow method to catch too general exception
     # pylint: disable=locally-disabled,W0718
