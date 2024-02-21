@@ -7,8 +7,10 @@ __all__ = [
 ]
 
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
-from crupydslparser.core.parser._base import CrupyParserBase
-from crupydslparser.core.parser.node import CrupyParserNode
+from crupydslparser.core.parser import (
+    CrupyParserBase,
+    CrupyParserNode,
+)
 
 #---
 # Public

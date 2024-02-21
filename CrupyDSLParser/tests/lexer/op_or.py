@@ -6,7 +6,7 @@ __all__ = [
 ]
 
 from crupydslparser.core.unittest import CrupyUnittestBase
-from crupydslparser.core.parser._base import CrupyParserBase
+from crupydslparser.core.parser import CrupyParserBase
 from crupydslparser.core._lexer import (
     CrupyLexerOpOr,
     CrupyLexerOpText,
@@ -32,7 +32,8 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
                 CrupyLexerOpText('abcdef'),
             ),
         })
-        or_op = parser.execute('entry', 'abcdef ijkl')
+        parser.register_stream('abcdef ijkl')
+        or_op = parser.execute('entry')
         self.assertIsNotNone(or_op)
         if or_op is None:
             return
@@ -51,7 +52,8 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
                 CrupyLexerOpText('abcdef'),
             ),
         })
-        or_op = parser.execute('entry', 'abcdef ijkl')
+        parser.register_stream('abcdef ijkl')
+        or_op = parser.execute('entry')
         self.assertIsNotNone(or_op)
         if or_op is None:
             return

@@ -10,7 +10,7 @@ from typing import List, Any
 from crupydslparser.core._lexer._assert._base import CrupyLexerAssertBase
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.core._lexer.exception import CrupyLexerException
-from crupydslparser.core.parser._base import CrupyParserBase
+from crupydslparser.core.parser import CrupyParserBase
 
 #---
 # Public

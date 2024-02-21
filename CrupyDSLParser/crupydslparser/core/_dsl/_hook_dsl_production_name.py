@@ -5,8 +5,10 @@ __all__ = [
     'hook_dsl_production_name',
 ]
 
-from crupydslparser.core.parser.node import CrupyParserNode
-from crupydslparser.core.parser._base import CrupyParserBase
+from crupydslparser.core.parser import (
+    CrupyParserBase,
+    CrupyParserNode,
+)
 
 #---
 # Internals

@@ -8,7 +8,7 @@ from typing import Dict, Any
 from abc import ABC, abstractmethod
 
 from crupydslparser.core._lexer.exception import CrupyLexerException
-from crupydslparser.core.parser._base import CrupyParserBase
+from crupydslparser.core.parser import CrupyParserBase
 
 #---
 # Public

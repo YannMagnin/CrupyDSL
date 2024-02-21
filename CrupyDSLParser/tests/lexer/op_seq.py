@@ -6,7 +6,7 @@ __all__ = [
 ]
 
 from crupydslparser.core.unittest import CrupyUnittestBase
-from crupydslparser.core.parser._base import CrupyParserBase
+from crupydslparser.core.parser import CrupyParserBase
 from crupydslparser.core._lexer import (
     CrupyLexerOpSeq,
     CrupyLexerOpText,
@@ -33,10 +33,8 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
                 CrupyLexerOpText('ij'),
             ),
         })
-        seqtok = parser.execute(
-            'entry',
-            'abcdef ijkl',
-        )
+        parser.register_stream('abcdef ijkl')
+        seqtok = parser.execute('entry')
         self.assertIsNotNone(seqtok)
         if seqtok is None:
             return
@@ -51,16 +49,15 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
 
     def test_simple_fail(self) -> None:
         """ simple fail """
-        seqtok = CrupyParserBase({
+        parser = CrupyParserBase({
             'entry' : CrupyLexerOpSeq(
                 CrupyLexerOpText('abc'),
                 CrupyLexerOpText('dex'),
                 CrupyLexerOpText('ijkl'),
             ),
-        }).execute(
-            'entry',
-            'abcdef ijkl',
-        )
+        })
+        parser.register_stream('abcdef ijkl')
+        seqtok = parser.execute('entry')
         self.assertIsNone(seqtok)
 
     def test_retrograde_fail(self) -> None:
@@ -72,7 +69,8 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
                 CrupyLexerOpText('ijxl'),
             ),
         })
-        seqtok = parser.execute('entry', 'abcdef ijkl')
+        parser.register_stream('abcdef ijkl')
+        seqtok = parser.execute('entry')
         self.assertIsNone(seqtok)
         with parser.stream as lexem:
             self.assertEqual(lexem.read(), 'abcdef')

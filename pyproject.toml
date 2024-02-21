@@ -7,12 +7,14 @@ authors     = [
     "Yann MAGNIN <yann.magnin@ecole2600.com>",
 ]
 packages    = [
-    { include = "crupydslparser", from='CrupyDSLParser' },
+    { include = "crupydslparser", from='CrupyDSLParser/' },
+    { include = "crupycsv",       from='CrupyDSLParser/examples/' },
 ]
 
 
 [tool.poetry.scripts]
 crupydsl    = 'crupydslparser.cli:crupydslparser_cli_entry'
+crupycsv    = 'crupycsv.cli:crupycsv_cli_entry'
 
 
 [tool.poetry.dependencies]

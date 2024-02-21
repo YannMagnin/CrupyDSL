@@ -26,7 +26,7 @@ from crupydslparser.core.parser.node import CrupyParserNode
 # - use the `annotations` import to allow "not well defined class"
 # - import the missing `CrupyLexer` type
 if TYPE_CHECKING:
-    from crupydslparser.core._lexer._lexer import CrupyLexer
+    from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
 
 #---
 # Public
@@ -37,10 +37,10 @@ class CrupyParserBase():
     """
     def __init__(
         self,
-        production_book: Optional[Dict[str,CrupyLexer]] = None,
+        production_book: Optional[Dict[str,CrupyLexerOpBase]] = None,
     ) -> None:
         self._stream: CrupyStream|None = None
-        self._production_book: Dict[str,CrupyLexer] = {}
+        self._production_book: Dict[str,CrupyLexerOpBase] = {}
         if production_book:
             self._production_book = production_book
         self._hook_book: Dict[
@@ -65,7 +65,7 @@ class CrupyParserBase():
         raise CrupyParserException('No stream registered')
 
     @property
-    def production_book(self) -> Dict[str,CrupyLexer]:
+    def production_book(self) -> Dict[str,CrupyLexerOpBase]:
         """ return the current registered rules """
         return self._production_book
 
@@ -76,15 +76,9 @@ class CrupyParserBase():
     def execute(
         self,
         production_name: str,
-        stream: Optional[CrupyStream|IO[str]|str] = None,
     ) -> CrupyParserNode|None:
         """ execute a particular production name
         """
-        if stream:
-            if isinstance(stream, CrupyStream):
-                self._stream = stream
-            else:
-                self._stream = CrupyStream.from_any(stream)
         if production_name not in self._production_book:
             raise CrupyParserException(
                 'Unable to find the primary production entry name '
@@ -96,6 +90,17 @@ class CrupyParserBase():
             for hook in self._hook_book[production_name]:
                 node = hook(self, node)
         return node
+
+    def register_stream(
+        self,
+        stream: CrupyStream|IO[str]|str,
+    ) -> None:
+        """ register a stream
+        """
+        if isinstance(stream, CrupyStream):
+            self._stream = stream
+        else:
+            self._stream = CrupyStream.from_any(stream)
 
     def register_hook(
         self,

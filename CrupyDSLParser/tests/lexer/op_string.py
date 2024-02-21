@@ -6,7 +6,7 @@ __all__ = [
 ]
 
 from crupydslparser.core.unittest import CrupyUnittestBase
-from crupydslparser.core.parser._base import CrupyParserBase
+from crupydslparser.core.parser import CrupyParserBase
 from crupydslparser.core._lexer import CrupyLexerOpText
 
 #---
@@ -29,7 +29,8 @@ class CrupyUnittestLexerText(CrupyUnittestBase):
             'entry2' : CrupyLexerOpText('jkc'),
             'entry3' : CrupyLexerOpText('jkl'),
         })
-        strop0 = parser.execute('entry0', 'abcdef ijkl')
+        parser.register_stream('abcdef ijkl')
+        strop0 = parser.execute('entry0')
         strop1 = parser.execute('entry1')
         strop2 = parser.execute('entry2')
         strop3 = parser.execute('entry3')

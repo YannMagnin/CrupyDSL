@@ -6,7 +6,6 @@ __all__ = [
 ]
 from typing import Optional, Any, IO
 
-from crupydslparser.core.parser._base import CrupyParserBase
 from crupydslparser.core._stream import CrupyStream
 from crupydslparser.core.grammar.exception import CrupyGrammarException
 
@@ -43,8 +42,9 @@ class CrupyGrammarBase():
             )
 
     def __init__(self) -> None:
-        self._parser = CrupyParserBase()
-        self._parser.dsl_compile(self.grammar)
+        #self._parser = CrupyGrammarParser()
+        #self._parser.dsl_compile(self.grammar)
+        pass
 
     #---
     # Public methods

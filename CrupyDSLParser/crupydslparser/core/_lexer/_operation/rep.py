@@ -6,12 +6,15 @@ __all__ = [
     'CrupyLexerOpRep0N',
     'CrupyLexerOpRep1N',
 ]
-from typing import List, Any
+from typing import List, Any, cast
 
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
+from crupydslparser.core._lexer._assert._base import CrupyLexerAssertBase
 from crupydslparser.core._lexer.exception import CrupyLexerException
-from crupydslparser.core.parser._base import CrupyParserBase
-from crupydslparser.core.parser.node import CrupyParserNode
+from crupydslparser.core.parser import (
+    CrupyParserBase,
+    CrupyParserNode,
+)
 
 #---
 # Internals
@@ -24,9 +27,12 @@ class _CrupyLexerOpRepxN(CrupyLexerOpBase):
     """ execute sequence of lexer operation
     """
     def __init__(self, *args: Any) -> None:
-        self._seq: List[CrupyLexerOpBase] = []
+        self._seq: List[CrupyLexerOpBase|CrupyLexerAssertBase] = []
         for i, arg in enumerate(args):
-            if CrupyLexerOpBase not in type(arg).mro():
+            if (
+                    CrupyLexerOpBase not in type(arg).mro()
+                and CrupyLexerAssertBase not in type(arg).mro()
+            ):
                 raise CrupyLexerException(
                     'Unable to initialise the CrupyLexerSeq because the '
                     f"argument {i} is not of type CrupyLexer "
@@ -55,9 +61,15 @@ class _CrupyLexerOpRepxN(CrupyLexerOpBase):
                 valid = True
                 token_list: List[CrupyParserNode] = []
                 for lexer in self._seq:
-                    if token := lexer(parser):
-                        token_list.append(token)
-                        continue
+                    if issubclass(type(lexer), CrupyLexerAssertBase):
+                        if lexer(parser):
+                            continue
+                    else:
+                        if token := lexer(parser):
+                            token_list.append(
+                                cast(CrupyParserNode, token),
+                            )
+                            continue
                     valid = False
                     break
                 if not valid:

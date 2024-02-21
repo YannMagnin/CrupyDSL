@@ -21,8 +21,6 @@ class CrupyUnittestDSLProdName(CrupyUnittestBase):
 
     def test_simple_success(self) -> None:
         """ simple valid case """
-        node = CRUPY_DSL_PARSER_OBJ.execute(
-            production_name = 'crupy_dsl_production_name',
-            stream          = '<oui_non>',
-        )
+        CRUPY_DSL_PARSER_OBJ.register_stream('<oui_non>')
+        node = CRUPY_DSL_PARSER_OBJ.execute('crupy_dsl_production_name')
         print(node)

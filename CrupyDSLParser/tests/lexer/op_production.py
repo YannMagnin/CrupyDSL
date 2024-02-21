@@ -6,7 +6,7 @@ __all__ = [
 ]
 
 from crupydslparser.core.unittest import CrupyUnittestBase
-from crupydslparser.core.parser._base import CrupyParserBase
+from crupydslparser.core.parser import CrupyParserBase
 from crupydslparser.core.parser.exception import CrupyParserException
 from crupydslparser.core._lexer import (
     CrupyLexerOpProductionCall,
@@ -31,7 +31,8 @@ class CrupyUnittestLexerProd(CrupyUnittestBase):
             'entry'  : CrupyLexerOpProductionCall('entry2'),
             'entry2' : CrupyLexerOpText('abcdef')
         })
-        test = parser.execute('entry', '\tabcdef ijkl')
+        parser.register_stream('\tabcdef ijkl')
+        test = parser.execute('entry')
         self.assertIsNotNone(test)
         if test is None:
             return
@@ -44,10 +45,11 @@ class CrupyUnittestLexerProd(CrupyUnittestBase):
         parser = CrupyParserBase({
             'entry'  : CrupyLexerOpProductionCall('entry2'),
         })
+        parser.register_stream('\tabcdef ijkl')
         self.assertRaises(
             exc_obj     = CrupyParserException(
                 'Unable to find the primary production entry name '
                 '\'entry2\''
             ),
-            request     = (parser, 'execute', 'entry', '\tabcdef ijkl'),
+            request     = (parser, 'execute', 'entry', ),
         )

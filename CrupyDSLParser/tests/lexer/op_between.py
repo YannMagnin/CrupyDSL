@@ -7,7 +7,7 @@ __all__ = [
 
 from crupydslparser.core.unittest import CrupyUnittestBase
 from crupydslparser.core._lexer import CrupyLexerOpBetween
-from crupydslparser.core.parser._base import CrupyParserBase
+from crupydslparser.core.parser import CrupyParserBase
 
 #---
 # Public
@@ -26,7 +26,8 @@ class CrupyUnittestLexerUntil(CrupyUnittestBase):
         parser = CrupyParserBase({
             'entry' : CrupyLexerOpBetween('"'),
         })
-        strop0 = parser.execute('entry', '"abcdef" "ijkl')
+        parser.register_stream('"abcdef" "ijkl')
+        strop0 = parser.execute('entry')
         strop1 = parser.execute('entry')
         self.assertIsNotNone(strop0)
         self.assertIsNone(strop1)
