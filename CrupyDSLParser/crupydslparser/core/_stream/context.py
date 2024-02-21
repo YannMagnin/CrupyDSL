@@ -16,4 +16,3 @@ class CrupyStreamContext():
     index:      int
     lineno:     int
     column:     int
-    validated:  bool

@@ -105,3 +105,25 @@ class CrupyUnittestStream(CrupyUnittestBase):
         with stream as lexem:
             self.assertIsNone(lexem.read())
             lexem.validate()
+
+    def test_context(self) -> None:
+        """ check context handling
+        """
+        stream = CrupyStream.from_any('abcdef')
+        with stream as lexem:
+            self.assertEqual(lexem.read_char(), 'a')
+            self.assertEqual(lexem.read_char(), 'b')
+            with stream as lexem2:
+                self.assertEqual(lexem2.read_char(), 'c')
+                lexem2.validate()
+            self.assertEqual(lexem.read_char(), 'd')
+        with stream as lexem:
+            self.assertEqual(lexem.read_char(), 'a')
+            self.assertEqual(lexem.read_char(), 'b')
+            with stream as lexem2:
+                self.assertEqual(lexem2.read_char(), 'c')
+                with stream as lexem3:
+                    self.assertEqual(lexem3.read_char(), 'd')
+                    lexem3.validate()
+                self.assertEqual(lexem2.read_char(), 'e')
+            self.assertEqual(lexem.read_char(), 'c')

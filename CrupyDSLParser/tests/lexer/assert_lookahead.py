@@ -71,3 +71,4 @@ class CrupyUnittestLexerLookahead(CrupyUnittestBase):
         self.assertEqual(node['seq'][0]['name'], 'lex_text')
         self.assertEqual(node['seq'][0]['text'], 'abc')
         self.assertIsNone(parser.execute('entry'))
+        self.assertEqual(parser.stream.read_char(), 'd')

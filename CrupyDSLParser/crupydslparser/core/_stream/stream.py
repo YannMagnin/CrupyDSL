@@ -12,10 +12,21 @@ __all__ = [
 ]
 from typing import Any, IO, List
 from mmap import mmap, ACCESS_READ, ACCESS_WRITE
+from dataclasses import dataclass
 
 from crupydslparser.core._stream.context import CrupyStreamContext
 from crupydslparser.core._stream.exception import CrupyStreamException
 from crupydslparser.core._stream.lexem import CrupyStreamLexem
+
+#---
+# Internals
+#---
+
+@dataclass
+class _CrupyStreamContextState():
+    """ crupy stream context state """
+    validated:  bool
+    context:    CrupyStreamContext
 
 #---
 # Public
@@ -24,28 +35,8 @@ from crupydslparser.core._stream.lexem import CrupyStreamLexem
 class CrupyStream():
     """ crupy input stream abstraction
     """
+    # (todo) : remove me
     _LEXEM_SEPARATOR = " \t\v\n\r"
-
-    def __init__(self, memory_area: mmap) -> None:
-        """ initialise our attribute
-        """
-        self._context_stack: List[CrupyStreamContext] = []
-        self._context = CrupyStreamContext(
-            index       = 0,
-            lineno      = 1,
-            column      = 1,
-            validated   = True,
-        )
-        self._memory_area = memory_area
-        self._memory_area.seek(0)
-        self._memory_area_size = len(memory_area)
-        if self._memory_area_size < 1:
-            raise CrupyStreamException('Given memory area is too small')
-
-    def __del__(self) -> None:
-        """ do not forget the close the memory area
-        """
-        self._memory_area.close()
 
     #---
     # Factory methods
@@ -82,18 +73,28 @@ class CrupyStream():
         return cls.from_file(stream)
 
     #---
-    # Internal methods
+    # Object magic
     #---
 
-    def _find_next_lexem(self) -> None:
-        """ walk through the next lexem
+    def __init__(self, memory_area: mmap) -> None:
+        """ initialise our attribute
         """
-        while True:
-            if not (curr := self.peek_char()):
-                break
-            if curr not in CrupyStream._LEXEM_SEPARATOR:
-                break
-            self.read_char()
+        self._context_stack: List[_CrupyStreamContextState] = []
+        self._context = CrupyStreamContext(
+            index   = 0,
+            lineno  = 1,
+            column  = 1,
+        )
+        self._memory_area = memory_area
+        self._memory_area.seek(0)
+        self._memory_area_size = len(memory_area)
+        if self._memory_area_size < 1:
+            raise CrupyStreamException('Given memory area is too small')
+
+    def __del__(self) -> None:
+        """ do not forget the close the memory area
+        """
+        self._memory_area.close()
 
     #---
     # Magic context handling using `with` keyword
@@ -111,13 +112,26 @@ class CrupyStream():
         self.context_restore()
 
     #---
-    # Public property
+    # Internal methods
     #---
 
-    @property
-    def context(self) -> CrupyStreamContext:
-        """ return the current context """
-        return self._context
+    def _context_restore(self, context: CrupyStreamContext) -> None:
+        """ restore the current context
+        """
+        self._context.index     = context.index
+        self._context.lineno    = context.lineno
+        self._context.column    = context.column
+
+    def _find_next_lexem(self) -> None:
+        """ walk through the next lexem
+        """
+        while True:
+            if not (curr := self.peek_char()):
+                break
+            # (fixme) : dynamic configuration
+            if curr not in CrupyStream._LEXEM_SEPARATOR:
+                break
+            self.read_char()
 
     #---
     # Public methods
@@ -130,17 +144,18 @@ class CrupyStream():
         """
         self._find_next_lexem()
         self._context_stack.append(
-            self.context_copy(),
+            _CrupyStreamContextState(
+                context     = self.context_copy(),
+                validated   = False,
+            )
         )
-        self._context.validated = False
 
     def context_copy(self) -> CrupyStreamContext:
         """ return the current context """
         return CrupyStreamContext(
-            index       = self._context.index,
-            lineno      = self._context.lineno,
-            column      = self._context.column,
-            validated   = self._context.validated,
+            index   = self._context.index,
+            lineno  = self._context.lineno,
+            column  = self._context.column,
         )
 
     def context_restore(self) -> None:
@@ -148,25 +163,25 @@ class CrupyStream():
         """
         if not self._context_stack:
             raise CrupyStreamException('context_restore(): empty stack')
-        if not self._context.validated:
-            context = self._context_stack[-1]
-            self._context.index  = context.index
-            self._context.lineno = context.lineno
-            self._context.column = context.column
+        context_state = self._context_stack[-1]
+        if not context_state.validated:
+            self._context_restore(context_state.context)
         self._context_stack.pop()
 
     def context_validate(self) -> CrupyStreamContext:
         """ validate the current contex
         """
-        self._context.validated = True
-        return self.context
+        if not self._context_stack:
+            raise CrupyStreamException('context_validate(): empty stack')
+        self._context_stack[-1].validated = True
+        return self.context_copy()
 
     ## peek primitives
 
     def peek_char(self) -> str|None:
         """ return the current char """
-        if self.context.index < self._memory_area_size:
-            return chr(self._memory_area[self.context.index] & 0xff)
+        if self._context.index < self._memory_area_size:
+            return chr(self._memory_area[self._context.index] & 0xff)
         return None
 
     ## read primitives
@@ -176,10 +191,10 @@ class CrupyStream():
         if not (curr := self.peek_char()):
             return None
         if self.is_lexem_separator(curr):
-            self.context.lineno += 1
-            self.context.column  = 0
-        self.context.index  += 1
-        self.context.column += 1
+            self._context.lineno += 1
+            self._context.column  = 0
+        self._context.index  += 1
+        self._context.column += 1
         return curr
 
     ## helper
