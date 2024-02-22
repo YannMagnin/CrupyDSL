@@ -35,8 +35,6 @@ class _CrupyStreamContextState():
 class CrupyStream():
     """ crupy input stream abstraction
     """
-    # (todo) : remove me
-    _LEXEM_SEPARATOR = " \t\v\n\r"
 
     #---
     # Factory methods
@@ -122,17 +120,6 @@ class CrupyStream():
         self._context.lineno    = context.lineno
         self._context.column    = context.column
 
-    def _find_next_lexem(self) -> None:
-        """ walk through the next lexem
-        """
-        while True:
-            if not (curr := self.peek_char()):
-                break
-            # (fixme) : dynamic configuration
-            if curr not in CrupyStream._LEXEM_SEPARATOR:
-                break
-            self.read_char()
-
     #---
     # Public methods
     #---
@@ -142,7 +129,6 @@ class CrupyStream():
     def context_save(self) -> None:
         """ push the current context to the stack
         """
-        self._find_next_lexem()
         self._context_stack.append(
             _CrupyStreamContextState(
                 context     = self.context_copy(),
@@ -190,16 +176,9 @@ class CrupyStream():
         """ read the current char and update the cursor """
         if not (curr := self.peek_char()):
             return None
-        if self.is_lexem_separator(curr):
+        if curr == '\n':
             self._context.lineno += 1
             self._context.column  = 0
         self._context.index  += 1
         self._context.column += 1
         return curr
-
-    ## helper
-
-    def is_lexem_separator(self, char: str) -> bool:
-        """ check if the given char is a separator
-        """
-        return char in CrupyStream._LEXEM_SEPARATOR

@@ -9,7 +9,11 @@ import sys
 
 import click
 
-from crupycsv._tests._parser.field import csv_test_parser_field
+from crupycsv._tests._parser import (
+    csv_test_parser_field,
+    csv_test_parser_record,
+    csv_test_parser_csv,
+)
 from crupycsv._parser import CSV_PARSER_OBJ
 
 #---
@@ -20,4 +24,6 @@ from crupycsv._parser import CSV_PARSER_OBJ
 def crupycsv_cli_tests_entry() -> NoReturn:
     """ execute all tests """
     csv_test_parser_field(CSV_PARSER_OBJ)
+    csv_test_parser_record(CSV_PARSER_OBJ)
+    csv_test_parser_csv(CSV_PARSER_OBJ)
     sys.exit(0)

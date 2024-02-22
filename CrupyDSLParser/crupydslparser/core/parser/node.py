@@ -72,7 +72,7 @@ class CrupyParserNode():
                     f"({type(item[1])}) -> ({err})"
                 ) from err
             setattr(self, item[0], item[1])
-        if not getattr(self, 'stream_ctx'):
+        if not getattr(self, 'stream_ctx', None):
             raise CrupyParserException(
                 f"Missing 'stream_ctx' declaration for '{type(self)}'"
             )

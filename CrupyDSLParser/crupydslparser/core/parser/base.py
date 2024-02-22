@@ -45,12 +45,7 @@ class CrupyParserBase():
             self._production_book = production_book
         self._hook_book: Dict[
             str,
-            List[
-                Callable[
-                    [CrupyParserBase, CrupyParserNode],
-                    CrupyParserNode,
-                ],
-            ],
+            List[Callable[[CrupyParserNode], CrupyParserNode]],
         ]= {}
 
     #---
@@ -88,7 +83,7 @@ class CrupyParserBase():
             return None
         if production_name in self._hook_book:
             for hook in self._hook_book[production_name]:
-                node = hook(self, node)
+                node = hook(node)
         return node
 
     def register_stream(
@@ -105,10 +100,7 @@ class CrupyParserBase():
     def register_hook(
         self,
         production_name: str,
-        handler: Callable[
-            [CrupyParserBase, CrupyParserNode],
-            CrupyParserNode,
-        ],
+        handler: Callable[[CrupyParserNode],CrupyParserNode],
     ) -> None:
         """ register a new hook for a production
         """

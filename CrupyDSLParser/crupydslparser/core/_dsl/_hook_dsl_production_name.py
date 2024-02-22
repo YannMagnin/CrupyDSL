@@ -5,10 +5,7 @@ __all__ = [
     'hook_dsl_production_name',
 ]
 
-from crupydslparser.core.parser import (
-    CrupyParserBase,
-    CrupyParserNode,
-)
+from crupydslparser.core.parser import CrupyParserNode
 
 #---
 # Internals
@@ -42,10 +39,7 @@ class CrupyParserNodeDslProdName(CrupyParserNode):
 
 ## hook
 
-def hook_dsl_production_name(
-    _: CrupyParserBase,
-    node: CrupyParserNode,
-) -> CrupyParserNode:
+def hook_dsl_production_name(node: CrupyParserNode) -> CrupyParserNode:
     """ hook the `crupy_dsl_production_name` production
 
     @note
