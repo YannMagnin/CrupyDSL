@@ -1,5 +1,5 @@
 """
-tests.lexer.assert_lookahead  - tesy for the CrupyLexerAssertLookahead*
+tests.lexer.assert_lookahead  - test for the CrupyLexerAssertLookahead*
 """
 __all__ = [
     'CrupyUnittestLexerLookahead',

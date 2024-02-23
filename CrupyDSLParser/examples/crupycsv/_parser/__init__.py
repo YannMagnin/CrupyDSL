@@ -14,6 +14,7 @@ from crupydslparser.core._lexer import (
     CrupyLexerOpOr,
     CrupyLexerOpProductionCall,
     CrupyLexerAssertLookaheadNegative,
+    CrupyLexerAssertEOF,
 )
 
 from crupycsv._parser.csv import csv_parser_prod_csv_hook
@@ -31,14 +32,17 @@ from crupycsv._parser.field import csv_parser_prod_field_hook
 CSV_PARSER_OBJ = CrupyParserBase({
     #
     # production entry
-    # > cvs ::= (<record> "\n")+
+    # > cvs ::= (<record> "\n")+ :eof:
     #
     'csv' : \
-        CrupyLexerOpRep1N(
-            CrupyLexerOpSeq(
-                CrupyLexerOpProductionCall('record'),
-                CrupyLexerOpText('\n'),
+        CrupyLexerOpSeq(
+            CrupyLexerOpRep1N(
+                CrupyLexerOpSeq(
+                    CrupyLexerOpProductionCall('record'),
+                    CrupyLexerOpText('\n'),
+                ),
             ),
+            CrupyLexerAssertEOF(),
         ),
 
     #

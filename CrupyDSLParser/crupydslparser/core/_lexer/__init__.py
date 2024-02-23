@@ -14,6 +14,7 @@ __all__ = [
 
     'CrupyLexerAssertLookaheadNegative',
     'CrupyLexerAssertLookaheadPositive',
+    'CrupyLexerAssertEOF',
 ]
 from crupydslparser.core._lexer.exception import CrupyLexerException
 from crupydslparser.core._lexer._operation import (
@@ -25,7 +26,8 @@ from crupydslparser.core._lexer._operation import (
     CrupyLexerOpRep0N,
     CrupyLexerOpRep1N,
 )
-from crupydslparser.core._lexer._assert.lookahead import (
+from crupydslparser.core._lexer._assert import (
     CrupyLexerAssertLookaheadNegative,
     CrupyLexerAssertLookaheadPositive,
+    CrupyLexerAssertEOF,
 )

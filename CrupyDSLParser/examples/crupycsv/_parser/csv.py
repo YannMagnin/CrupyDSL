@@ -21,8 +21,11 @@ def csv_parser_prod_csv_hook(node: CrupyParserNode) -> CrupyParserNode:
     """ generate more appropriate node concerning `csv` output
 
     @note
-    - production -> "cvs ::= (<record> "\n")+"
+    - production -> "cvs ::= (<record> "\n")+ :eof:"
     """
+    assert node['name'] == 'lex_seq'
+    assert len(node['seq']) == 1
+    node = node['seq'][0]
     assert node['name'] == 'lex_rep'
     assert len(node['rep']) >= 1
     record_list: List[CrupyParserNodeCsvRecord] = []
