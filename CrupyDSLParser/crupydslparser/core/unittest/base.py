@@ -111,8 +111,7 @@ class CrupyUnittestBase():
         """ iterate over all registered test
         """
         CrupyUnittestBase.__generate_testsuit_list()
-        for test_name in CrupyUnittestBase._testsuit_list:
-            yield test_name
+        yield from CrupyUnittestBase._testsuit_list
 
     #---
     # Public methods

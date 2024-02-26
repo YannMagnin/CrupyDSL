@@ -114,9 +114,13 @@ class CrupyParserNode():
     def __getitem__(self, key: str) -> Any:
         """ return the 'key' attribute
         """
-        if (attr := getattr(self, key, None)) is not None:
-            return attr
-        raise CrupyParserException(f"Unable to fetch the attribute '{key}'")
+        try:
+            return getattr(self, key)
+        except AttributeError as err:
+            raise CrupyParserException(
+                f"Unable to fetch the attribute '{key}' for the class "
+                f"{type(self).__name__}"
+            ) from err
 
     #---
     # Public property
