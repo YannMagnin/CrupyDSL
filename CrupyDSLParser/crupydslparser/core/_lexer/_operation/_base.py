@@ -41,7 +41,7 @@ class CrupyLexerOpBase(ABC):
     #---
 
     @abstractmethod
-    def __call__(self, stream: CrupyParserBase) -> CrupyParserNode|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
         pass
 
     #---

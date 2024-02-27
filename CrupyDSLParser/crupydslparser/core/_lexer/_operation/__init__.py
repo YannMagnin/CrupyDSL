@@ -10,6 +10,7 @@ __all__ = [
     'CrupyLexerOpBetween',
     'CrupyLexerOpProductionCall',
     'CrupyLexerOpOptional',
+    'CrupyLexerOpBuiltin',
 ]
 from crupydslparser.core._lexer._operation.text import CrupyLexerOpText
 from crupydslparser.core._lexer._operation.seq import CrupyLexerOpSeq
@@ -22,6 +23,9 @@ from crupydslparser.core._lexer._operation.between import (
 )
 from crupydslparser.core._lexer._operation.productioncall import (
     CrupyLexerOpProductionCall,
+)
+from crupydslparser.core._lexer._operation.builtin import (
+    CrupyLexerOpBuiltin,
 )
 from crupydslparser.core._lexer._operation.rep import (
     CrupyLexerOpRep0N,
