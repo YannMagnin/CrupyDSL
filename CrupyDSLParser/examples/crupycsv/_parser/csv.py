@@ -37,6 +37,6 @@ def csv_parser_prod_csv_hook(node: CrupyParserNode) -> CrupyParserNode:
         assert record[0]['seq'][1]['text'] == '\n'
         record_list.append(record[0]['seq'][0])
     return CrupyParserNodeCsv(
-        stream_ctx  = node.stream_context,
+        parent_node = node,
         records     = record_list,
     )

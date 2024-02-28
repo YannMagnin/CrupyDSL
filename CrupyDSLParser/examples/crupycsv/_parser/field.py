@@ -29,7 +29,7 @@ def __check_node_simple(node: CrupyParserNode) -> CrupyParserNode|None:
             assert op['seq'][0]['name'] == 'lex_text'
             capture += op['seq'][0]['text']
         return CrupyParserNodeCsvField(
-            stream_ctx  = node.stream_context,
+            parent_node = node,
             kind        = 'simple',
             text        = capture,
         )
@@ -54,7 +54,7 @@ def __check_node_quoted(node: CrupyParserNode) -> CrupyParserNode|None:
             assert op['name'] == 'lex_text'
             capture += op['text']
         return CrupyParserNodeCsvField(
-            stream_ctx  = node.stream_context,
+            parent_node = node,
             kind        = 'quoted',
             text        = capture,
         )

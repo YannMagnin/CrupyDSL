@@ -79,6 +79,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                self._is_alphanum(curr, 'alphanum')
             or self._is_digit(curr, 'decimal')
             or self._is_symbol(curr, 'ascii')
+            or self._is_space(curr, 'space_n')
         )
 
     def _is_alphanum(self, curr: str, target: str) -> bool:

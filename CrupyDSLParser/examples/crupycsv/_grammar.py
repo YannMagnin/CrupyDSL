@@ -22,7 +22,7 @@ class CrupyGrammarCSV(CrupyGrammarBase):
         <field>             ::= <quoted_content> | <simple_content>
         <simple_content>    ::= ((?!,)(<letter> | <digit> | <symbol>))*
         <quoted_content>    ::= \
-                "\"" (<letter>|<digit>|<symbol>|<space>)+ "\""
+                "\"" (<letter>|<digit>|<symbol>|:space:)+ "\""
 
         <letter> ::= \
               "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" \

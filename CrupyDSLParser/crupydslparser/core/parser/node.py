@@ -29,9 +29,11 @@ class CrupyParserNode():
 
     We also need that the `name` attribute should not be able to be modified
     "on-the-fly" (no assignment possible) and thus, the `stream_ctx` should
-    be of type `CrupyStreamContext` and it's required for the creation of the
-    object
+    be of type `CrupyStreamContext` and it's required for the creation of
+    the object
     """
+    # since this constructor is pretty huge, allow too many branches
+    # pylint: disable=locally-disabled,R0912
     def __init__(self, /, **kwargs: Any) -> None:
         """ special initialisation routine
 
@@ -41,15 +43,24 @@ class CrupyParserNode():
             with `isinstance()` because it will raise the `TypeError`
             exception
         """
+        parent_node: Any = None
         cls_annotations = self.__class__.__annotations__
         cls_annotations['stream_ctx'] = CrupyStreamContext
         for item in kwargs.items():
-            if item[0] not in cls_annotations:
-                raise CrupyParserException(
-                    f"Unable to assign class property '{item[0]}' for "
-                    f"parser node subclass '{type(self)}'"
-                )
             try:
+                if item[0] == 'parent_node':
+                    if not isinstance(item[1], CrupyParserNode):
+                        raise CrupyParserException(
+                            'Given `parent_node` type mismatch '
+                            f"'{type(item[1])}' != CrupyParserNode"
+                        )
+                    parent_node = item[1]
+                    continue
+                if item[0] not in cls_annotations:
+                    raise CrupyParserException(
+                        f"Unable to assign class property '{item[0]}' for "
+                        f"parser node subclass '{type(self)}'"
+                    )
                 if not getattr(
                     cls_annotations[item[0]],
                     '__origin__',
@@ -73,9 +84,11 @@ class CrupyParserNode():
                 ) from err
             setattr(self, item[0], item[1])
         if not getattr(self, 'stream_ctx', None):
-            raise CrupyParserException(
-                f"Missing 'stream_ctx' declaration for '{type(self)}'"
-            )
+            if not parent_node:
+                raise CrupyParserException(
+                    f"Missing 'stream_ctx' declaration for '{type(self)}'"
+                )
+            setattr(self, 'stream_ctx', parent_node.stream_context)
         if self.__class__.__name__.find('CrupyParserNode') != 0:
             raise CrupyParserException(
                 'Malformed parser node class name '

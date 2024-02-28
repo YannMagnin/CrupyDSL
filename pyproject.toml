@@ -4,17 +4,19 @@ version     = "0.0.0"
 description = "Crupy DSL parser"
 readme      = "README.md"
 authors     = [
-    "Yann MAGNIN <yann.magnin@ecole2600.com>",
+    "Yann MAGNIN <yann.magnin@protonmail.com>",
 ]
 packages    = [
     { include = "crupydslparser", from='CrupyDSLParser/' },
     { include = "crupycsv",       from='CrupyDSLParser/examples/' },
+    { include = "crupyjson",      from='CrupyDSLParser/examples/' },
 ]
 
 
 [tool.poetry.scripts]
 crupydsl    = 'crupydslparser.cli:crupydslparser_cli_entry'
 crupycsv    = 'crupycsv.cli:crupycsv_cli_entry'
+crupyjson   = 'crupyjson.cli:crupyjson_cli_entry'
 
 
 [tool.poetry.dependencies]

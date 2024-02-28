@@ -35,6 +35,6 @@ def csv_parser_prod_record_hook(node: CrupyParserNode) -> CrupyParserNode:
         assert field[1]['name'] == 'csv_field'
         field_list.append(field[1])
     return CrupyParserNodeCsvRecord(
-        stream_ctx  = node.stream_context,
+        parent_node = node,
         fields      = field_list,
     )
