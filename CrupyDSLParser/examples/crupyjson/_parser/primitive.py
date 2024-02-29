@@ -21,13 +21,21 @@ class CrupyParserNodeJsonPrimitive(CrupyParserNode):
     kind:   str
     data:   str|bool|None
 
-def json_parser_prod_hook_primitive(node: CrupyParserNode) -> CrupyParserNode:
+def json_parser_prod_hook_primitive(
+    node: CrupyParserNode,
+) -> CrupyParserNode:
     """ handle `primitive` node
     """
-    if node['name'] in ['lex_text', 'json_string']:
+    if node['name'] == 'lex_text':
         return CrupyParserNodeJsonPrimitive(
             parent_node = node,
-            kind        = node['name'].split('_')[1],
+            kind        = 'digit',
+            data        = node['text'],
+        )
+    if node['name'] == 'json_string':
+        return CrupyParserNodeJsonPrimitive(
+            parent_node = node,
+            kind        = 'string',
             data        = node['text'],
         )
     if node['name'] == 'json_nullable':

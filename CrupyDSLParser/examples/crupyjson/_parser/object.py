@@ -22,12 +22,12 @@ def json_parser_prod_hook_object(node: CrupyParserNode) -> CrupyParserNode:
     assert len(node['seq']) == 4
     assert node['seq'][0]['name'] == 'lex_text'
     assert node['seq'][0]['text'] == '{'
-    assert node['seq'][1]['name'] == 'json_statement'
+    assert node['seq'][1]['name'] == 'json_member'
     assert node['seq'][2]['name'] == 'lex_rep'
     assert node['seq'][3]['name'] == 'lex_text'
     assert node['seq'][3]['text'] == '}'
     node_list = [node['seq'][1]]
-    for stmt_info in node['seq'][1]['rep']:
+    for stmt_info in node['seq'][2]['rep']:
         assert len(stmt_info) == 2
         assert stmt_info[0]['name'] == 'lex_text'
         assert stmt_info[0]['text'] == ','

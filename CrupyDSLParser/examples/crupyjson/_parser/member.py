@@ -25,8 +25,11 @@ def json_parser_prod_hook_member(node: CrupyParserNode) -> CrupyParserNode:
     assert node['seq'][1]['name'] == 'lex_text'
     assert node['seq'][1]['text'] == ':'
     assert node['seq'][2]['name'] == 'json_statement'
+    value = node['seq'][2]['node']
+    if value['name'] == 'json_container':
+        value = value['node']
     return CrupyParserNodeJsonMember(
         parent_node = node,
         key         = node['seq'][0]['text'],
-        value       = node['seq'][1],
+        value       = value,
     )

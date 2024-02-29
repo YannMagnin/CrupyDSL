@@ -20,7 +20,9 @@ class CrupyParserNodeJsonStatement(CrupyParserNode):
     """
     node: CrupyParserNode
 
-def json_parser_prod_hook_statement(node: CrupyParserNode) -> CrupyParserNode:
+def json_parser_prod_hook_statement(
+    node: CrupyParserNode,
+) -> CrupyParserNode:
     """ handle `statement` node
     """
     assert node['name'] in ['json_primitive', 'json_container']

@@ -17,5 +17,5 @@ def json_parser_prod_hook_json(node: CrupyParserNode) -> CrupyParserNode:
     """
     assert node['name'] == 'lex_seq'
     assert len(node['seq']) == 1
-    assert node['seq'][0]['name'] in ['json_primitive', 'json_container']
+    assert node['seq'][0]['name'] == 'json_statement'
     return cast(CrupyParserNode, node['seq'][0])

@@ -27,6 +27,7 @@ from crupyjson._parser.primitive import json_parser_prod_hook_primitive
 from crupyjson._parser.array import json_parser_prod_hook_array
 from crupyjson._parser.object import json_parser_prod_hook_object
 from crupyjson._parser.member import json_parser_prod_hook_member
+from crupyjson._parser.statement import json_parser_prod_hook_statement
 
 #---
 # Public
@@ -169,3 +170,4 @@ JSON_PARSER_OBJ.register_hook('primitive', json_parser_prod_hook_primitive)
 JSON_PARSER_OBJ.register_hook('array', json_parser_prod_hook_array)
 JSON_PARSER_OBJ.register_hook('object', json_parser_prod_hook_object)
 JSON_PARSER_OBJ.register_hook('member', json_parser_prod_hook_member)
+JSON_PARSER_OBJ.register_hook('statement', json_parser_prod_hook_statement)
