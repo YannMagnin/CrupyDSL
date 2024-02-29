@@ -31,7 +31,7 @@ class CrupyUnittestLexerProd(CrupyUnittestBase):
             'entry'  : CrupyLexerOpProductionCall('entry2'),
             'entry2' : CrupyLexerOpText('abcdef')
         })
-        parser.register_stream('\tabcdef ijkl')
+        parser.register_stream('abcdefijkl')
         test = parser.execute('entry')
         self.assertIsNotNone(test)
         if test is None:
@@ -45,7 +45,7 @@ class CrupyUnittestLexerProd(CrupyUnittestBase):
         parser = CrupyParserBase({
             'entry'  : CrupyLexerOpProductionCall('entry2'),
         })
-        parser.register_stream('\tabcdef ijkl')
+        parser.register_stream('abcdefijkl')
         self.assertRaises(
             exc_obj     = CrupyParserException(
                 'Unable to find the primary production entry name '

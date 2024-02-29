@@ -61,7 +61,12 @@ class CrupyUnittestBase():
         if not tests_list:
             print(f"WARNING: unable to find test method in {cls.__name__}")
             return
-        CrupyUnittestBase._testsuit_list[info['key'].lower()] = {
+        name = ''
+        for letter in info['key']:
+            if name and letter.isupper():
+                name += '_'
+            name += letter.lower()
+        CrupyUnittestBase._testsuit_list[name] = {
             'class' : cls,
             'tests' : tests_list,
         }
@@ -100,11 +105,18 @@ class CrupyUnittestBase():
         for test in CrupyUnittestBase._testsuit_list.items():
             if target_tests and test[0] not in target_tests:
                 continue
-            print(f"Testing '{test[0]}'...")
+            print(f"\033[1;97mTesting '{test[0]}'...\033[0m")
             obj = test[1]['class']()
             for test_name in test[1]['tests']:
                 print(f"- {test_name}...")
-                getattr(obj, test_name)()
+                try:
+                    getattr(obj, test_name)()
+                # allow general exception handling
+                # pylint: disable=locally-disabled,W0718
+                except Exception as err:
+                    cls._error(
+                        f"!!! Exception during test execution -> {err}"
+                    )
 
     @classmethod
     def iter_tests(cls) -> Generator[str,None,None]:
@@ -112,6 +124,15 @@ class CrupyUnittestBase():
         """
         CrupyUnittestBase.__generate_testsuit_list()
         yield from CrupyUnittestBase._testsuit_list
+
+    #---
+    # Internals
+    #---
+
+    @classmethod
+    def _error(cls, text: str) -> None:
+        """ display text in bold red """
+        print(f"\033[1;31m{text}\033[0m", file=sys.stderr)
 
     #---
     # Public methods
@@ -126,21 +147,21 @@ class CrupyUnittestBase():
         try:
             assert first == second
         except AssertionError:
-            print(f"assert '{first}' != '{second}'")
+            self._error(f"assert '{first}' != '{second}'")
 
     def assertIsNone(self, obj: Any) -> None:
         """ simply check if the object is None """
         try:
             assert obj is None
         except AssertionError:
-            print(f"assert '{obj}' is not None")
+            self._error(f"assert '{obj}' is not None")
 
     def assertIsNotNone(self, obj: Any) -> None:
         """ simply check if the object is None """
         try:
             assert obj is not None
         except AssertionError:
-            print(f"assert '{obj}' is None")
+            self._error(f"assert '{obj}' is None")
 
     # Allow method to catch too general exception
     # pylint: disable=locally-disabled,W0718
@@ -149,11 +170,15 @@ class CrupyUnittestBase():
         """ check if the request raise exception """
         try:
             getattr(request[0], request[1])(*request[2:])
-            print(f"WARNING: No exception {type(exc_obj).__name__} occured")
+            self._error(
+                f"WARNING: No exception {type(exc_obj).__name__} occured"
+            )
         except exc_obj.__class__ as err:
             if str(exc_obj) != str(err):
-                print(f"assertRaises:  mismatch '{exc_obj}' != '{err}'")
+                self._error(
+                    f"assertRaises:  mismatch '{exc_obj}' != '{err}'"
+                )
         except Exception as err:
-            print(
+            self._error(
                 f"assertRaises: Unable to execute the request ('{err}')"
             )

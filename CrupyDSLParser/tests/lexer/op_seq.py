@@ -33,7 +33,7 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
                 CrupyLexerOpText('ij'),
             ),
         })
-        parser.register_stream('abcdef ijkl')
+        parser.register_stream('abcdefijkl')
         seqtok = parser.execute('entry')
         self.assertIsNotNone(seqtok)
         if seqtok is None:
@@ -69,8 +69,8 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
                 CrupyLexerOpText('ijxl'),
             ),
         })
-        parser.register_stream('abcdef ijkl')
+        parser.register_stream('abcdefijkl')
         seqtok = parser.execute('entry')
         self.assertIsNone(seqtok)
         with parser.stream as lexem:
-            self.assertEqual(lexem.read(), 'abcdef')
+            self.assertEqual(lexem.read(), 'abcdefijkl')

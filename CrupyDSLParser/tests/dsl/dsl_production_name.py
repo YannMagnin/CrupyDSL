@@ -2,7 +2,7 @@
 tests.lexer.dsl_production_name - test `crupy_dsl_production_name` rule
 """
 __all__ = [
-    'CrupyUnittestDSLProdName',
+    'CrupyUnittestDslProdName',
 ]
 
 from crupydslparser.core.unittest import CrupyUnittestBase
@@ -11,7 +11,7 @@ from crupydslparser.core._dsl._parser import CRUPY_DSL_PARSER_OBJ
 # Public
 #---
 
-class CrupyUnittestDSLProdName(CrupyUnittestBase):
+class CrupyUnittestDslProdName(CrupyUnittestBase):
     """ unittest suite for the `crupy_dsl_production_name` rule
     """
 

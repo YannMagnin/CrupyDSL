@@ -56,3 +56,18 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         self.assertEqual(strop0['text'], '0')
         self.assertEqual(strop1['text'], '9')
         self.assertIsNone(parser.execute('entry'))
+
+    def test_number(self) -> None:
+        """ simple valid cases """
+        parser = CrupyParserBase({
+            'entry' : CrupyLexerOpBuiltin('number'),
+        })
+        parser.register_stream('667,')
+        strop0 = parser.execute('entry')
+        strop1 = parser.execute('entry')
+        self.assertIsNotNone(strop0)
+        self.assertIsNone(strop1)
+        if strop0 is None:
+            return
+        self.assertEqual(strop0['name'], 'lex_text')
+        self.assertEqual(strop0['text'], '667')

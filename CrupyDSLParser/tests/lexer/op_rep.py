@@ -36,7 +36,7 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
                 CrupyLexerOpText('ij'),
             ),
         })
-        parser.register_stream('abcdef ij abc def ijklnm')
+        parser.register_stream('abcdefijabcdefijklnm')
         reptok = parser.execute('entry')
         self.assertIsNotNone(reptok)
         if reptok is None:
@@ -60,7 +60,7 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
                 CrupyLexerOpText('ijk'),
             ),
         })
-        parser.register_stream('  abcdef ij abc def ijklnm')
+        parser.register_stream('abcdefijabcdefijklnm')
         reptok = parser.execute('entry')
         self.assertIsNotNone(reptok)
         if reptok is None:
@@ -79,7 +79,7 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
                 CrupyLexerOpText('ij'),
             ),
         })
-        parser.register_stream('abcdef ij')
+        parser.register_stream('abcdefij')
         reptok = parser.execute('entry')
         self.assertIsNotNone(reptok)
         if reptok is None:
@@ -100,6 +100,6 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
                 CrupyLexerOpText('ijk'),
             ),
         })
-        parser.register_stream('  abcdef ij abc def ijklnm')
+        parser.register_stream('abcdefijabcdefijklnm')
         reptok = parser.execute('entry')
         self.assertIsNone(reptok)

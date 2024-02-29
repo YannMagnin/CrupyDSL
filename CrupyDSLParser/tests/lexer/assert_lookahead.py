@@ -39,7 +39,7 @@ class CrupyUnittestLexerLookahead(CrupyUnittestBase):
                 ),
             ),
         })
-        parser.register_stream('\tabcdr  abcde')
+        parser.register_stream('abcdrabcde')
         node = parser.execute('entry')
         self.assertIsNotNone(node)
         if node is None:
@@ -62,7 +62,7 @@ class CrupyUnittestLexerLookahead(CrupyUnittestBase):
                 ),
             ),
         })
-        parser.register_stream('\tabcde  abcdz')
+        parser.register_stream('abcdeabcdz')
         node = parser.execute('entry')
         self.assertIsNotNone(node)
         if node is None:

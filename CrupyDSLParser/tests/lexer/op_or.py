@@ -32,14 +32,14 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
                 CrupyLexerOpText('abcdef'),
             ),
         })
-        parser.register_stream('abcdef ijkl')
+        parser.register_stream('abcdefijkl')
         or_op = parser.execute('entry')
         self.assertIsNotNone(or_op)
         if or_op is None:
             return
         self.assertEqual(or_op['text'], 'abc')
         with parser.stream as lexem:
-            self.assertEqual(lexem.read(), 'def')
+            self.assertEqual(lexem.read(), 'defijkl')
 
     def test_simple_success1(self) -> None:
         """ simple valid case """
@@ -52,7 +52,7 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
                 CrupyLexerOpText('abcdef'),
             ),
         })
-        parser.register_stream('abcdef ijkl')
+        parser.register_stream('abcdefijkl')
         or_op = parser.execute('entry')
         self.assertIsNotNone(or_op)
         if or_op is None:

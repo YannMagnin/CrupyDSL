@@ -29,7 +29,7 @@ class CrupyUnittestLexerText(CrupyUnittestBase):
             'entry2' : CrupyLexerOpText('jkc'),
             'entry3' : CrupyLexerOpText('jkl'),
         })
-        parser.register_stream('abcdef ijkl')
+        parser.register_stream('abcdefijkl')
         strop0 = parser.execute('entry0')
         strop1 = parser.execute('entry1')
         strop2 = parser.execute('entry2')
