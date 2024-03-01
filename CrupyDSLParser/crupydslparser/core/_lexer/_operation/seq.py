@@ -34,15 +34,15 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
                 and CrupyLexerAssertBase not in type(arg).mro()
             ):
                 raise CrupyLexerException(
-                    'Unable to initialise the CrupyLexerOpSeq because the '
-                    f"argument {i} is not of type CrupyLexer "
+                    f"Unable to initialise the {type(self).__name__} "
+                    f"because the argument {i} is not of type CrupyLexer "
                     f"({type(arg).mro()})"
                 )
             self._seq.append(arg)
         if not self._seq:
             raise CrupyLexerException(
-                'Unable to initialise the CrupyLexerSeq because not '
-                'sequence has been presented'
+                f"Unable to initialise the {type(self).__name__} because "
+                'not sequence has been presented'
             )
 
     def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:

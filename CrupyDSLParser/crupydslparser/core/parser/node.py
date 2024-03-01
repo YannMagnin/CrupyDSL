@@ -4,7 +4,7 @@ crupydslparser.core.parser.node     - parser node base class
 __all__ = [
     'CrupyParserNode',
 ]
-from typing import Any
+from typing import Any, get_origin
 
 from crupydslparser.core.parser.exception import CrupyParserException
 from crupydslparser.core._stream.context import CrupyStreamContext
@@ -38,10 +38,11 @@ class CrupyParserNode():
         """ special initialisation routine
 
         @note
-        - We check if the `__origin__` field to magically check if the
-            annotated is of type `typing.*` information which cannot be used
+        - We use `typing.get_origin()` to magically check if the annotated
+            variable is of type `typing.*` information which cannot be used
             with `isinstance()` because it will raise the `TypeError`
             exception
+        - For now, ignore `typing` module import typing check
         """
         parent_node: Any = None
         cls_annotations = self.__class__.__annotations__
@@ -61,22 +62,17 @@ class CrupyParserNode():
                         f"Unable to assign class property '{item[0]}' for "
                         f"parser node subclass '{type(self)}'"
                     )
-                if not getattr(
-                    cls_annotations[item[0]],
-                    '__origin__',
-                    None,
-                ):
-                    ok = isinstance(item[1], cls_annotations[item[0]])
+                type_info = cls_annotations[item[0]]
+                if not get_origin(type_info):
+                    if not isinstance(item[1], type_info):
+                        raise CrupyParserException(
+                            f"{type(self)}: stream_ctx attribute type"
+                            f"mismatch ({type(item[1])})"
+                        )
                 else:
-                    ok = isinstance(
-                        item[1],
-                        cls_annotations[item[0]].__origin__,
-                    )
-                if not ok:
-                    raise CrupyParserException(
-                        f"{type(self)}: stream_ctx attribute type"
-                        f"mismatch ({type(item[1])})"
-                    )
+                    # (todo) : proper handle typing information
+                    # (todo) : use `typing.get_args()` to validate types
+                    pass
             except TypeError as err:
                 raise CrupyParserException(
                     f"{type(self)}: unable to validate the argument type "

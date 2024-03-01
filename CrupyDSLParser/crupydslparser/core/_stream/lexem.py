@@ -67,3 +67,8 @@ class CrupyStreamLexem():
         curr = self._stream.read_char()
         self._readed += 1
         return curr
+
+    def peek_char(self) -> str|None:
+        """ return the current char without consuming stream
+        """
+        return self._stream.peek_char()

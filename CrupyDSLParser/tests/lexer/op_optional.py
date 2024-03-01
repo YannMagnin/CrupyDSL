@@ -40,9 +40,10 @@ class CrupyUnittestLexerOptional(CrupyUnittestBase):
         self.assertEqual(node['seq'][0]['name'], 'lex_text')
         content += node['seq'][0]['text']
         self.assertEqual(node['seq'][1]['name'], 'lex_optional')
-        if node['seq'][1]['node']:
-            self.assertEqual(node['seq'][1]['node']['name'], 'lex_text')
-            content += node['seq'][1]['node']['text']
+        if node['seq'][1]['seq']:
+            self.assertEqual(len(node['seq'][1]['seq']), 1)
+            self.assertEqual(node['seq'][1]['seq'][0]['name'], 'lex_text')
+            content += node['seq'][1]['seq'][0]['text']
         self.assertEqual(node['seq'][2]['name'], 'lex_text')
         content += node['seq'][2]['text']
         self.assertEqual(content, text)

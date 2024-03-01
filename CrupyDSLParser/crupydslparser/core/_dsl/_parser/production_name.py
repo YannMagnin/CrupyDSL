@@ -1,8 +1,8 @@
 """
-crupydslparser.core._dsl._hook_dsl_production_name  - DSL parser hook
+crupydslparser.core._dsl._parser.production_name  - DSL parser hook
 """
 __all__ = [
-    'hook_dsl_production_name',
+    'dsl_production_name_hook',
 ]
 
 from crupydslparser.core.parser import CrupyParserNode
@@ -39,7 +39,7 @@ class CrupyParserNodeDslProdName(CrupyParserNode):
 
 ## hook
 
-def hook_dsl_production_name(node: CrupyParserNode) -> CrupyParserNode:
+def dsl_production_name_hook(node: CrupyParserNode) -> CrupyParserNode:
     """ hook the `crupy_dsl_production_name` production
 
     @note

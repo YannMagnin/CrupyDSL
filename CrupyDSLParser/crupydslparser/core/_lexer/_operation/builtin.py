@@ -5,7 +5,6 @@ __all__ = [
     'CrupyLexerOpBuiltin',
 ]
 
-from crupydslparser.core._stream.lexem import CrupyStreamLexem
 from crupydslparser.core._lexer.exception import CrupyLexerException
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.core._lexer._operation.text import (
@@ -47,97 +46,141 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
     def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
         """ handle builtin
         """
-        with parser.stream as lexem:
-            text = {
-                'any'            : self._is_any,
-                'alphanum'       : self._is_alphanum,
-                'alphanum_upper' : self._is_alphanum,
-                'alphanum_lower' : self._is_alphanum,
-                'alpha'          : self._is_alpha,
-                'alpha_lower'    : self._is_alpha,
-                'alpha_upper'    : self._is_alpha,
-                'digit'          : self._is_number,
-                'number'         : self._is_number,
-                'symbol'         : self._is_symbol,
-                'space'          : self._is_space,
-                'space_n'        : self._is_space,
-            }[self._operation](lexem, self._operation)
-            if not text:
-                return None
-            return CrupyParserNodeLexText(
-                stream_ctx  = lexem.validate(),
-                text        = text,
-            )
+        return {
+            'any'            : self._is_any,
+            'alphanum'       : self._is_alphanum,
+            'alphanum_upper' : self._is_alphanum,
+            'alphanum_lower' : self._is_alphanum,
+            'alpha'          : self._is_alpha,
+            'alpha_lower'    : self._is_alpha,
+            'alpha_upper'    : self._is_alpha,
+            'digit'          : self._is_number,
+            'number'         : self._is_number,
+            'symbol'         : self._is_symbol,
+            'space'          : self._is_space,
+            'space_n'        : self._is_space,
+        }[self._operation](parser, self._operation)
+
 
     #---
     # Internals
     #---
 
-    def _is_any(self, lexem: CrupyStreamLexem, _: str) -> str|None:
+    def _is_any(
+        self,
+        parser: CrupyParserBase,
+        _: str,
+    ) -> CrupyParserNode|None:
         """ check any char
         """
-        if text := self._is_alphanum(lexem, 'alphanum'):
-            return text
-        if text := self._is_number(lexem, 'decimal'):
-            return text
-        if text:= self._is_symbol(lexem, 'ascii'):
-            return text
-        if text := self._is_space(lexem, 'space_n'):
-            return text
-        return None
+        with parser.stream as lexem:
+            if lexem.peek_char() == '\\':
+                lexem.read_char()
+            while True:
+                if node := self._is_alphanum(parser, 'alphanum'):
+                    break
+                if node := self._is_symbol(parser, 'ascii'):
+                    break
+                if node := self._is_space(parser, 'space_n'):
+                    break
+                return None
+            lexem.validate()
+            return node
 
     def _is_alphanum(
         self,
-        lexem: CrupyStreamLexem,
+        parser: CrupyParserBase,
         target: str,
-    ) -> str|None:
+    ) -> CrupyParserNode|None:
         """ check alphanum char
         """
-        if text := self._is_number(lexem, 'decimal'):
-            return text
+        if node := self._is_number(parser, 'digit'):
+            return node
         if target in ['alphanum', 'alphanum_upper']:
-            if text := self._is_alpha(lexem, 'alpha_upper'):
-                return text
-        return self._is_alpha(lexem, 'alpha_lower')
+            if node := self._is_alpha(parser, 'alpha_upper'):
+                return node
+        return self._is_alpha(parser, 'alpha_lower')
 
-    def _is_alpha(self, lexem: CrupyStreamLexem, target: str) -> str|None:
+    def _is_alpha(
+        self,
+        parser: CrupyParserBase,
+        target: str,
+    ) -> CrupyParserNode|None:
         """ check if alphabet
         """
-        if not (curr := lexem.read_char()):
-            return None
-        if target in ['alpha', 'alpha_lower'] and bool('a' <= curr <= 'z'):
-            return curr
-        if target in ['alpha', 'alpha_upper'] and bool('A' <= curr <= 'Z'):
-            return curr
-        return None
-
-    def _is_number(self, lexem: CrupyStreamLexem, target: str) -> str|None:
-        """ check if number or digit
-        """
-        number = ''
-        while True:
+        with parser.stream as lexem:
             if not (curr := lexem.read_char()):
                 return None
-            if not '0' <= curr <= '9':
-                return number
-            number += curr
-            if target == 'digit':
-                return number
+            valid = 0
+            if target in ['alpha', 'alpha_lower']:
+                valid += bool('a' <= curr <= 'z')
+            if target in ['alpha', 'alpha_upper']:
+                valid += bool('A' <= curr <= 'Z')
+            if valid == 0:
+                return None
+            return CrupyParserNodeLexText(
+                stream_ctx  = lexem.validate(),
+                text        = curr,
+            )
 
-    def _is_symbol(self, lexem: CrupyStreamLexem, _: str) -> str|None:
+    def _is_number(
+        self,
+        parser: CrupyParserBase,
+        target: str,
+    ) -> CrupyParserNode|None:
+        """ check if number or digit
+        """
+        with parser.stream as lexem:
+            number = ''
+            while True:
+                if not (curr := lexem.peek_char()):
+                    return None
+                if not '0' <= curr <= '9':
+                    break
+                lexem.read_char()
+                number += curr
+                if target == 'digit':
+                    break
+            if not number:
+                return None
+            return CrupyParserNodeLexText(
+                stream_ctx  = lexem.validate(),
+                text        = number,
+            )
+
+    def _is_symbol(
+        self,
+        parser: CrupyParserBase,
+        _: str,
+    ) -> CrupyParserNode|None:
         """ check if symbol
         """
-        if not (curr := lexem.read_char()):
-            return None
-        if curr in r"| !#$%&()*+,-./:;>=<?@[\]^_`{}~":
-            return curr
-        return None
+        with parser.stream as lexem:
+            if not (curr := lexem.peek_char()):
+                return None
+            if not curr in "| !#$%&()*+,-./:;>=<?@[\\]^_`{}~\"":
+                return None
+            return CrupyParserNodeLexText(
+                stream_ctx  = lexem.validate(),
+                text        = lexem.read_char(),
+            )
 
-    def _is_space(self, lexem: CrupyStreamLexem, target: str) -> str|None:
+    def _is_space(
+        self,
+        parser: CrupyParserBase,
+        target: str,
+    ) -> CrupyParserNode|None:
         """ check if space
         """
-        if not (curr := lexem.read_char()):
-            return None
-        if target == 'space_n':
-            return curr if curr in " \t\v\n" else None
-        return curr if curr in " \t\v" else None
+        with parser.stream as lexem:
+            if not (curr := lexem.peek_char()):
+                return None
+            space_list = " \t\v"
+            if target == 'space_n':
+                space_list = " \t\v\r\n"
+            if curr not in space_list:
+                return None
+            return CrupyParserNodeLexText(
+                stream_ctx  = lexem.validate(),
+                text        = lexem.read_char(),
+            )

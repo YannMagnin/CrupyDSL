@@ -6,7 +6,7 @@ __all__ = [
     'CrupyLexerOpOptional',
 ]
 
-from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
+from crupydslparser.core._lexer._operation.seq import CrupyLexerOpSeq
 from crupydslparser.core.parser import (
     CrupyParserBase,
     CrupyParserNode,
@@ -18,18 +18,18 @@ from crupydslparser.core.parser import (
 
 class CrupyParserNodeLexOptional(CrupyParserNode):
     """ optional lexer information """
-    node:   CrupyParserNode|None
+    seq:    list[CrupyParserNode]|None
 
-class CrupyLexerOpOptional(CrupyLexerOpBase):
+class CrupyLexerOpOptional(CrupyLexerOpSeq):
     """ optional operator
     """
-    def __init__(self, lexer: CrupyLexerOpBase) -> None:
-        self._operation = lexer
-
     def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
         """ catch lexer operation
         """
+        seq = None
+        if node := super().__call__(parser):
+            seq = node['seq']
         return CrupyParserNodeLexOptional(
             stream_ctx  = parser.stream.context_copy(),
-            node        = self._operation(parser),
+            seq         = seq,
         )
