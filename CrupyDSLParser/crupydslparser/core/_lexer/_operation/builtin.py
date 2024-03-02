@@ -36,6 +36,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             'symbol',
             'space',
             'space_n',
+            'eof',
         ]:
             raise CrupyLexerException(
                 'Unable to configure the CrupyLexerOpBuiltin: '
@@ -59,6 +60,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             'symbol'         : self._is_symbol,
             'space'          : self._is_space,
             'space_n'        : self._is_space,
+            'eof'            : self._is_end_of_file,
         }[self._operation](parser, self._operation)
 
 
@@ -183,4 +185,19 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             return CrupyParserNodeLexText(
                 stream_ctx  = lexem.validate(),
                 text        = lexem.read_char(),
+            )
+
+    def _is_end_of_file(
+        self,
+        parser: CrupyParserBase,
+        _: str,
+    ) -> CrupyParserNode|None:
+        """ check if space
+        """
+        with parser.stream as lexem:
+            if lexem.peek_char():
+                return None
+            return CrupyParserNodeLexText(
+                stream_ctx  = lexem.validate(),
+                text        = '',
             )

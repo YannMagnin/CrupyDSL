@@ -9,6 +9,7 @@ __all__ = [
     'CrupyParserBase',
 ]
 from typing import List, Dict, Optional, Callable, IO, TYPE_CHECKING
+import traceback
 
 from crupydslparser.core._stream import CrupyStream
 from crupydslparser.core.parser.exception import CrupyParserException
@@ -83,7 +84,12 @@ class CrupyParserBase():
             return None
         if production_name in self._hook_book:
             for hook in self._hook_book[production_name]:
-                node = hook(node)
+                try:
+                    node = hook(node)
+                except AssertionError as err:
+                    raise CrupyParserException(
+                        traceback.format_exc()
+                    ) from err
         return node
 
     def register_stream(

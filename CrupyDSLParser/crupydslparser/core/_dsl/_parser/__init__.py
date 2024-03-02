@@ -19,12 +19,19 @@ from crupydslparser.core._lexer import (
     CrupyLexerAssertLookaheadNegative,
     CrupyLexerAssertLookaheadPositive,
 )
-from crupydslparser.core._dsl._parser.production_name import (
-    dsl_production_name_hook,
-)
+from crupydslparser.core._dsl._parser.eol import dsl_eol_hook
 from crupydslparser.core._dsl._parser.space import dsl_space_hook
 from crupydslparser.core._dsl._parser.builtin import dsl_builtin_hook
 from crupydslparser.core._dsl._parser.string import dsl_string_hook
+from crupydslparser.core._dsl._parser.statement import dsl_statement_hook
+from crupydslparser.core._dsl._parser.group import dsl_group_hook
+from crupydslparser.core._dsl._parser.production import dsl_production_hook
+from crupydslparser.core._dsl._parser.alternative import (
+    dsl_alternative_hook,
+)
+from crupydslparser.core._dsl._parser.production_name import (
+    dsl_production_name_hook,
+)
 
 #---
 # Public
@@ -35,43 +42,51 @@ from crupydslparser.core._dsl._parser.string import dsl_string_hook
 CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     #
     # Production entry
-    # > <crupy_dsl> ::= (<crupy_dsl_production>)+ EOF
+    # > <crupy_dsl> ::= (<crupy_dsl_production>)+ :eof:
     #
     'crupy_dsl' : \
         CrupyLexerOpSeq(
             CrupyLexerOpRep1N(
                 CrupyLexerOpProductionCall('production'),
             ),
-            CrupyLexerAssertEOF(),
+            CrupyLexerOpBuiltin('eof'),
         ),
     #
     # Production (rule) declaration
     # > production ::= \
-    #       <space_opt>
+    #       <space_opt> \
     #       <crupy_dsl_rulename> \
     #       <crupy_dsl_space> \
     #       "::=" \
     #       <crupy_dsl_space> \
-    #       <crupy_dsl_stmts>
+    #       <crupy_dsl_stmts> \
+    #       <eol>
     #
     'production' : \
         CrupyLexerOpSeq(
             CrupyLexerOpProductionCall('space_opt'),
-            CrupyLexerOpProductionCall('rulename'),
+            CrupyLexerOpProductionCall('production_name'),
             CrupyLexerOpProductionCall('space'),
             CrupyLexerOpText("::="),
             CrupyLexerOpProductionCall('space'),
             CrupyLexerOpProductionCall('statement'),
+            CrupyLexerOpProductionCall('eol'),
         ),
     #
     # Production' statement declaration (right part of a production)
     # > statement ::= \
+    #       (<space_opt> "|" <space_opt>)? \
     #       <alternative> \
     #       (<space_opt> "|" <space_opt> <alternative>)* \
     #       <eol>
     #
     'statement' : \
         CrupyLexerOpSeq(
+            CrupyLexerOpProductionCall('space_opt'),
+            CrupyLexerOpOptional(
+                CrupyLexerOpText('|'),
+                CrupyLexerOpProductionCall('space_opt'),
+            ),
             CrupyLexerOpProductionCall('alternative'),
             CrupyLexerOpRep0N(
                 CrupyLexerOpProductionCall('space_opt'),
@@ -79,7 +94,6 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
                 CrupyLexerOpProductionCall('space_opt'),
                 CrupyLexerOpProductionCall('alternative'),
             ),
-            CrupyLexerOpProductionCall('eol'),
         ),
     #
     # Production' alternatives (right part of the production declaraction,
@@ -88,6 +102,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     #
     'alternative' : \
         CrupyLexerOpRep1N(
+            CrupyLexerOpProductionCall('space_opt'),
             CrupyLexerOpOr(
                 CrupyLexerOpProductionCall('production_name'),
                 CrupyLexerOpProductionCall('group'),
@@ -113,10 +128,12 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
             CrupyLexerOpProductionCall('statement'),
             CrupyLexerOpProductionCall('space_opt'),
             CrupyLexerOpText(')'),
-            CrupyLexerOpOr(
-                CrupyLexerOpText('+'),
-                CrupyLexerOpText('-'),
-                CrupyLexerOpText('?'),
+            CrupyLexerOpOptional(
+                CrupyLexerOpOr(
+                    CrupyLexerOpText('*'),
+                    CrupyLexerOpText('+'),
+                    CrupyLexerOpText('?'),
+                ),
             ),
         ),
     #
@@ -201,6 +218,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
         CrupyLexerOpOr(
             CrupyLexerOpText('\n'),
             CrupyLexerOpText('\r\n'),
+            CrupyLexerOpBuiltin('eof'),
         ),
 })
 
@@ -210,8 +228,13 @@ CRUPY_DSL_PARSER_OBJ.register_hook(
     'production_name',
     dsl_production_name_hook,
 )
+CRUPY_DSL_PARSER_OBJ.register_hook('eol', dsl_eol_hook)
 CRUPY_DSL_PARSER_OBJ.register_hook('space', dsl_space_hook)
 CRUPY_DSL_PARSER_OBJ.register_hook('space_opt', dsl_space_hook)
 CRUPY_DSL_PARSER_OBJ.register_hook('__space', dsl_space_hook)
 CRUPY_DSL_PARSER_OBJ.register_hook('builtin', dsl_builtin_hook)
 CRUPY_DSL_PARSER_OBJ.register_hook('string', dsl_string_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('alternative', dsl_alternative_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('statement', dsl_statement_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('group', dsl_group_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('production', dsl_production_hook)
