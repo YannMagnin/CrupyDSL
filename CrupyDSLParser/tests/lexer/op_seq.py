@@ -38,11 +38,11 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
         self.assertIsNotNone(seqtok)
         if seqtok is None:
             return
-        self.assertIsNotNone(seqtok['seq'])
-        self.assertEqual(len(seqtok['seq']), 3)
-        self.assertEqual(seqtok['seq'][0]['text'], 'abc')
-        self.assertEqual(seqtok['seq'][1]['text'], 'def')
-        self.assertEqual(seqtok['seq'][2]['text'], 'ij')
+        self.assertIsNotNone(seqtok.seq)
+        self.assertEqual(len(seqtok.seq), 3)
+        self.assertEqual(seqtok.seq[0].text, 'abc')
+        self.assertEqual(seqtok.seq[1].text, 'def')
+        self.assertEqual(seqtok.seq[2].text, 'ij')
         with parser.stream as lexem:
             self.assertEqual(lexem.read(), 'kl')
             lexem.validate()

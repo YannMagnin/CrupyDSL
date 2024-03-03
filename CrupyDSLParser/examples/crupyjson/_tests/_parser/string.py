@@ -16,14 +16,14 @@ def json_test_parser_string(parser: CrupyParserBase) -> None:
     """
     print('-= check string =-')
     print('- check double quote...')
-    parser.register_stream('"667 oui ~# \\ dslk"')
+    parser.register_stream('"667 oui ~# \\\\ dslk"')
     node = parser.execute('string')
     assert node is not None
-    assert node['name'] == 'json_string'
-    assert node['text'] == '667 oui ~# \\ dslk'
+    assert node.type == 'json_string'
+    assert node.text == r'667 oui ~# \ dslk'
     print('- check single quote...')
-    parser.register_stream('\'667 oui ~# \\\tdslk\'')
+    parser.register_stream('\'667 oui ~# \\\\ dslk\'')
     node = parser.execute('string')
     assert node is not None
-    assert node['name'] == 'json_string'
-    assert node['text'] == '667 oui ~# \\\tdslk'
+    assert node.type == 'json_string'
+    assert node.text == r'667 oui ~# \ dslk'

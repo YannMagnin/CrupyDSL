@@ -27,11 +27,11 @@ class CrupyUnittestDslGroup(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'dsl_group')
-        self.assertIsNone(node['lookahead'])
-        self.assertIsNone(node['operation'])
-        self.assertEqual(node['statement']['name'], 'dsl_statement')
-        self.assertEqual(len(node['statement']['alternatives']), 1)
+        self.assertEqual(node.type, 'dsl_group')
+        self.assertIsNone(node.lookahead)
+        self.assertIsNone(node.operation)
+        self.assertEqual(node.statement.type, 'dsl_statement')
+        self.assertEqual(len(node.statement.alternatives), 1)
 
     def test_group_lookahead_negative(self) -> None:
         """ lookahead tests """
@@ -40,11 +40,11 @@ class CrupyUnittestDslGroup(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'dsl_group')
-        self.assertEqual(node['lookahead'], 'negative')
-        self.assertIsNone(node['operation'])
-        self.assertEqual(node['statement']['name'], 'dsl_statement')
-        self.assertEqual(len(node['statement']['alternatives']), 1)
+        self.assertEqual(node.type, 'dsl_group')
+        self.assertEqual(node.lookahead, 'negative')
+        self.assertIsNone(node.operation)
+        self.assertEqual(node.statement.type, 'dsl_statement')
+        self.assertEqual(len(node.statement.alternatives), 1)
 
     def test_group_lookahead_positive(self) -> None:
         """ lookahead tests """
@@ -53,11 +53,11 @@ class CrupyUnittestDslGroup(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'dsl_group')
-        self.assertEqual(node['lookahead'], 'positive')
-        self.assertIsNone(node['operation'])
-        self.assertEqual(node['statement']['name'], 'dsl_statement')
-        self.assertEqual(len(node['statement']['alternatives']), 1)
+        self.assertEqual(node.type, 'dsl_group')
+        self.assertEqual(node.lookahead, 'positive')
+        self.assertIsNone(node.operation)
+        self.assertEqual(node.statement.type, 'dsl_statement')
+        self.assertEqual(len(node.statement.alternatives), 1)
 
     def test_group_operation_zero_plus(self) -> None:
         """ operation zero plus """
@@ -66,11 +66,11 @@ class CrupyUnittestDslGroup(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'dsl_group')
-        self.assertIsNone(node['lookahead'])
-        self.assertEqual(node['operation'], 'zero_plus')
-        self.assertEqual(node['statement']['name'], 'dsl_statement')
-        self.assertEqual(len(node['statement']['alternatives']), 1)
+        self.assertEqual(node.type, 'dsl_group')
+        self.assertIsNone(node.lookahead)
+        self.assertEqual(node.operation, 'zero_plus')
+        self.assertEqual(node.statement.type, 'dsl_statement')
+        self.assertEqual(len(node.statement.alternatives), 1)
 
     def test_group_operation_one_plus(self) -> None:
         """ operation one plus """
@@ -79,11 +79,11 @@ class CrupyUnittestDslGroup(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'dsl_group')
-        self.assertIsNone(node['lookahead'])
-        self.assertEqual(node['operation'], 'one_plus')
-        self.assertEqual(node['statement']['name'], 'dsl_statement')
-        self.assertEqual(len(node['statement']['alternatives']), 2)
+        self.assertEqual(node.type, 'dsl_group')
+        self.assertIsNone(node.lookahead)
+        self.assertEqual(node.operation, 'one_plus')
+        self.assertEqual(node.statement.type, 'dsl_statement')
+        self.assertEqual(len(node.statement.alternatives), 2)
 
     def test_group_operation_optional(self) -> None:
         """ operation optional """
@@ -92,8 +92,8 @@ class CrupyUnittestDslGroup(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'dsl_group')
-        self.assertIsNone(node['lookahead'])
-        self.assertEqual(node['operation'], 'optional')
-        self.assertEqual(node['statement']['name'], 'dsl_statement')
-        self.assertEqual(len(node['statement']['alternatives']), 2)
+        self.assertEqual(node.type, 'dsl_group')
+        self.assertIsNone(node.lookahead)
+        self.assertEqual(node.operation, 'optional')
+        self.assertEqual(node.statement.type, 'dsl_statement')
+        self.assertEqual(len(node.statement.alternatives), 2)

@@ -20,16 +20,16 @@ def __check_node_simple(node: CrupyParserNode|None, text: str) -> None:
     """ generic node check """
     try:
         assert node is not None
-        assert node['name'] == 'lex_rep'
-        assert len(node['rep']) == len(text)
+        assert node.type == 'lex_rep'
+        assert len(node.rep) == len(text)
         capture = ''
-        for rep in node['rep']:
+        for rep in node.rep:
             assert len(rep) == 1
             op = rep[0]
-            assert op['name'] == 'lex_seq'
-            assert len(op['seq']) == 1
-            assert op['seq'][0]['name'] == 'lex_text'
-            capture += op['seq'][0]['text']
+            assert op.type == 'lex_seq'
+            assert len(op.seq) == 1
+            assert op.seq[0].type == 'lex_text'
+            capture += op.seq[0].text
         assert capture == text
     except AssertionError:
         print(
@@ -42,17 +42,17 @@ def __check_node_quoted(node: CrupyParserNode|None, text: str) -> None:
     """ generic node check """
     try:
         assert node is not None
-        assert node['name'] == 'lex_seq'
-        assert len(node['seq']) == 3
-        assert node['seq'][0]['name'] == 'lex_text'
-        assert node['seq'][1]['name'] == 'lex_rep'
-        assert node['seq'][2]['name'] == 'lex_text'
+        assert node.type == 'lex_seq'
+        assert len(node.seq) == 3
+        assert node.seq[0].type == 'lex_text'
+        assert node.seq[1].type == 'lex_rep'
+        assert node.seq[2].type == 'lex_text'
         capture = ''
-        for rep in node['seq'][1]['rep']:
+        for rep in node.seq[1].rep:
             assert len(rep) == 1
             op = rep[0]
-            assert op['name'] == 'lex_text'
-            capture += op['text']
+            assert op.type == 'lex_text'
+            capture += op.text
         assert capture == text
     except AssertionError:
         print(
@@ -70,9 +70,9 @@ def __check_node_mixed(
     """
     try:
         assert node is not None
-        assert node['name'] == 'csv_field'
-        assert node['kind'] == kind
-        assert node['text'] == text
+        assert node.type == 'csv_field'
+        assert node.kind == kind
+        assert node.text == text
     except AssertionError:
         print(
             '\033[0;33m'

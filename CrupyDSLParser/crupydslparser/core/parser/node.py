@@ -24,7 +24,7 @@ class CrupyParserNode():
     But, each node should have default information that we want to
     "auto-magically" generate :
 
-        * `name`        : node name
+        * `type`        : node type
         * `stream_ctx`  : stream context (which contain cursor information)
 
     We also need that the `name` attribute should not be able to be modified
@@ -44,6 +44,16 @@ class CrupyParserNode():
             exception
         - For now, ignore `typing` module import typing check
         """
+        if self.__class__.__name__.find('CrupyParserNode') != 0:
+            raise CrupyParserException(
+                'Malformed parser node class name '
+                f"'{self.__class__.__name__}'"
+            )
+        self._type = ''
+        for letter in self.__class__.__name__[15:]:
+            if self._type and letter.isupper():
+                self._type += '_'
+            self._type += letter.lower()
         parent_node: Any = None
         cls_annotations = self.__class__.__annotations__
         cls_annotations['stream_ctx'] = CrupyStreamContext
@@ -85,16 +95,6 @@ class CrupyParserNode():
                     f"Missing 'stream_ctx' declaration for '{type(self)}'"
                 )
             setattr(self, 'stream_ctx', parent_node.stream_context)
-        if self.__class__.__name__.find('CrupyParserNode') != 0:
-            raise CrupyParserException(
-                'Malformed parser node class name '
-                f"'{self.__class__.__name__}'"
-            )
-        self._name = ''
-        for letter in self.__class__.__name__[15:]:
-            if self._name and letter.isupper():
-                self._name += '_'
-            self._name += letter.lower()
         self._stream_context: CrupyStreamContext = getattr(
             self,
             'stream_ctx',
@@ -108,7 +108,7 @@ class CrupyParserNode():
         """ generate the string information about the object
         """
         content = f"<{self.__class__.__name__}("
-        attributes = ['name'] + list(self.__class__.__annotations__)
+        attributes = ['type'] + list(self.__class__.__annotations__)
         for i, keyname in enumerate(attributes):
             if i != 0:
                 content += ', '
@@ -126,19 +126,33 @@ class CrupyParserNode():
         try:
             return getattr(self, key)
         except AttributeError as err:
-            raise CrupyParserException(
-                f"Unable to fetch the attribute '{key}' for the class "
-                f"{type(self).__name__}"
-            ) from err
+            raise CrupyParserException(f"{err}") from err
+
+    def __getattr__(self, name: str) -> Any:
+        """ return the attribute `name`
+
+        @note
+        We are constraint to raise `AttributeError` if the attribute `name`
+        is not found, otherwise the `getattr(obj, key, default)` will never
+        return the default value
+        """
+        if name in self.__dict__:
+            return self.__dict__[name]
+        if name in self.__class__.__dict__:
+            return self.__class__.__dict__[name]
+        raise AttributeError(
+            f"Unable to fetch the attribute '{name}' for the class "
+            f"{self.__class__.__name__}"
+        )
 
     #---
     # Public property
     #---
 
     @property
-    def name(self) -> str:
-        """ return the node name """
-        return self._name
+    def type(self) -> str:
+        """ return the node type """
+        return self._type
 
     @property
     def stream_context(self) -> CrupyStreamContext:

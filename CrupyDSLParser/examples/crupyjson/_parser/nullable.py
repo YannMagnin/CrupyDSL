@@ -23,8 +23,8 @@ class CrupyParserNodeJsonNullable(CrupyParserNode):
 def json_parser_prod_hook_nullable(node: CrupyParserNode) -> CrupyParserNode:
     """ handle `nullable` node
     """
-    assert node['name'] == 'lex_text'
-    assert node['text'] == 'null'
+    assert node.type == 'lex_text'
+    assert node.text == 'null'
     return CrupyParserNodeJsonNullable(
         parent_node = node,
     )

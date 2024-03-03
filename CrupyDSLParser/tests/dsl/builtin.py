@@ -31,7 +31,7 @@ class CrupyUnittestDslBuiltin(CrupyUnittestBase):
         self.assertIsNone(node2)
         if node0 is None or node1 is None:
             return
-        self.assertEqual(node0['name'], 'dsl_builtin')
-        self.assertEqual(node0['kind'], 'digit')
-        self.assertEqual(node1['name'], 'dsl_builtin')
-        self.assertEqual(node1['kind'], 'any')
+        self.assertEqual(node0.type, 'dsl_builtin')
+        self.assertEqual(node0.kind, 'digit')
+        self.assertEqual(node1.type, 'dsl_builtin')
+        self.assertEqual(node1.kind, 'any')

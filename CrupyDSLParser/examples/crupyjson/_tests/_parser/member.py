@@ -19,8 +19,8 @@ def json_test_parser_member(parser: CrupyParserBase) -> None:
     parser.register_stream('"ekip667":0')
     node = parser.execute('member')
     assert node is not None
-    assert node['name'] == 'json_member'
-    assert node['key'] == 'ekip667'
-    assert node['value']['name'] == 'json_primitive'
-    assert node['value']['kind'] == 'digit'
-    assert node['value']['data'] == '0'
+    assert node.type == 'json_member'
+    assert node.key == 'ekip667'
+    assert node.value.type == 'json_primitive'
+    assert node.value.kind == 'digit'
+    assert node.value.data == '0'

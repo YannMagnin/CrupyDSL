@@ -35,10 +35,10 @@ class CrupyUnittestDslSpace(CrupyUnittestBase):
         self.assertIsNone(CRUPY_DSL_PARSER_OBJ.execute('__space'))
         if node1 is None or node2 is None or node3 is None or node4 is None:
             return
-        self.assertEqual(node1['name'], 'dsl_space')
-        self.assertEqual(node2['name'], 'dsl_space')
-        self.assertEqual(node3['name'], 'dsl_space')
-        self.assertEqual(node4['name'], 'dsl_space')
+        self.assertEqual(node1.type, 'dsl_space')
+        self.assertEqual(node2.type, 'dsl_space')
+        self.assertEqual(node3.type, 'dsl_space')
+        self.assertEqual(node4.type, 'dsl_space')
 
     def test_space(self) -> None:
         """ space rule """

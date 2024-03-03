@@ -18,14 +18,14 @@ class CrupyParserNodeDslEntry(CrupyParserNode):
 def dsl_dsl_hook(node: CrupyParserNode) -> CrupyParserNode:
     """ handle "dsl" node
     """
-    assert node['name'] == 'lex_seq'
-    assert len(node['seq']) == 2
-    assert node['seq'][0]['name'] == 'lex_rep'
-    assert node['seq'][1]['name'] == 'lex_text'
+    assert node.type == 'lex_seq'
+    assert len(node.seq) == 2
+    assert node.seq[0].type == 'lex_rep'
+    assert node.seq[1].type == 'lex_text'
     production_list: list[CrupyParserNode] = []
-    for seq in node['seq'][0]['rep']:
+    for seq in node.seq[0].rep:
         assert len(seq) == 1
-        assert seq[0]['name'] == 'dsl_production'
+        assert seq[0].type == 'dsl_production'
         production_list.append(seq[0])
     return CrupyParserNodeDslEntry(
         parent_node = node,

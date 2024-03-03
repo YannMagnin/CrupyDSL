@@ -33,4 +33,4 @@ class CrupyUnittestLexerUntil(CrupyUnittestBase):
         self.assertIsNone(strop1)
         if not strop0:
             return
-        self.assertEqual(strop0['text'], 'abcdef')
+        self.assertEqual(strop0.text, 'abcdef')

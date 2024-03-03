@@ -27,7 +27,7 @@ class CrupyUnittestDslProduction(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'dsl_production')
-        self.assertEqual(node['production_name'], 'entry')
-        self.assertEqual(node['statement']['name'], 'dsl_statement')
-        self.assertEqual(len(node['statement']['alternatives']), 1)
+        self.assertEqual(node.type, 'dsl_production')
+        self.assertEqual(node.production_name, 'entry')
+        self.assertEqual(node.statement.type, 'dsl_statement')
+        self.assertEqual(len(node.statement.alternatives), 1)

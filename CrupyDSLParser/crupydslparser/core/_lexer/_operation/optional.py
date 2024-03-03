@@ -28,7 +28,7 @@ class CrupyLexerOpOptional(CrupyLexerOpSeq):
         """
         seq = None
         if node := super().__call__(parser):
-            seq = node['seq']
+            seq = node.seq
         return CrupyParserNodeLexOptional(
             stream_ctx  = parser.stream.context_copy(),
             seq         = seq,

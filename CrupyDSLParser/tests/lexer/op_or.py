@@ -37,7 +37,7 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
         self.assertIsNotNone(or_op)
         if or_op is None:
             return
-        self.assertEqual(or_op['text'], 'abc')
+        self.assertEqual(or_op.text, 'abc')
         with parser.stream as lexem:
             self.assertEqual(lexem.read(), 'defijkl')
 
@@ -57,6 +57,6 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
         self.assertIsNotNone(or_op)
         if or_op is None:
             return
-        self.assertEqual(or_op['text'], 'abcdef')
+        self.assertEqual(or_op.text, 'abcdef')
         with parser.stream as lexem:
             self.assertEqual(lexem.read(), 'ijkl')

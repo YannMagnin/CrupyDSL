@@ -29,18 +29,18 @@ class CrupyUnittestDslAlternative(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'dsl_alternative')
-        self.assertEqual(len(node['seq']), 4)
-        self.assertEqual(node['seq'][0]['name'], 'dsl_prod_name')
-        self.assertEqual(node['seq'][0]['production_name'], 'test_oui')
-        self.assertEqual(node['seq'][1]['name'], 'dsl_string')
-        self.assertEqual(node['seq'][1]['text'], 'test')
-        self.assertEqual(node['seq'][2]['name'], 'dsl_builtin')
-        self.assertEqual(node['seq'][2]['kind'], 'number')
-        self.assertEqual(node['seq'][3]['name'], 'dsl_group')
-        self.assertEqual(node['seq'][3]['lookahead'], 'negative')
-        self.assertEqual(node['seq'][3]['operation'], 'optional')
+        self.assertEqual(node.type, 'dsl_alternative')
+        self.assertEqual(len(node.seq), 4)
+        self.assertEqual(node.seq[0].type, 'dsl_production_name')
+        self.assertEqual(node.seq[0].production_name, 'test_oui')
+        self.assertEqual(node.seq[1].type, 'dsl_string')
+        self.assertEqual(node.seq[1].text, 'test')
+        self.assertEqual(node.seq[2].type, 'dsl_builtin')
+        self.assertEqual(node.seq[2].kind, 'number')
+        self.assertEqual(node.seq[3].type, 'dsl_group')
+        self.assertEqual(node.seq[3].lookahead, 'negative')
+        self.assertEqual(node.seq[3].operation, 'optional')
         self.assertEqual(
-            node['seq'][3]['statement']['name'],
+            node.seq[3].statement.type,
             'dsl_statement',
         )

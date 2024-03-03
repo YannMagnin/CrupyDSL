@@ -23,19 +23,19 @@ def csv_parser_prod_csv_hook(node: CrupyParserNode) -> CrupyParserNode:
     @note
     - production -> "cvs ::= (<record> "\n")+ :eof:"
     """
-    assert node['name'] == 'lex_seq'
-    assert len(node['seq']) == 1
-    node = node['seq'][0]
-    assert node['name'] == 'lex_rep'
-    assert len(node['rep']) >= 1
+    assert node.type == 'lex_seq'
+    assert len(node.seq) == 1
+    node = node.seq[0]
+    assert node.type == 'lex_rep'
+    assert len(node.rep) >= 1
     record_list: List[CrupyParserNodeCsvRecord] = []
-    for record in node['rep']:
+    for record in node.rep:
         assert len(record) == 1
-        assert len(record[0]['seq']) == 2
-        assert record[0]['seq'][0]['name'] == 'csv_record'
-        assert record[0]['seq'][1]['name'] == 'lex_text'
-        assert record[0]['seq'][1]['text'] == '\n'
-        record_list.append(record[0]['seq'][0])
+        assert len(record[0].seq) == 2
+        assert record[0].seq[0].type == 'csv_record'
+        assert record[0].seq[1].type == 'lex_text'
+        assert record[0].seq[1].text == '\n'
+        record_list.append(record[0].seq[0])
     return CrupyParserNodeCsv(
         parent_node = node,
         records     = record_list,

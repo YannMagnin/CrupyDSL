@@ -7,6 +7,7 @@ __all__ = [
 from typing import Any, Dict, Tuple, Generator, Optional, List
 from pathlib import Path
 from importlib import import_module
+import traceback
 import sys
 import re
 
@@ -115,7 +116,10 @@ class CrupyUnittestBase():
                 # pylint: disable=locally-disabled,W0718
                 except Exception as err:
                     cls._error(
-                        f"!!! Exception during test execution -> {err}"
+                        '!!! Exception during test execution -> '
+                        f"{traceback.format_exc()} "
+                        f"({err.__class__.__name__}) "
+                        f"{err}"
                     )
 
     @classmethod

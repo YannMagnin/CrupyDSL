@@ -38,7 +38,7 @@ class CrupyUnittestLexerAssertEOF(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'lex_seq')
-        self.assertEqual(len(node['seq']), 1)
-        self.assertEqual(node['seq'][0]['name'], 'lex_text')
-        self.assertEqual(node['seq'][0]['text'], 'a')
+        self.assertEqual(node.type, 'lex_seq')
+        self.assertEqual(len(node.seq), 1)
+        self.assertEqual(node.seq[0].type, 'lex_text')
+        self.assertEqual(node.seq[0].text, 'a')

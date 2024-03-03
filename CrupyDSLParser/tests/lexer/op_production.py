@@ -36,7 +36,7 @@ class CrupyUnittestLexerProd(CrupyUnittestBase):
         self.assertIsNotNone(test)
         if test is None:
             return
-        self.assertEqual(test['text'], 'abcdef')
+        self.assertEqual(test.text, 'abcdef')
         with parser.stream as lexem:
             self.assertEqual(lexem.read(), 'ijkl')
 

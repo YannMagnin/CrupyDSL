@@ -19,9 +19,9 @@ class CrupyParserNodeJsonBoolean(CrupyParserNode):
 def json_parser_prod_hook_boolean(node: CrupyParserNode) -> CrupyParserNode:
     """ handle `boolean` node
     """
-    assert node['name'] == 'lex_text'
-    assert node['text'] in ['true', 'false']
+    assert node.type == 'lex_text'
+    assert node.text in ['true', 'false']
     return CrupyParserNodeJsonBoolean(
         parent_node = node,
-        state       = node['text'] == 'true',
+        state       = node.text == 'true',
     )

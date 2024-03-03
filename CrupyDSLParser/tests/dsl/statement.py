@@ -29,19 +29,19 @@ class CrupyUnittestDslStatement(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'dsl_statement')
-        self.assertEqual(len(node['alternatives']), 3)
-        alts = node['alternatives']
-        self.assertEqual(alts[0]['name'], 'dsl_alternative')
-        self.assertEqual(alts[1]['name'], 'dsl_alternative')
-        self.assertEqual(alts[2]['name'], 'dsl_alternative')
-        self.assertEqual(len(alts[0]['seq']), 1)
-        self.assertEqual(len(alts[1]['seq']), 1)
-        self.assertEqual(len(alts[2]['seq']), 2)
-        self.assertEqual(alts[0]['seq'][0]['name'], 'dsl_prod_name')
-        self.assertEqual(alts[1]['seq'][0]['name'], 'dsl_string')
-        self.assertEqual(alts[2]['seq'][0]['name'], 'dsl_builtin')
-        self.assertEqual(alts[2]['seq'][1]['name'], 'dsl_prod_name')
+        self.assertEqual(node.type, 'dsl_statement')
+        self.assertEqual(len(node.alternatives), 3)
+        alts = node.alternatives
+        self.assertEqual(alts[0].type, 'dsl_alternative')
+        self.assertEqual(alts[1].type, 'dsl_alternative')
+        self.assertEqual(alts[2].type, 'dsl_alternative')
+        self.assertEqual(len(alts[0].seq), 1)
+        self.assertEqual(len(alts[1].seq), 1)
+        self.assertEqual(len(alts[2].seq), 2)
+        self.assertEqual(alts[0].seq[0].type, 'dsl_production_name')
+        self.assertEqual(alts[1].seq[0].type, 'dsl_string')
+        self.assertEqual(alts[2].seq[0].type, 'dsl_builtin')
+        self.assertEqual(alts[2].seq[1].type, 'dsl_production_name')
 
     def test_multiple_line(self) -> None:
         """ test multiple line """
@@ -54,16 +54,16 @@ class CrupyUnittestDslStatement(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'dsl_statement')
-        self.assertEqual(len(node['alternatives']), 3)
-        alts = node['alternatives']
-        self.assertEqual(alts[0]['name'], 'dsl_alternative')
-        self.assertEqual(alts[1]['name'], 'dsl_alternative')
-        self.assertEqual(alts[2]['name'], 'dsl_alternative')
-        self.assertEqual(len(alts[0]['seq']), 1)
-        self.assertEqual(len(alts[1]['seq']), 1)
-        self.assertEqual(len(alts[2]['seq']), 2)
-        self.assertEqual(alts[0]['seq'][0]['name'], 'dsl_prod_name')
-        self.assertEqual(alts[1]['seq'][0]['name'], 'dsl_string')
-        self.assertEqual(alts[2]['seq'][0]['name'], 'dsl_builtin')
-        self.assertEqual(alts[2]['seq'][1]['name'], 'dsl_prod_name')
+        self.assertEqual(node.type, 'dsl_statement')
+        self.assertEqual(len(node.alternatives), 3)
+        alts = node.alternatives
+        self.assertEqual(alts[0].type, 'dsl_alternative')
+        self.assertEqual(alts[1].type, 'dsl_alternative')
+        self.assertEqual(alts[2].type, 'dsl_alternative')
+        self.assertEqual(len(alts[0].seq), 1)
+        self.assertEqual(len(alts[1].seq), 1)
+        self.assertEqual(len(alts[2].seq), 2)
+        self.assertEqual(alts[0].seq[0].type, 'dsl_production_name')
+        self.assertEqual(alts[1].seq[0].type, 'dsl_string')
+        self.assertEqual(alts[2].seq[0].type, 'dsl_builtin')
+        self.assertEqual(alts[2].seq[1].type, 'dsl_production_name')

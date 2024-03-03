@@ -30,9 +30,9 @@ class CrupyUnittestDslDsl(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'dsl_entry')
-        self.assertEqual(len(node['productions']), 2)
-        self.assertEqual(node['productions'][0]['name'], 'production_name')
-        self.assertEqual(node['productions'][0]['production_name'], 'entry')
-        self.assertEqual(node['productions'][1]['name'], 'production_name')
-        self.assertEqual(node['productions'][1]['production_name'], 'test')
+        self.assertEqual(node.type, 'dsl_entry')
+        self.assertEqual(len(node.productions), 2)
+        self.assertEqual(node.productions[0].type, 'production_name')
+        self.assertEqual(node.productions[0].production_name, 'entry')
+        self.assertEqual(node.productions[1].type, 'production_name')
+        self.assertEqual(node.productions[1].production_name, 'test')

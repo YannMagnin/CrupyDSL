@@ -25,7 +25,7 @@ def json_parser_prod_hook_statement(
 ) -> CrupyParserNode:
     """ handle `statement` node
     """
-    assert node['name'] in ['json_primitive', 'json_container']
+    assert node.type in ['json_primitive', 'json_container']
     return CrupyParserNodeJsonStatement(
         parent_node = node,
         node        = node,

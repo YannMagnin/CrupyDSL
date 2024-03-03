@@ -35,17 +35,17 @@ class CrupyUnittestLexerOptional(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'lex_seq')
-        self.assertEqual(len(node['seq']), 3)
-        self.assertEqual(node['seq'][0]['name'], 'lex_text')
-        content += node['seq'][0]['text']
-        self.assertEqual(node['seq'][1]['name'], 'lex_optional')
-        if node['seq'][1]['seq']:
-            self.assertEqual(len(node['seq'][1]['seq']), 1)
-            self.assertEqual(node['seq'][1]['seq'][0]['name'], 'lex_text')
-            content += node['seq'][1]['seq'][0]['text']
-        self.assertEqual(node['seq'][2]['name'], 'lex_text')
-        content += node['seq'][2]['text']
+        self.assertEqual(node.type, 'lex_seq')
+        self.assertEqual(len(node.seq), 3)
+        self.assertEqual(node.seq[0].type, 'lex_text')
+        content += node.seq[0].text
+        self.assertEqual(node.seq[1].type, 'lex_optional')
+        if node.seq[1].seq:
+            self.assertEqual(len(node.seq[1].seq), 1)
+            self.assertEqual(node.seq[1].seq[0].type, 'lex_text')
+            content += node.seq[1].seq[0].text
+        self.assertEqual(node.seq[2].type, 'lex_text')
+        content += node.seq[2].text
         self.assertEqual(content, text)
 
     #---

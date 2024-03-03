@@ -27,8 +27,8 @@ class CrupyUnittestDslString(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'dsl_string')
-        self.assertEqual(node['text'], r'667 oui ~# \ dslk')
+        self.assertEqual(node.type, 'dsl_string')
+        self.assertEqual(node.text, r'667 oui ~# \ dslk')
 
     def test_escape(self) -> None:
         """ test escaping """
@@ -37,5 +37,5 @@ class CrupyUnittestDslString(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(node['name'], 'dsl_string')
-        self.assertEqual(node['text'], '"\\')
+        self.assertEqual(node.type, 'dsl_string')
+        self.assertEqual(node.text, '"\\')

@@ -18,4 +18,4 @@ def json_test_parser_nullable(parser: CrupyParserBase) -> None:
     parser.register_stream('null')
     node = parser.execute('nullable')
     assert node is not None
-    assert node['name'] == 'json_nullable'
+    assert node.type == 'json_nullable'

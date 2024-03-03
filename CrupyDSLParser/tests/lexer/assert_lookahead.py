@@ -44,9 +44,9 @@ class CrupyUnittestLexerLookahead(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(len(node['seq']), 1)
-        self.assertEqual(node['seq'][0]['name'], 'lex_text')
-        self.assertEqual(node['seq'][0]['text'], 'abc')
+        self.assertEqual(len(node.seq), 1)
+        self.assertEqual(node.seq[0].type, 'lex_text')
+        self.assertEqual(node.seq[0].text, 'abc')
         self.assertIsNone(parser.execute('entry'))
 
     ## Positive
@@ -67,8 +67,8 @@ class CrupyUnittestLexerLookahead(CrupyUnittestBase):
         self.assertIsNotNone(node)
         if node is None:
             return
-        self.assertEqual(len(node['seq']), 1)
-        self.assertEqual(node['seq'][0]['name'], 'lex_text')
-        self.assertEqual(node['seq'][0]['text'], 'abc')
+        self.assertEqual(len(node.seq), 1)
+        self.assertEqual(node.seq[0].type, 'lex_text')
+        self.assertEqual(node.seq[0].text, 'abc')
         self.assertIsNone(parser.execute('entry'))
         self.assertEqual(parser.stream.read_char(), 'd')

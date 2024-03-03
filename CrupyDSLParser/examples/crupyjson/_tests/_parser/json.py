@@ -19,14 +19,14 @@ def json_test_parser_json(parser: CrupyParserBase) -> None:
     parser.register_stream('0')
     node = parser.execute('json')
     assert node is not None
-    assert node['name'] == 'json_statement'
-    assert node['node']['name'] == 'json_primitive'
-    assert node['node']['kind'] == 'digit'
-    assert node['node']['data'] == '0'
+    assert node.type == 'json_statement'
+    assert node.node.type == 'json_primitive'
+    assert node.node.kind == 'digit'
+    assert node.node.data == '0'
     print('- check container...')
     parser.register_stream('[1,2]')
     node = parser.execute('json')
     assert node is not None
-    assert node['name'] == 'json_statement'
-    assert node['node']['name'] == 'json_container'
-    assert node['node']['node']['name'] == 'json_array'
+    assert node.type == 'json_statement'
+    assert node.node.type == 'json_container'
+    assert node.node.node.type == 'json_array'

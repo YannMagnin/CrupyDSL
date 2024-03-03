@@ -22,9 +22,9 @@ def json_parser_prod_hook_container(
 ) -> CrupyParserNode:
     """ handle `container` node
     """
-    assert node['name'] in ['json_array', 'json_object']
+    assert node.type in ['json_array', 'json_object']
     return CrupyParserNodeJsonContainer(
         parent_node = node,
-        kind        = node['name'],
+        kind        = node.type,
         node        = node,
     )

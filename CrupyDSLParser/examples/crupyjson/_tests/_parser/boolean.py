@@ -19,11 +19,11 @@ def json_test_parser_boolean(parser: CrupyParserBase) -> None:
     parser.register_stream('true')
     node = parser.execute('boolean')
     assert node is not None
-    assert node['name'] == 'json_boolean'
-    assert node['state'] is True
+    assert node.type == 'json_boolean'
+    assert node.state is True
     print('- check false...')
     parser.register_stream('false')
     node = parser.execute('boolean')
     assert node is not None
-    assert node['name'] == 'json_boolean'
-    assert node['state'] is False
+    assert node.type == 'json_boolean'
+    assert node.state is False

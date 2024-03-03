@@ -17,17 +17,17 @@ from crupydslparser.core.parser import (
 def __check_node_simple(node: CrupyParserNode) -> CrupyParserNode|None:
     """ field simple node check
     """
-    if node['name'] != 'lex_rep':
+    if node.type != 'lex_rep':
         return None
     try:
         capture = ''
-        for rep in node['rep']:
+        for rep in node.rep:
             assert len(rep) == 1
             op = rep[0]
-            assert op['name'] == 'lex_seq'
-            assert len(op['seq']) == 1
-            assert op['seq'][0]['name'] == 'lex_text'
-            capture += op['seq'][0]['text']
+            assert op.type == 'lex_seq'
+            assert len(op.seq) == 1
+            assert op.seq[0].type == 'lex_text'
+            capture += op.seq[0].text
         return CrupyParserNodeCsvField(
             parent_node = node,
             kind        = 'simple',
@@ -40,19 +40,19 @@ def __check_node_simple(node: CrupyParserNode) -> CrupyParserNode|None:
 
 def __check_node_quoted(node: CrupyParserNode) -> CrupyParserNode|None:
     """ generic node check """
-    if node['name'] != 'lex_seq':
+    if node.type != 'lex_seq':
         return None
     try:
-        assert len(node['seq']) == 3
-        assert node['seq'][0]['name'] == 'lex_text'
-        assert node['seq'][1]['name'] == 'lex_rep'
-        assert node['seq'][2]['name'] == 'lex_text'
+        assert len(node.seq) == 3
+        assert node.seq[0].type == 'lex_text'
+        assert node.seq[1].type == 'lex_rep'
+        assert node.seq[2].type == 'lex_text'
         capture = ''
-        for rep in node['seq'][1]['rep']:
+        for rep in node.seq[1].rep:
             assert len(rep) == 1
             op = rep[0]
-            assert op['name'] == 'lex_text'
-            capture += op['text']
+            assert op.type == 'lex_text'
+            capture += op.text
         return CrupyParserNodeCsvField(
             parent_node = node,
             kind        = 'quoted',

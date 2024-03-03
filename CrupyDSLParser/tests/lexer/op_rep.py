@@ -41,15 +41,15 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
         self.assertIsNotNone(reptok)
         if reptok is None:
             return
-        self.assertIsNotNone(reptok['rep'])
-        self.assertEqual(len(reptok['rep']), 2)
-        self.assertEqual(len(reptok['rep'][0]), 3)
-        self.assertEqual(reptok['rep'][0][0]['text'], 'abc')
-        self.assertEqual(reptok['rep'][0][1]['text'], 'def')
-        self.assertEqual(reptok['rep'][0][2]['text'], 'ij')
-        self.assertEqual(reptok['rep'][1][0]['text'], 'abc')
-        self.assertEqual(reptok['rep'][1][1]['text'], 'def')
-        self.assertEqual(reptok['rep'][1][2]['text'], 'ij')
+        self.assertIsNotNone(reptok.rep)
+        self.assertEqual(len(reptok.rep), 2)
+        self.assertEqual(len(reptok.rep[0]), 3)
+        self.assertEqual(reptok.rep[0][0].text, 'abc')
+        self.assertEqual(reptok.rep[0][1].text, 'def')
+        self.assertEqual(reptok.rep[0][2].text, 'ij')
+        self.assertEqual(reptok.rep[1][0].text, 'abc')
+        self.assertEqual(reptok.rep[1][1].text, 'def')
+        self.assertEqual(reptok.rep[1][2].text, 'ij')
 
     def test_rep0n_empty(self) -> None:
         """ simple empty """
@@ -65,8 +65,8 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
         self.assertIsNotNone(reptok)
         if reptok is None:
             return
-        self.assertIsNotNone(reptok['rep'])
-        self.assertEqual(len(reptok['rep']), 0)
+        self.assertIsNotNone(reptok.rep)
+        self.assertEqual(len(reptok.rep), 0)
 
     ## Rep1N
 
@@ -84,12 +84,12 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
         self.assertIsNotNone(reptok)
         if reptok is None:
             return
-        self.assertIsNotNone(reptok['rep'])
-        self.assertEqual(len(reptok['rep']), 1)
-        self.assertEqual(len(reptok['rep'][0]), 3)
-        self.assertEqual(reptok['rep'][0][0]['text'], 'abc')
-        self.assertEqual(reptok['rep'][0][1]['text'], 'def')
-        self.assertEqual(reptok['rep'][0][2]['text'], 'ij')
+        self.assertIsNotNone(reptok.rep)
+        self.assertEqual(len(reptok.rep), 1)
+        self.assertEqual(len(reptok.rep[0]), 3)
+        self.assertEqual(reptok.rep[0][0].text, 'abc')
+        self.assertEqual(reptok.rep[0][1].text, 'def')
+        self.assertEqual(reptok.rep[0][2].text, 'ij')
 
     def test_rep1n_empty(self) -> None:
         """ simple empty """
