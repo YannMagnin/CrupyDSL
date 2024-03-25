@@ -182,3 +182,20 @@ class CrupyStream():
         self._context.index  += 1
         self._context.column += 1
         return curr
+
+    ## error handling
+
+    def generate_error_context(self) -> str:
+        """ generate error context information
+        """
+        ctx = self._context
+        error = f"Stream: line {ctx.lineno}, column {ctx.column}\n"
+        i = ctx.index - (ctx.column - 1)
+        while i < self._memory_area_size:
+            if (curr := chr(self._memory_area[i] & 0xff)) in '\r\n':
+                break
+            error += curr
+            i += 1
+        error += '\n'
+        error += f"{' ' * (ctx.column - 1)}^"
+        return error

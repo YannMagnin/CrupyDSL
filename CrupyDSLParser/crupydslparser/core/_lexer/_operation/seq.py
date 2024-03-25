@@ -23,6 +23,9 @@ class CrupyParserNodeLexSeq(CrupyParserNode):
     """ sequence token information """
     seq: List[CrupyParserNode]
 
+
+# allow to few methods and unused private methods
+# pylint: disable=locally-disabled,R0903,W0238
 class CrupyLexerOpSeq(CrupyLexerOpBase):
     """ execute sequence of lexer operation
     """
@@ -45,21 +48,28 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
                 'not sequence has been presented'
             )
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
+    def _execute(
+        self,
+        parser: CrupyParserBase,
+        last_chance: bool,
+    ) -> CrupyParserNode|None:
         """ execute all lexer operation
         """
         with parser.stream as lexem:
             token_list: List[CrupyParserNode] = []
             for lexer in self._seq:
+                last_chance_really = False
+                if lexer == self._seq[-1]:
+                    last_chance_really = last_chance
                 if issubclass(type(lexer), CrupyLexerAssertBase):
-                    if not lexer(parser):
+                    assert_op = cast(CrupyLexerAssertBase, lexer)
+                    if not assert_op(parser):
                         return None
                 else:
-                    if not (token := lexer(parser)):
+                    lexer_op = cast(CrupyLexerOpBase, lexer)
+                    if not (token := lexer_op(parser, last_chance_really)):
                         return None
-                    token_list.append(
-                        cast(CrupyParserNode, token),
-                    )
+                    token_list.append(token)
             return CrupyParserNodeLexSeq(
                 stream_ctx  = lexem.validate(),
                 seq         = token_list

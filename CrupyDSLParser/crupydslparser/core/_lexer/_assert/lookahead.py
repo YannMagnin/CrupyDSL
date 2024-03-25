@@ -40,7 +40,7 @@ class CrupyLexerAssertLookaheadNegative(CrupyLexerAssertBase):
         """
         with parser.stream as _:
             for lexer in self._seq:
-                if not lexer(parser):
+                if not lexer(parser, False):
                     return True
             return False
 

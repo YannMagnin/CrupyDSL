@@ -19,6 +19,7 @@ from crupydslparser.core._lexer import (
     CrupyLexerAssertLookaheadNegative,
     CrupyLexerAssertLookaheadPositive,
 )
+from crupydslparser.core._dsl._parser.dsl import dsl_dsl_hook
 from crupydslparser.core._dsl._parser.eol import dsl_eol_hook
 from crupydslparser.core._dsl._parser.space import dsl_space_hook
 from crupydslparser.core._dsl._parser.builtin import dsl_builtin_hook
@@ -49,22 +50,27 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
             CrupyLexerOpRep1N(
                 CrupyLexerOpProductionCall('production'),
             ),
+            CrupyLexerOpOptional(
+                CrupyLexerOpProductionCall('space_any'),
+            ),
             CrupyLexerOpBuiltin('eof'),
         ),
     #
     # Production (rule) declaration
     # > production ::= \
-    #       <space_opt> \
-    #       <crupy_dsl_rulename> \
-    #       <crupy_dsl_space> \
+    #       <space_any> \
+    #       <production_name> \
+    #       <space> \
     #       "::=" \
-    #       <crupy_dsl_space> \
-    #       <crupy_dsl_stmts> \
+    #       <space> \
+    #       <statements> \
     #       <eol>
     #
     'production' : \
         CrupyLexerOpSeq(
-            CrupyLexerOpProductionCall('space_opt'),
+            CrupyLexerOpOptional(
+                CrupyLexerOpProductionCall('space_any'),
+            ),
             CrupyLexerOpProductionCall('production_name'),
             CrupyLexerOpProductionCall('space'),
             CrupyLexerOpText("::="),
@@ -179,6 +185,18 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
             CrupyLexerOpText(':'),
         ),
     #
+    # space_any
+    # space_any ::= (:space: | "\n" | "\r\n")*
+    #
+    'space_any' : \
+        CrupyLexerOpRep0N(
+            CrupyLexerOpOr(
+                CrupyLexerOpBuiltin('space'),
+                CrupyLexerOpText('\n'),
+                CrupyLexerOpText('\r\n'),
+            ),
+        ),
+    #
     # space_opt
     # space_opt ::= (:space: | ((?="\") <eol>)*
     #
@@ -230,6 +248,7 @@ CRUPY_DSL_PARSER_OBJ.register_hook(
 )
 CRUPY_DSL_PARSER_OBJ.register_hook('eol', dsl_eol_hook)
 CRUPY_DSL_PARSER_OBJ.register_hook('space', dsl_space_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('space_any', dsl_space_hook)
 CRUPY_DSL_PARSER_OBJ.register_hook('space_opt', dsl_space_hook)
 CRUPY_DSL_PARSER_OBJ.register_hook('__space', dsl_space_hook)
 CRUPY_DSL_PARSER_OBJ.register_hook('builtin', dsl_builtin_hook)
@@ -238,3 +257,4 @@ CRUPY_DSL_PARSER_OBJ.register_hook('alternative', dsl_alternative_hook)
 CRUPY_DSL_PARSER_OBJ.register_hook('statement', dsl_statement_hook)
 CRUPY_DSL_PARSER_OBJ.register_hook('group', dsl_group_hook)
 CRUPY_DSL_PARSER_OBJ.register_hook('production', dsl_production_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('crupy_dsl', dsl_dsl_hook)

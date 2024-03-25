@@ -27,8 +27,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             'entry' : CrupyLexerOpBuiltin('alpha'),
         })
         parser.register_stream('aZ')
-        strop0 = parser.execute('entry')
-        strop1 = parser.execute('entry')
+        strop0 = parser.execute('entry', False)
+        strop1 = parser.execute('entry', False)
         self.assertIsNotNone(strop0)
         self.assertIsNotNone(strop1)
         if strop0 is None or strop1 is None:
@@ -37,7 +37,7 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         self.assertEqual(strop1.type, 'lex_text')
         self.assertEqual(strop0.text, 'a')
         self.assertEqual(strop1.text, 'Z')
-        self.assertIsNone(parser.execute('entry'))
+        self.assertIsNone(parser.execute('entry', False))
 
     def test_alphanum(self) -> None:
         """ simple valid cases """
@@ -45,11 +45,11 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             'entry' : CrupyLexerOpBuiltin('alphanum'),
         })
         parser.register_stream('a667')
-        strop0 = parser.execute('entry')
-        strop1 = parser.execute('entry')
-        strop2 = parser.execute('entry')
-        strop3 = parser.execute('entry')
-        strop4 = parser.execute('entry')
+        strop0 = parser.execute('entry', False)
+        strop1 = parser.execute('entry', False)
+        strop2 = parser.execute('entry', False)
+        strop3 = parser.execute('entry', False)
+        strop4 = parser.execute('entry', False)
         self.assertIsNotNone(strop0)
         self.assertIsNotNone(strop1)
         self.assertIsNotNone(strop2)
@@ -75,8 +75,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             'entry' : CrupyLexerOpBuiltin('digit'),
         })
         parser.register_stream('09A')
-        strop0 = parser.execute('entry')
-        strop1 = parser.execute('entry')
+        strop0 = parser.execute('entry', False)
+        strop1 = parser.execute('entry', False)
         self.assertIsNotNone(strop0)
         self.assertIsNotNone(strop1)
         if strop0 is None or strop1 is None:
@@ -85,7 +85,7 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         self.assertEqual(strop1.type, 'lex_text')
         self.assertEqual(strop0.text, '0')
         self.assertEqual(strop1.text, '9')
-        self.assertIsNone(parser.execute('entry'))
+        self.assertIsNone(parser.execute('entry', False))
 
     def test_number(self) -> None:
         """ simple valid cases """
@@ -93,8 +93,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             'entry' : CrupyLexerOpBuiltin('number'),
         })
         parser.register_stream('667,')
-        strop0 = parser.execute('entry')
-        strop1 = parser.execute('entry')
+        strop0 = parser.execute('entry', False)
+        strop1 = parser.execute('entry', False)
         self.assertIsNotNone(strop0)
         self.assertIsNone(strop1)
         if strop0 is None:
@@ -108,10 +108,10 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             'entry' : CrupyLexerOpBuiltin('space'),
         })
         parser.register_stream(' \t\vabc')
-        self.assertIsNotNone(parser.execute('entry'))
-        self.assertIsNotNone(parser.execute('entry'))
-        self.assertIsNotNone(parser.execute('entry'))
-        self.assertIsNone(parser.execute('entry'))
+        self.assertIsNotNone(parser.execute('entry', False))
+        self.assertIsNotNone(parser.execute('entry', False))
+        self.assertIsNotNone(parser.execute('entry', False))
+        self.assertIsNone(parser.execute('entry', False))
         self.assertEqual(parser.stream.read_char(), 'a')
 
     def test_any(self) -> None:
@@ -120,10 +120,10 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             'entry' : CrupyLexerOpBuiltin('any'),
         })
         parser.register_stream(r'a\"\\')
-        node0 = parser.execute('entry')
-        node1 = parser.execute('entry')
-        node2 = parser.execute('entry')
-        node3 = parser.execute('entry')
+        node0 = parser.execute('entry', False)
+        node1 = parser.execute('entry', False)
+        node2 = parser.execute('entry', False)
+        node3 = parser.execute('entry', False)
         self.assertIsNotNone(node0)
         self.assertIsNotNone(node1)
         self.assertIsNotNone(node2)

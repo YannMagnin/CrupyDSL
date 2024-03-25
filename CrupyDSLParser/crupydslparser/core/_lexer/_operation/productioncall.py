@@ -15,13 +15,22 @@ from crupydslparser.core.parser import (
 # Public
 #---
 
+# allow to few methods and unused private methods
+# pylint: disable=locally-disabled,R0903,W0238
 class CrupyLexerOpProductionCall(CrupyLexerOpBase):
     """ Rule invocation operation
     """
     def __init__(self, production_name: str) -> None:
         self._production_name = production_name
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
+    def _execute(
+        self,
+        parser: CrupyParserBase,
+        last_chance: bool,
+    ) -> CrupyParserNode|None:
         """ invoke another production rule
         """
-        return parser.execute(self._production_name)
+        return parser.execute(
+            self._production_name,
+            last_chance,
+        )

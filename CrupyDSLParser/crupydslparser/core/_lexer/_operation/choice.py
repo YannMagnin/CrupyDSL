@@ -17,6 +17,8 @@ from crupydslparser.core.parser import (
 # Public
 #---
 
+# allow to few methods and unused private methods
+# pylint: disable=locally-disabled,R0903,W0238
 class CrupyLexerOpOr(CrupyLexerOpBase):
     """ OR lexer operation
     """
@@ -25,21 +27,28 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
         for i, arg in enumerate(args):
             if CrupyLexerOpBase not in type(arg).mro():
                 raise CrupyLexerException(
-                    'Unable to initialise the CrupyLexerSeq because the '
-                    f"argument {i} is not of type CrupyLexer "
-                    f"({type(arg)})"
+                    f"Unable to initialise the {type(arg).__name__} "
+                    f"because the argument {i} is not of type "
+                    f"CrupyLexerOpBase ({type(arg).__name__})"
                 )
             self._seq.append(arg)
         if not self._seq:
             raise CrupyLexerException(
-                'Unable to initialise the CrupyLexerSeq because not '
-                'sequence has been presented'
+                f"Unable to initialise the {self.__class__.__name__} "
+                "because not sequence has been presented"
             )
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
+    def _execute(
+        self,
+        parser: CrupyParserBase,
+        last_chance: bool,
+    ) -> CrupyParserNode|None:
         """ try to match at least one of the two lexer operation
         """
         for lexer in self._seq:
-            if (token := lexer(parser)):
+            last_chance_really = False
+            if lexer == self._seq[-1]:
+                last_chance_really = last_chance
+            if (token := lexer(parser, last_chance_really)):
                 return token
         return None

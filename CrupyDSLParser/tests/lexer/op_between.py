@@ -27,8 +27,8 @@ class CrupyUnittestLexerUntil(CrupyUnittestBase):
             'entry' : CrupyLexerOpBetween('"'),
         })
         parser.register_stream('"abcdef" "ijkl')
-        strop0 = parser.execute('entry')
-        strop1 = parser.execute('entry')
+        strop0 = parser.execute('entry', False)
+        strop1 = parser.execute('entry', False)
         self.assertIsNotNone(strop0)
         self.assertIsNone(strop1)
         if not strop0:

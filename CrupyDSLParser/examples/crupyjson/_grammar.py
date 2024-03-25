@@ -12,16 +12,18 @@ class _CrupyGrammarJSON(CrupyGrammarBase):
     """
     production_entry    = 'json'
     grammar             = """
-        <json>      ::= <primitive> | <container>
+        <json>      ::= <statement> :eof:
+        <statement> ::= <primitive> | <container>
 
-        <primitive> ::= <number> | <string> | <boolean> | <nullable>
-        <number>    ::= "[0-9]+"
-        <string>    ::= "\".*\"" | "'.*'"
+        <primitive> ::= :digit: | <string> | <boolean> | <nullable>
+        <string>    ::= \
+            | "\"" ((?!"\"") :any:)* "\"" \
+            | "\'" ((?!"\'") :any:)* "\'"
         <boolean>   ::= "true" | "false"
         <nullable>  ::= "null"
 
         <container> ::= <object> | <array>
-        <array>     ::= "[" <json> ("," <json>)*  "]"
+        <array>     ::= "[" <statement> ("," <statement>)*  "]"
         <object>    ::= "{" <member> ("," <member>)*  "}"
-        <member>    ::= <string> ":" <json>
+        <member>    ::= <string> ":" <statement>
     """

@@ -13,3 +13,4 @@ from crupydslparser.core.exception import CrupyDSLCoreException
 
 class CrupyParserException(CrupyDSLCoreException):
     """ Crupy parser exception class """
+    # (todo) : from_missing_rule()

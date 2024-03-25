@@ -51,3 +51,16 @@ class CrupyUnittestStream(CrupyUnittestBase):
                     lexem3.validate()
                 self.assertEqual(lexem2.read_char(), 'e')
             self.assertEqual(lexem.read_char(), 'c')
+
+    def test_error_context(self) -> None:
+        """ check context error generation """
+        stream = CrupyStream.from_any('abcdef\noui')
+        with stream as lexem:
+            self.assertEqual(lexem.read_char(), 'a')
+            self.assertEqual(lexem.read_char(), 'b')
+            self.assertEqual(
+                stream.generate_error_context(),
+                'Stream: line 1, column 3\n'
+                'abcdef\n'
+                '  ^'
+            )

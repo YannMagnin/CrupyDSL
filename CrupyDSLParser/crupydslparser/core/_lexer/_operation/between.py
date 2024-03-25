@@ -20,13 +20,19 @@ class CrupyParserNodeLexBetween(CrupyParserNode):
     """ string node information """
     text: str
 
+# allow to few methods and unused private methods
+# pylint: disable=locally-disabled,R0903,W0238
 class CrupyLexerOpBetween(CrupyLexerOpBase):
     """ capture between delimiter
     """
     def __init__(self, delimiter: str) -> None:
         self._delimiter = delimiter
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
+    def _execute(
+        self,
+        parser: CrupyParserBase,
+        _: bool,
+    ) -> CrupyParserNode|None:
         """ try to strictly match the text
         """
         with parser.stream as lexem:

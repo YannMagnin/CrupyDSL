@@ -65,6 +65,6 @@ class CrupyUnittestLexerOptional(CrupyUnittestBase):
                 ),
         })
         parser.register_stream('http://')
-        self.__check_node(parser.execute('entry'), 'http://')
+        self.__check_node(parser.execute('entry', False), 'http://')
         parser.register_stream('https://')
-        self.__check_node(parser.execute('entry'), 'https://')
+        self.__check_node(parser.execute('entry', False), 'https://')

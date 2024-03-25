@@ -40,14 +40,14 @@ class CrupyUnittestLexerLookahead(CrupyUnittestBase):
             ),
         })
         parser.register_stream('abcdrabcde')
-        node = parser.execute('entry')
+        node = parser.execute('entry', False)
         self.assertIsNotNone(node)
         if node is None:
             return
         self.assertEqual(len(node.seq), 1)
         self.assertEqual(node.seq[0].type, 'lex_text')
         self.assertEqual(node.seq[0].text, 'abc')
-        self.assertIsNone(parser.execute('entry'))
+        self.assertIsNone(parser.execute('entry', False))
 
     ## Positive
 
@@ -63,12 +63,12 @@ class CrupyUnittestLexerLookahead(CrupyUnittestBase):
             ),
         })
         parser.register_stream('abcdeabcdz')
-        node = parser.execute('entry')
+        node = parser.execute('entry', False)
         self.assertIsNotNone(node)
         if node is None:
             return
         self.assertEqual(len(node.seq), 1)
         self.assertEqual(node.seq[0].type, 'lex_text')
         self.assertEqual(node.seq[0].text, 'abc')
-        self.assertIsNone(parser.execute('entry'))
+        self.assertIsNone(parser.execute('entry', False))
         self.assertEqual(parser.stream.read_char(), 'd')

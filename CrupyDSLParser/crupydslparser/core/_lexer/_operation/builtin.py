@@ -19,6 +19,8 @@ from crupydslparser.core.parser import (
 # Public
 #---
 
+# allow to few methods and unused private methods
+# pylint: disable=locally-disabled,R0903,W0238
 class CrupyLexerOpBuiltin(CrupyLexerOpBase):
     """ builtin operations
     """
@@ -44,7 +46,11 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             )
         self._operation = operation
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
+    def _execute(
+        self,
+        parser: CrupyParserBase,
+        _: bool,
+    ) -> CrupyParserNode|None:
         """ handle builtin
         """
         return {

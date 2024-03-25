@@ -10,6 +10,7 @@ from crupydslparser.core.parser import CrupyParserBase
 from crupydslparser.core._lexer import (
     CrupyLexerOpSeq,
     CrupyLexerOpText,
+    CrupyLexerException,
 )
 
 #---
@@ -34,7 +35,7 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
             ),
         })
         parser.register_stream('abcdefijkl')
-        seqtok = parser.execute('entry')
+        seqtok = parser.execute('entry', False)
         self.assertIsNotNone(seqtok)
         if seqtok is None:
             return
@@ -57,7 +58,7 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
             ),
         })
         parser.register_stream('abcdef ijkl')
-        seqtok = parser.execute('entry')
+        seqtok = parser.execute('entry', False)
         self.assertIsNone(seqtok)
 
     def test_retrograde_fail(self) -> None:
@@ -70,7 +71,31 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
             ),
         })
         parser.register_stream('abcdefijkl')
-        seqtok = parser.execute('entry')
+        seqtok = parser.execute('entry', False)
         self.assertIsNone(seqtok)
         with parser.stream as lexem:
             self.assertEqual(lexem.read(), 'abcdefijkl')
+
+    def test_simple_error(self) -> None:
+        """ simple error """
+        parser = CrupyParserBase({
+            'entry' : \
+                CrupyLexerOpSeq(
+                    CrupyLexerOpText('abcdef'),
+                    CrupyLexerOpText('zz'),
+                ),
+        })
+        parser.register_stream('abcdefghij')
+        self.assertRaises(
+            CrupyLexerException(
+                'Parsing exception occured:\n'
+                '\n'
+                'Stream: line 1, column 7\n'
+                'abcdefghij\n'
+                '      ^\n'
+                '\n'
+                'SyntaxError: invalid syntax (unable to find '
+                'appropriate production to parse this stream here)'
+            ),
+            (parser, 'execute', 'entry', True),
+        )

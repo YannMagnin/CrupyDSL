@@ -72,6 +72,7 @@ class CrupyParserBase():
     def execute(
         self,
         production_name: str,
+        last_chance: bool,
     ) -> CrupyParserNode|None:
         """ execute a particular production name
         """
@@ -80,7 +81,11 @@ class CrupyParserBase():
                 'Unable to find the primary production entry name '
                 f"'{production_name}'"
             )
-        if not (node := self._production_book[production_name](self)):
+        node = self._production_book[production_name](
+            parser      = self,
+            last_chance = last_chance,
+        )
+        if node is None:
             return None
         if production_name in self._hook_book:
             for hook in self._hook_book[production_name]:
@@ -88,7 +93,10 @@ class CrupyParserBase():
                     node = hook(node)
                 except AssertionError as err:
                     raise CrupyParserException(
-                        traceback.format_exc()
+                        f"{traceback.format_exc()}\n"
+                        '\n'
+                        'Parsing hook assertion exception:\n'
+                        f"{self.stream.generate_error_context()}"
                     ) from err
         return node
 

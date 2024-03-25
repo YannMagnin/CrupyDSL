@@ -20,13 +20,19 @@ class CrupyParserNodeLexText(CrupyParserNode):
     """ string token information """
     text: str
 
+# allow to few methods and unused private methods
+# pylint: disable=locally-disabled,R0903,W0238
 class CrupyLexerOpText(CrupyLexerOpBase):
     """ strict string matcher
     """
     def __init__(self, text: str) -> None:
         self._text = text
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode|None:
+    def _execute(
+        self,
+        parser: CrupyParserBase,
+        _: bool,
+    ) -> CrupyParserNode|None:
         """ try to strictly match the text
         """
         with parser.stream as lexem:

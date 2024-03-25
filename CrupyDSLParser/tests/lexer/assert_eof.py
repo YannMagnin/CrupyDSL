@@ -34,7 +34,7 @@ class CrupyUnittestLexerAssertEOF(CrupyUnittestBase):
             )
         })
         parser.register_stream('a')
-        node = parser.execute('entry')
+        node = parser.execute('entry', False)
         self.assertIsNotNone(node)
         if node is None:
             return

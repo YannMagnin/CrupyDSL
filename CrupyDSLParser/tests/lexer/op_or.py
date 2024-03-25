@@ -33,7 +33,7 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
             ),
         })
         parser.register_stream('abcdefijkl')
-        or_op = parser.execute('entry')
+        or_op = parser.execute('entry', False)
         self.assertIsNotNone(or_op)
         if or_op is None:
             return
@@ -53,7 +53,7 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
             ),
         })
         parser.register_stream('abcdefijkl')
-        or_op = parser.execute('entry')
+        or_op = parser.execute('entry', False)
         self.assertIsNotNone(or_op)
         if or_op is None:
             return

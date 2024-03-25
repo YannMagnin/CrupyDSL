@@ -24,6 +24,6 @@ python  = "3.11.*"
 click   = "8.1.*"
 
 [tool.poetry.dev-dependencies]
-pynvim  = "0.5.*"
-pylint  = "3.*"
-mypy    = "1.*"
+pynvim  = "*"
+pylint  = "*"
+mypy    = "*"
