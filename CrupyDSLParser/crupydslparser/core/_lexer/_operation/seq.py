@@ -48,29 +48,25 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
                 'not sequence has been presented'
             )
 
-    def _execute(
-        self,
-        parser: CrupyParserBase,
-        last_chance: bool,
-    ) -> CrupyParserNode|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode:
         """ execute all lexer operation
         """
-        with parser.stream as lexem:
+        with parser.stream as context:
             token_list: List[CrupyParserNode] = []
             for lexer in self._seq:
-                last_chance_really = False
-                if lexer == self._seq[-1]:
-                    last_chance_really = last_chance
                 if issubclass(type(lexer), CrupyLexerAssertBase):
                     assert_op = cast(CrupyLexerAssertBase, lexer)
                     if not assert_op(parser):
-                        return None
-                else:
-                    lexer_op = cast(CrupyLexerOpBase, lexer)
-                    if not (token := lexer_op(parser, last_chance_really)):
-                        return None
-                    token_list.append(token)
+                        self._raise_from_context(
+                            context,
+                            'Unable to validate the assertion '
+                            f"{assert_op.name}"
+                        )
+                    continue
+                token_list.append(
+                   cast(CrupyLexerOpBase, lexer)(parser)
+                )
             return CrupyParserNodeLexSeq(
-                stream_ctx  = lexem.validate(),
-                seq         = token_list
+                context = context.validate(),
+                seq     = token_list,
             )

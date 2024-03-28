@@ -23,14 +23,7 @@ class CrupyLexerOpProductionCall(CrupyLexerOpBase):
     def __init__(self, production_name: str) -> None:
         self._production_name = production_name
 
-    def _execute(
-        self,
-        parser: CrupyParserBase,
-        last_chance: bool,
-    ) -> CrupyParserNode|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode:
         """ invoke another production rule
         """
-        return parser.execute(
-            self._production_name,
-            last_chance,
-        )
+        return parser.execute(self._production_name)

@@ -1,22 +1,20 @@
 """
 crupydslparser.core.stream.strea     - crupy stream abstraction
 """
-# Since we should support the CPython 3.8 which does not expose the 'Self'
-# type needed for the `__enter__` magic method, we use this workaround to
-# allow using the class name as return type before the said class is
-# finished to be declared (same behaviours than the 'Self' type)
+# We use this workaround to allow using the class name as return type before
+# the said class is finished to be declared (same behaviours than the
+# 'Self' type, but it's more explicit)
 from __future__ import annotations
 
-__all__ = [
+__all__ = (
     'CrupyStream',
-]
-from typing import Any, IO, List
+)
+from typing import Any, IO
 from mmap import mmap, ACCESS_READ, ACCESS_WRITE
 from dataclasses import dataclass
 
 from crupydslparser.core._stream.context import CrupyStreamContext
 from crupydslparser.core._stream.exception import CrupyStreamException
-from crupydslparser.core._stream.lexem import CrupyStreamLexem
 
 #---
 # Internals
@@ -77,12 +75,12 @@ class CrupyStream():
     def __init__(self, memory_area: mmap) -> None:
         """ initialise our attribute
         """
-        self._context_stack: List[_CrupyStreamContextState] = []
-        self._context = CrupyStreamContext(
-            index   = 0,
-            lineno  = 1,
-            column  = 1,
-        )
+        self._context_stack: list[_CrupyStreamContextState] = []
+        self._context = {
+            'index'  : 0,
+            'lineno' : 1,
+            'column' : 1,
+        }
         self._memory_area = memory_area
         self._memory_area.seek(0)
         self._memory_area_size = len(memory_area)
@@ -94,108 +92,78 @@ class CrupyStream():
         """
         self._memory_area.close()
 
+    def __getitem__(self, idx: int) -> int:
+        """ do not expose directly the memory mapping
+        """
+        return self._memory_area[idx]
+
     #---
     # Magic context handling using `with` keyword
     #---
 
-    def __enter__(self) -> CrupyStreamLexem:
+    def __enter__(self) -> CrupyStreamContext:
         """ pop the current cursor context
         """
-        self.context_save()
-        return CrupyStreamLexem(self)
+        return self.context_push()
 
     def __exit__(self, _: Any, __: Any, ___: Any) -> None:
         """ restore the previous cursor context if not validated
         """
-        self.context_restore()
+        self.context_pop()
 
     #---
-    # Internal methods
+    # Public properties
     #---
 
-    def _context_restore(self, context: CrupyStreamContext) -> None:
-        """ restore the current context
-        """
-        self._context.index     = context.index
-        self._context.lineno    = context.lineno
-        self._context.column    = context.column
+    @property
+    def size(self) -> int:
+        """ return the memory area size """
+        return self._memory_area_size
 
     #---
     # Public methods
     #---
 
-    ## context handling
-
-    def context_save(self) -> None:
+    def context_push(self) -> CrupyStreamContext:
         """ push the current context to the stack
         """
+        context_new = CrupyStreamContext(
+            stream  = self,
+            index   = self._context['index'],
+            lineno  = self._context['lineno'],
+            column  = self._context['column'],
+        )
         self._context_stack.append(
             _CrupyStreamContextState(
-                context     = self.context_copy(),
+                context     = context_new,
                 validated   = False,
             )
         )
+        return context_new
 
-    def context_copy(self) -> CrupyStreamContext:
-        """ return the current context """
-        return CrupyStreamContext(
-            index   = self._context.index,
-            lineno  = self._context.lineno,
-            column  = self._context.column,
-        )
-
-    def context_restore(self) -> None:
+    def context_pop(self) -> None:
         """ restore the saved context
         """
         if not self._context_stack:
             raise CrupyStreamException('context_restore(): empty stack')
-        context_state = self._context_stack[-1]
-        if not context_state.validated:
-            self._context_restore(context_state.context)
+        if not self._context_stack[-1].validated:
+            context_new = self._context_stack[-1].context
+            self._context['index']  = context_new.index
+            self._context['lineno'] = context_new.lineno
+            self._context['column'] = context_new.column
         self._context_stack.pop()
 
-    def context_validate(self) -> CrupyStreamContext:
-        """ validate the current contex
+    def context_validate(
+        self,
+        context: CrupyStreamContext,
+    ) -> CrupyStreamContext:
+        """ validate the current context
         """
         if not self._context_stack:
             raise CrupyStreamException('context_validate(): empty stack')
+        if self._context_stack[-1].context != context:
+            raise CrupyStreamException(
+                'context_validate(): mismatch context'
+            )
         self._context_stack[-1].validated = True
-        return self.context_copy()
-
-    ## peek primitives
-
-    def peek_char(self) -> str|None:
-        """ return the current char """
-        if self._context.index < self._memory_area_size:
-            return chr(self._memory_area[self._context.index] & 0xff)
-        return None
-
-    ## read primitives
-
-    def read_char(self) -> str|None:
-        """ read the current char and update the cursor """
-        if not (curr := self.peek_char()):
-            return None
-        if curr == '\n':
-            self._context.lineno += 1
-            self._context.column  = 0
-        self._context.index  += 1
-        self._context.column += 1
-        return curr
-
-    ## error handling
-
-    def generate_error_context(self) -> str:
-        """ generate error context information
-        """
-        ctx = self._context
-        error = f"Stream: line {ctx.lineno}, column {ctx.column}\n"
-        i = ctx.index - (ctx.column - 1)
-        while i < self._memory_area_size:
-            if (curr := chr(self._memory_area[i] & 0xff)) in '\r\n':
-                break
-            error += curr
-            i += 1
-        error += '\n'
-        error += f"{' ' * (ctx.column - 1)}^"
-        return error
+        return context

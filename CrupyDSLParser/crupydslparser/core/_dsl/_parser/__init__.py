@@ -243,18 +243,31 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
 ## hook registration
 
 CRUPY_DSL_PARSER_OBJ.register_hook(
+    'postprocess',
     'production_name',
     dsl_production_name_hook,
 )
-CRUPY_DSL_PARSER_OBJ.register_hook('eol', dsl_eol_hook)
-CRUPY_DSL_PARSER_OBJ.register_hook('space', dsl_space_hook)
-CRUPY_DSL_PARSER_OBJ.register_hook('space_any', dsl_space_hook)
-CRUPY_DSL_PARSER_OBJ.register_hook('space_opt', dsl_space_hook)
-CRUPY_DSL_PARSER_OBJ.register_hook('__space', dsl_space_hook)
-CRUPY_DSL_PARSER_OBJ.register_hook('builtin', dsl_builtin_hook)
-CRUPY_DSL_PARSER_OBJ.register_hook('string', dsl_string_hook)
-CRUPY_DSL_PARSER_OBJ.register_hook('alternative', dsl_alternative_hook)
-CRUPY_DSL_PARSER_OBJ.register_hook('statement', dsl_statement_hook)
-CRUPY_DSL_PARSER_OBJ.register_hook('group', dsl_group_hook)
-CRUPY_DSL_PARSER_OBJ.register_hook('production', dsl_production_hook)
-CRUPY_DSL_PARSER_OBJ.register_hook('crupy_dsl', dsl_dsl_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('postprocess', 'eol', dsl_eol_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('postprocess', 'space', dsl_space_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('postprocess', 'space_any', dsl_space_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('postprocess', 'space_opt', dsl_space_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('postprocess', '__space', dsl_space_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('postprocess', 'builtin', dsl_builtin_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('postprocess', 'string', dsl_string_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('postprocess', 'group', dsl_group_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook('postprocess', 'crupy_dsl', dsl_dsl_hook)
+CRUPY_DSL_PARSER_OBJ.register_hook(
+    'postprocess',
+    'alternative',
+    dsl_alternative_hook,
+)
+CRUPY_DSL_PARSER_OBJ.register_hook(
+    'postprocess',
+    'statement',
+    dsl_statement_hook,
+)
+CRUPY_DSL_PARSER_OBJ.register_hook(
+    'postprocess',
+    'production',
+    dsl_production_hook,
+)

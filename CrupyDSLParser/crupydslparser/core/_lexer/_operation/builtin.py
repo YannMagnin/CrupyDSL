@@ -1,9 +1,9 @@
 """
 crupydslparser.core._lexer._operation.builtin   - builtin operations
 """
-__all__ = [
+__all__ = (
     'CrupyLexerOpBuiltin',
-]
+)
 
 from crupydslparser.core._lexer.exception import CrupyLexerException
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
@@ -46,11 +46,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             )
         self._operation = operation
 
-    def _execute(
-        self,
-        parser: CrupyParserBase,
-        _: bool,
-    ) -> CrupyParserNode|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode:
         """ handle builtin
         """
         return {
@@ -69,7 +65,6 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             'eof'            : self._is_end_of_file,
         }[self._operation](parser, self._operation)
 
-
     #---
     # Internals
     #---
@@ -78,132 +73,190 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         self,
         parser: CrupyParserBase,
         _: str,
-    ) -> CrupyParserNode|None:
+    ) -> CrupyParserNode:
         """ check any char
         """
-        with parser.stream as lexem:
-            if lexem.peek_char() == '\\':
-                lexem.read_char()
-            while True:
-                if node := self._is_alphanum(parser, 'alphanum'):
-                    break
-                if node := self._is_symbol(parser, 'ascii'):
-                    break
-                if node := self._is_space(parser, 'space_n'):
-                    break
-                return None
-            lexem.validate()
-            return node
+        with parser.stream as context:
+            if context.peek_char() == '\\':
+                context.read_char()
+            node: CrupyParserNode|None = None
+            try:
+                node = self._is_alphanum(parser, 'alphanum')
+            except CrupyLexerException:
+                pass
+            try:
+                node = self._is_symbol(parser, 'ascii')
+            except CrupyLexerException:
+                pass
+            try:
+                node = self._is_space(parser, 'space_n')
+            except CrupyLexerException:
+                pass
+            if node is None:
+                self._raise_from_context(
+                    context,
+                    'Unable to validate the char as "any"'
+                )
+            return CrupyParserNodeLexText(
+                context = context.validate(),
+                text    = node.text
+            )
 
     def _is_alphanum(
         self,
         parser: CrupyParserBase,
         target: str,
-    ) -> CrupyParserNode|None:
+    ) -> CrupyParserNode:
         """ check alphanum char
         """
-        if node := self._is_number(parser, 'digit'):
-            return node
-        if target in ['alphanum', 'alphanum_upper']:
-            if node := self._is_alpha(parser, 'alpha_upper'):
-                return node
-        return self._is_alpha(parser, 'alpha_lower')
+        try:
+            return self._is_number(parser, 'digit')
+        except CrupyLexerException:
+            pass
+        if target in ['alphanum', 'alphanum_upper']:#
+            try:
+                return self._is_alpha(parser, 'alpha_upper')
+            except CrupyLexerException:
+                pass
+        try:
+            return self._is_alpha(parser, 'alpha_lower')
+        except CrupyLexerException:
+            pass
+        with parser.stream as context:
+            self._raise_from_context(
+                context,
+                'Unable to validate the current char as "alphanum"'
+            )
 
     def _is_alpha(
         self,
         parser: CrupyParserBase,
         target: str,
-    ) -> CrupyParserNode|None:
+    ) -> CrupyParserNode:
         """ check if alphabet
         """
-        with parser.stream as lexem:
-            if not (curr := lexem.read_char()):
-                return None
+        with parser.stream as context:
+            if not (curr := context.read_char()):
+                self._raise_from_context(
+                    context,
+                    'Unable to validate current char as "alpha", no stream '
+                    'input available',
+                )
             valid = 0
             if target in ['alpha', 'alpha_lower']:
                 valid += bool('a' <= curr <= 'z')
             if target in ['alpha', 'alpha_upper']:
                 valid += bool('A' <= curr <= 'Z')
             if valid == 0:
-                return None
+                self._raise_from_context(
+                    context,
+                    'Unable to validate the current char as "alpha"',
+                )
             return CrupyParserNodeLexText(
-                stream_ctx  = lexem.validate(),
-                text        = curr,
+                context = context.validate(),
+                text    = curr,
             )
 
     def _is_number(
         self,
         parser: CrupyParserBase,
         target: str,
-    ) -> CrupyParserNode|None:
+    ) -> CrupyParserNode:
         """ check if number or digit
         """
-        with parser.stream as lexem:
+        with parser.stream as context:
             number = ''
             while True:
-                if not (curr := lexem.peek_char()):
-                    return None
+                if not (curr := context.peek_char()):
+                    if number:
+                        break
+                    self._raise_from_context(
+                        context,
+                        'Unable to validate the current char as '
+                        f"\"{target}\", no stream available",
+                    )
                 if not '0' <= curr <= '9':
                     break
-                lexem.read_char()
+                context.read_char()
                 number += curr
                 if target == 'digit':
                     break
             if not number:
-                return None
+                self._raise_from_context(
+                    context,
+                    f"Unable to validate the current char as \"{target}\"",
+                )
             return CrupyParserNodeLexText(
-                stream_ctx  = lexem.validate(),
-                text        = number,
+                context = context.validate(),
+                text    = number,
             )
 
     def _is_symbol(
         self,
         parser: CrupyParserBase,
         _: str,
-    ) -> CrupyParserNode|None:
+    ) -> CrupyParserNode:
         """ check if symbol
         """
-        with parser.stream as lexem:
-            if not (curr := lexem.peek_char()):
-                return None
+        with parser.stream as context:
+            if not (curr := context.peek_char()):
+                self._raise_from_context(
+                    context,
+                    'Unable to validate the current char as "symbol", no '
+                    'stream available',
+                )
             if not curr in "| !#$%&()*+,-./:;>=<?@[\\]^_`{}~\"":
-                return None
+                self._raise_from_context(
+                    context,
+                    'Unable to validate the current char as "symbol"',
+                )
+            context.read_char()
             return CrupyParserNodeLexText(
-                stream_ctx  = lexem.validate(),
-                text        = lexem.read_char(),
+                context = context.validate(),
+                text    = curr,
             )
 
     def _is_space(
         self,
         parser: CrupyParserBase,
         target: str,
-    ) -> CrupyParserNode|None:
+    ) -> CrupyParserNode:
         """ check if space
         """
-        with parser.stream as lexem:
-            if not (curr := lexem.peek_char()):
-                return None
-            space_list = " \t\v"
-            if target == 'space_n':
-                space_list = " \t\v\r\n"
+        with parser.stream as context:
+            if not (curr := context.peek_char()):
+                self._raise_from_context(
+                    context,
+                    'Unable to validate the current char as "space", no '
+                    'stream available',
+                )
+            space_list = " \t\v" if target == 'space_n' else " \t\v\r\n"
             if curr not in space_list:
-                return None
+                self._raise_from_context(
+                    context,
+                    'Unable to validate the current char as "space"',
+                )
+            context.read_char()
             return CrupyParserNodeLexText(
-                stream_ctx  = lexem.validate(),
-                text        = lexem.read_char(),
+                stream_ctx  = context.validate(),
+                text        = curr,
             )
 
     def _is_end_of_file(
         self,
         parser: CrupyParserBase,
         _: str,
-    ) -> CrupyParserNode|None:
+    ) -> CrupyParserNode:
         """ check if space
         """
-        with parser.stream as lexem:
-            if lexem.peek_char():
-                return None
+        with parser.stream as context:
+            if context.peek_char():
+                self._raise_from_context(
+                    context,
+                    'Unable to validate the current char as "EOF", '
+                    'stream available',
+                )
             return CrupyParserNodeLexText(
-                stream_ctx  = lexem.validate(),
+                stream_ctx  = context.validate(),
                 text        = '',
             )

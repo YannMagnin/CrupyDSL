@@ -6,12 +6,13 @@ crupydslparser.core._lexer.exception     - lexer exception class
 # exists
 from __future__ import annotations
 
-__all__ = [
+__all__ = (
     'CrupyLexerException',
-]
+)
+from typing import Optional
 
+from crupydslparser.core._stream import CrupyStreamContext
 from crupydslparser.core.exception import CrupyDSLCoreException
-from crupydslparser.core.parser import CrupyParserBase
 
 #---
 # Public
@@ -19,23 +20,27 @@ from crupydslparser.core.parser import CrupyParserBase
 
 class CrupyLexerException(CrupyDSLCoreException):
     """ Crupy lexer exception class """
+    def __init__(
+        self,
+        message: str,
+        context: Optional[CrupyStreamContext] = None,
+    ) -> None:
+        if context:
+            message = f"{context.generate_error_log()}\n{message}"
+        super().__init__(message)
+        self._context = context
 
     #---
-    # Utilities
+    # Properties
     #---
 
-    @classmethod
-    def from_operation(
-        cls,
-        parser: CrupyParserBase,
-    ) -> CrupyLexerException:
-        """ generate syntax error exception
+    @property
+    def context(self) -> CrupyStreamContext:
+        """ retrurn the stream context
         """
-        return cls(
-            f"Parsing exception occured:\n"
-            '\n'
-            f"{parser.stream.generate_error_context()}\n"
-            '\n'
-            'SyntaxError: invalid syntax (unable to find appropriate '
-            'production to parse this stream here)'
+        if self._context is not None:
+            return self._context
+        raise CrupyDSLCoreException(
+            'Accessing stream non existing stream context in lexer '
+            'exception'
         )

@@ -1,10 +1,10 @@
 """
 crupydslparser.core._lexer._operation.choice    - lexer or operation
 """
-__all__ = [
+__all__ = (
     'CrupyLexerOpOr',
-]
-from typing import List, Any
+)
+from typing import Any
 
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.core._lexer.exception import CrupyLexerException
@@ -23,7 +23,7 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
     """ OR lexer operation
     """
     def __init__(self, *args: Any) -> None:
-        self._seq: List[CrupyLexerOpBase] = []
+        self._seq: list[CrupyLexerOpBase] = []
         for i, arg in enumerate(args):
             if CrupyLexerOpBase not in type(arg).mro():
                 raise CrupyLexerException(
@@ -38,17 +38,23 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
                 "because not sequence has been presented"
             )
 
-    def _execute(
-        self,
-        parser: CrupyParserBase,
-        last_chance: bool,
-    ) -> CrupyParserNode|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode:
         """ try to match at least one of the two lexer operation
         """
+        best_choice_error: CrupyLexerException|None = None
         for lexer in self._seq:
-            last_chance_really = False
-            if lexer == self._seq[-1]:
-                last_chance_really = last_chance
-            if (token := lexer(parser, last_chance_really)):
-                return token
-        return None
+            try:
+                return lexer(parser)
+            except CrupyLexerException as err:
+                if best_choice_error is None:
+                    best_choice_error = err
+                    continue
+                if best_choice_error.context < err.context:
+                    best_choice_error = err
+        if not best_choice_error:
+            with parser.stream as context:
+                self._raise_from_context(
+                    context,
+                    'Unable to validate the sequense, empty sequense',
+                )
+        raise best_choice_error
