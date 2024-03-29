@@ -1,9 +1,9 @@
 """
 crupydslparser.core._lexer   - Lexer tools
 """
-__all__ = [
+__all__ = (
     'CrupyLexerException',
-
+    # operations
     'CrupyLexerOpText',
     'CrupyLexerOpSeq',
     'CrupyLexerOpOr',
@@ -13,11 +13,11 @@ __all__ = [
     'CrupyLexerOpProductionCall',
     'CrupyLexerOpOptional',
     'CrupyLexerOpBuiltin',
-
+    # asserts
     'CrupyLexerAssertLookaheadNegative',
     'CrupyLexerAssertLookaheadPositive',
     'CrupyLexerAssertEOF',
-]
+)
 from crupydslparser.core._lexer.exception import CrupyLexerException
 from crupydslparser.core._lexer._operation import (
     CrupyLexerOpText,

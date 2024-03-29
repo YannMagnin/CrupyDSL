@@ -1,9 +1,9 @@
 """
 crupydslparser.core._lexer._operation.productioncall  - lexer rule operation
 """
-__all__ = [
+__all__ = (
     'CrupyLexerOpProductionCall',
-]
+)
 
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.core.parser import (

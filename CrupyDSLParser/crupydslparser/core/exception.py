@@ -1,9 +1,9 @@
 """
 crupydslparser.core.exception    - general crupy exception
 """
-__all__ = [
+__all__ = (
     'CrupyDSLCoreException',
-]
+)
 
 #---
 # Public

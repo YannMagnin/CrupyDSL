@@ -1,9 +1,9 @@
 """
 crupydslparser.core.parser.node     - parser node base class
 """
-__all__ = [
+__all__ = (
     'CrupyParserNode',
-]
+)
 from typing import Any, get_origin
 
 from crupydslparser.core.parser.exception import CrupyParserException
@@ -24,11 +24,11 @@ class CrupyParserNode():
     But, each node should have default information that we want to
     "auto-magically" generate :
 
-        * `type`        : node type
-        * `stream_ctx`  : stream context (which contain cursor information)
+        * `type`    : node type
+        * `context` : stream context (which contain cursor information)
 
     We also need that the `name` attribute should not be able to be modified
-    "on-the-fly" (no assignment possible) and thus, the `stream_ctx` should
+    "on-the-fly" (no assignment possible) and thus, the `context` should
     be of type `CrupyStreamContext` and it's required for the creation of
     the object
     """
@@ -56,7 +56,7 @@ class CrupyParserNode():
             self._type += letter.lower()
         parent_node: Any = None
         cls_annotations = self.__class__.__annotations__
-        cls_annotations['stream_ctx'] = CrupyStreamContext
+        cls_annotations['context'] = CrupyStreamContext
         for item in kwargs.items():
             try:
                 if item[0] == 'parent_node':
@@ -76,7 +76,7 @@ class CrupyParserNode():
                 if not get_origin(type_info):
                     if not isinstance(item[1], type_info):
                         raise CrupyParserException(
-                            f"{type(self)}: stream_ctx attribute type"
+                            f"{type(self)}: 'context' attribute type"
                             f"mismatch ({type(item[1])})"
                         )
                 else:
@@ -89,15 +89,15 @@ class CrupyParserNode():
                     f"({type(item[1])}) -> ({err})"
                 ) from err
             setattr(self, item[0], item[1])
-        if not getattr(self, 'stream_ctx', None):
+        if not getattr(self, 'context', None):
             if not parent_node:
                 raise CrupyParserException(
-                    f"Missing 'stream_ctx' declaration for '{type(self)}'"
+                    f"Missing 'context' declaration for '{type(self)}'"
                 )
-            setattr(self, 'stream_ctx', parent_node.stream_context)
+            setattr(self, 'context', parent_node.stream_context)
         self._stream_context: CrupyStreamContext = getattr(
             self,
-            'stream_ctx',
+            'context',
         )
 
     #---

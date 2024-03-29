@@ -1,10 +1,11 @@
 """
 crupydslparser.core.unittest    - unittest abstraction
 """
-__all__ = [
+__all__ = (
     'CrupyUnittestBase',
-]
-from typing import Any, Dict, Tuple, Generator, Optional, List
+)
+from typing import Any, Optional
+from collections.abc import Generator
 from pathlib import Path
 from importlib import import_module
 import traceback
@@ -25,7 +26,7 @@ class CrupyUnittestBase():
     # Register magics
     #---
 
-    _testsuit_list: Dict[str,Any] = {}
+    _testsuit_list: dict[str,Any] = {}
 
     def __init_subclass__(cls, /, **kwargs: Any) -> None:
         """ register all subclass information
@@ -99,7 +100,7 @@ class CrupyUnittestBase():
                 )
 
     @classmethod
-    def run_tests(cls, target_tests: Optional[List[str]]) -> None:
+    def run_tests(cls, target_tests: Optional[list[str]]) -> None:
         """ scan the `tests/` folder and load all unittest and test
         """
         CrupyUnittestBase.__generate_testsuit_list()
@@ -170,7 +171,7 @@ class CrupyUnittestBase():
     # Allow method to catch too general exception
     # pylint: disable=locally-disabled,W0718
 
-    def assertRaises(self, exc_obj: Any, request: Tuple[Any,...]) -> None:
+    def assertRaises(self, exc_obj: Any, request: tuple[Any,...]) -> None:
         """ check if the request raise exception """
         try:
             getattr(request[0], request[1])(*request[2:])

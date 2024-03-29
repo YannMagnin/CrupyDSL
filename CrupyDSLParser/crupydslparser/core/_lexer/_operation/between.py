@@ -1,10 +1,10 @@
 """
 crupydslparser.core._lexer._operation.between   - Lexer between operation
 """
-__all__ = [
+__all__ = (
     'CrupyParserNodeLexBetween',
     'CrupyLexerOpBetween',
-]
+)
 
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.core.parser import (

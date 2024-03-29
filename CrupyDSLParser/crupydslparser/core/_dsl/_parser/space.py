@@ -1,9 +1,9 @@
 """
 crupydslparser.core._dsl._parser.space  - DSL space hook
 """
-__all__ = [
+__all__ = (
     'dsl_space_hook',
-]
+)
 
 from crupydslparser.core.parser import CrupyParserNode
 

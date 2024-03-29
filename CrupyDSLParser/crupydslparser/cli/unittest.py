@@ -1,10 +1,10 @@
 """
 crupydslparser.cli.unittest     - unittest framework
 """
-__all__ = [
+__all__ = (
     'crupydslparser_cli_unittest_entry',
-]
-from typing import NoReturn, Optional, List
+)
+from typing import NoReturn, Optional
 import sys
 
 import click
@@ -30,7 +30,7 @@ from crupydslparser.core.unittest import CrupyUnittestBase
 )
 def crupydslparser_cli_unittest_entry(
     disp_list:      bool,
-    target_tests:   Optional[List[str]],
+    target_tests:   Optional[list[str]],
 ) -> NoReturn:
     """ Unittest CLI entry
     """

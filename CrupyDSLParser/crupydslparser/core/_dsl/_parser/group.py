@@ -1,9 +1,9 @@
 """
 crupydslparser.core._dsl._parser.group  - DSL group hook
 """
-__all__ = [
+__all__ = (
     'dsl_group_hook',
-]
+)
 
 from crupydslparser.core.parser import CrupyParserNode
 

@@ -1,11 +1,11 @@
 """
 crupydslparser.core._lexer._operation.seq   - sequence operation
 """
-__all__ = [
+__all__ = (
     'CrupyParserNodeLexSeq',
     'CrupyLexerOpSeq',
-]
-from typing import List, Any, cast
+)
+from typing import Any, cast
 
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.core._lexer._assert._base import CrupyLexerAssertBase
@@ -21,7 +21,7 @@ from crupydslparser.core.parser import (
 
 class CrupyParserNodeLexSeq(CrupyParserNode):
     """ sequence token information """
-    seq: List[CrupyParserNode]
+    seq: list[CrupyParserNode]
 
 
 # allow to few methods and unused private methods
@@ -30,7 +30,7 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
     """ execute sequence of lexer operation
     """
     def __init__(self, *args: Any) -> None:
-        self._seq: List[CrupyLexerOpBase|CrupyLexerAssertBase] = []
+        self._seq: list[CrupyLexerOpBase|CrupyLexerAssertBase] = []
         for i, arg in enumerate(args):
             if (
                     CrupyLexerOpBase not in type(arg).mro()
@@ -52,7 +52,7 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
         """ execute all lexer operation
         """
         with parser.stream as context:
-            token_list: List[CrupyParserNode] = []
+            token_list: list[CrupyParserNode] = []
             for lexer in self._seq:
                 if issubclass(type(lexer), CrupyLexerAssertBase):
                     assert_op = cast(CrupyLexerAssertBase, lexer)

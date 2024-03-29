@@ -1,11 +1,11 @@
 """
 crupydslparser.core._lexer._assert.lookahead    - lookehader assert
 """
-__all__ =[
+__all__ = (
     'CrupyLexerAssertLookaheadNegative',
     'CrupyLexerAssertLookaheadPositive',
-]
-from typing import List, Any
+)
+from typing import Any
 
 from crupydslparser.core._lexer._assert._base import CrupyLexerAssertBase
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
@@ -20,7 +20,7 @@ class CrupyLexerAssertLookaheadNegative(CrupyLexerAssertBase):
     """ lexer lookahead negative operation
     """
     def __init__(self, *args: Any) -> None:
-        self._seq: List[CrupyLexerOpBase] = []
+        self._seq: list[CrupyLexerOpBase] = []
         for i, arg in enumerate(args):
             if CrupyLexerOpBase not in type(arg).mro():
                 raise CrupyLexerException(
@@ -40,8 +40,11 @@ class CrupyLexerAssertLookaheadNegative(CrupyLexerAssertBase):
         """
         with parser.stream as _:
             for lexer in self._seq:
-                if not lexer(parser, False):
-                    return True
+                try:
+                    if not lexer(parser):
+                        return True
+                except CrupyLexerException:
+                    break
             return False
 
 class CrupyLexerAssertLookaheadPositive(CrupyLexerAssertLookaheadNegative):

@@ -1,10 +1,10 @@
 """
 crupydslparser.core._lexer._assert._base    - Lexer assert abstraction
 """
-__all__ = [
+__all__ = (
     'CrupyLexerAssertBase',
-]
-from typing import Dict, Any
+)
+from typing import Any
 from abc import ABC, abstractmethod
 
 from crupydslparser.core._lexer.exception import CrupyLexerException
@@ -24,7 +24,7 @@ class CrupyLexerAssertBase(ABC):
 
     _name: str  = ''
 
-    def __init_subclass__(cls, /, **kwargs: Dict[str,Any]) -> None:
+    def __init_subclass__(cls, /, **kwargs: dict[str,Any]) -> None:
         """ guess token name based on class name
         """
         super().__init_subclass__(**kwargs)

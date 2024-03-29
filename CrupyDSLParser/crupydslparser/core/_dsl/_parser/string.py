@@ -1,9 +1,9 @@
 """
 crupydslparser._dsl._parser.string  - handle string production
 """
-__all__ = [
+__all__ = (
     'dsl_string_hook',
-]
+)
 
 from crupydslparser.core.parser import CrupyParserNode
 

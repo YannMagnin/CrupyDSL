@@ -1,10 +1,10 @@
 """
 crupydslparser.core._lexer._operation.optional  - optional operation
 """
-__all__ = [
+__all__ = (
     'CrupyParserNodeLexOptional',
     'CrupyLexerOpOptional',
-]
+)
 
 from crupydslparser.core._lexer.exception import CrupyLexerException
 from crupydslparser.core._lexer._operation.seq import CrupyLexerOpSeq
