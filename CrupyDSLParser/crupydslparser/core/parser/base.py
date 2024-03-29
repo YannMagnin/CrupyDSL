@@ -8,13 +8,9 @@ from __future__ import annotations
 __all__ = (
     'CrupyParserBase',
 )
-from typing import (
-    Union, Optional, Literal, IO, Any, TYPE_CHECKING,
-    cast,
-)
+from typing import Optional, IO, Any, TYPE_CHECKING, cast
 from collections.abc import Callable
 
-import typesentry
 
 from crupydslparser.core._stream import CrupyStream
 from crupydslparser.core.parser.exception import CrupyParserException
@@ -133,14 +129,10 @@ class CrupyParserBase():
         else:
             self._stream = CrupyStream.from_any(stream)
 
-    def register_hook(
+    def register_post_hook(
         self,
-        target: Literal['postprocess','error'],
         production_name: str,
-        hook: Union[
-            Callable[[CrupyParserNode],CrupyParserNode],
-            Callable[[CrupyParserNode],None],
-        ],
+        hook: Callable[[CrupyParserNode],CrupyParserNode],
     ) -> None:
         """ register a new hook for a production
         """
@@ -149,23 +141,22 @@ class CrupyParserBase():
                 'Unable to find the primary production entry name '
                 f"'{production_name}'"
             )
-        if target not in ['error', 'postprocess']:
+        if production_name not in self._hook_postprocess_book:
+            self._hook_postprocess_book[production_name] = []
+        self._hook_postprocess_book[production_name].append(hook)
+
+    def register_error_hook(
+        self,
+        production_name: str,
+        hook: Callable[[str],None],
+    ) -> None:
+        """ register a new hook for a production in case of error
+        """
+        if production_name not in self._production_book:
             raise CrupyParserException(
-                'Unable to register the hook for the production '
-                f"'{production_name}' because you only can select 'error' "
-                'postprocess'
+                'Unable to find the primary production entry name '
+                f"'{production_name}'"
             )
-        type_info = {
-            'error'       : Callable[[CrupyParserNode],None],
-            'postprocess' : Callable[[CrupyParserNode],CrupyParserNode],
-        }[target]
-        if not typesentry.Config.is_type(hook,type_info):
-            raise CrupyParserException(
-                f"Unable to register the hook {hook.__name__} because "
-                f"its signature do not match the '{target}' hook "
-                f"signature {str(type_info)[7:]}"
-            )
-        hook_book = getattr(self, f"_{target}_book")
-        if production_name not in hook_book:
-            hook_book[production_name] = []
-        hook_book[production_name].append(hook)
+        if production_name not in self._hook_error_book:
+            self._hook_error_book[production_name] = []
+        self._hook_error_book[production_name].append(hook)
