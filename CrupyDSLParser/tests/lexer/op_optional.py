@@ -1,9 +1,9 @@
 """
 tests.lexer.op_optional     - test the CrupyLexerOpOptional
 """
-__all__ = [
+__all__ = (
     'CrupyUnittestLexerOptional',
-]
+)
 
 from crupydslparser.core.unittest import CrupyUnittestBase
 from crupydslparser.core.parser import (
@@ -65,6 +65,6 @@ class CrupyUnittestLexerOptional(CrupyUnittestBase):
                 ),
         })
         parser.register_stream('http://')
-        self.__check_node(parser.execute('entry', False), 'http://')
+        self.__check_node(parser.execute('entry'), 'http://')
         parser.register_stream('https://')
-        self.__check_node(parser.execute('entry', False), 'https://')
+        self.__check_node(parser.execute('entry'), 'https://')

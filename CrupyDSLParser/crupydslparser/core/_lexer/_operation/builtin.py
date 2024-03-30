@@ -80,26 +80,22 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             if context.peek_char() == '\\':
                 context.read_char()
             node: CrupyParserNode|None = None
-            try:
-                node = self._is_alphanum(parser, 'alphanum')
-            except CrupyLexerException:
-                pass
-            try:
-                node = self._is_symbol(parser, 'ascii')
-            except CrupyLexerException:
-                pass
-            try:
-                node = self._is_space(parser, 'space_n')
-            except CrupyLexerException:
-                pass
-            if node is None:
-                self._raise_from_context(
-                    context,
-                    'Unable to validate the char as "any"'
-                )
-            return CrupyParserNodeLexText(
-                context = context.validate(),
-                text    = node.text
+            for test in (
+                (self._is_alphanum, 'alphanum'),
+                (self._is_symbol, 'ascii'),
+                (self._is_symbol, 'space_n'),
+            ):
+                try:
+                    node = test[0](parser, test[1])
+                    return CrupyParserNodeLexText(
+                        context = context.validate(),
+                        text    = node.text
+                    )
+                except CrupyLexerException:
+                    pass
+            self._raise_from_context(
+                context,
+                'Unable to validate the char as "any"'
             )
 
     def _is_alphanum(
@@ -238,8 +234,8 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                 )
             context.read_char()
             return CrupyParserNodeLexText(
-                stream_ctx  = context.validate(),
-                text        = curr,
+                context = context.validate(),
+                text    = curr,
             )
 
     def _is_end_of_file(
@@ -257,6 +253,6 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     'stream available',
                 )
             return CrupyParserNodeLexText(
-                stream_ctx  = context.validate(),
-                text        = '',
+                context = context.validate(),
+                text    = '',
             )

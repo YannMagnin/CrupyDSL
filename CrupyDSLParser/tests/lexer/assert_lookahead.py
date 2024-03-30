@@ -1,9 +1,9 @@
 """
 tests.lexer.assert_lookahead  - test for the CrupyLexerAssertLookahead*
 """
-__all__ = [
+__all__ = (
     'CrupyUnittestLexerLookahead',
-]
+)
 
 from crupydslparser.core.unittest import CrupyUnittestBase
 from crupydslparser.core.parser import CrupyParserBase
@@ -35,19 +35,19 @@ class CrupyUnittestLexerLookahead(CrupyUnittestBase):
                 CrupyLexerOpText('abc'),
                 CrupyLexerAssertLookaheadNegative(
                     CrupyLexerOpText('d'),
-                    CrupyLexerOpText('e'),
+                    CrupyLexerOpText('r'),
+                    CrupyLexerOpText('x'),
                 ),
             ),
         })
         parser.register_stream('abcdrabcde')
-        node = parser.execute('entry', False)
-        self.assertIsNotNone(node)
-        if node is None:
-            return
+        node = parser.execute('entry')
         self.assertEqual(len(node.seq), 1)
         self.assertEqual(node.seq[0].type, 'lex_text')
         self.assertEqual(node.seq[0].text, 'abc')
-        self.assertIsNone(parser.execute('entry', False))
+        with parser.stream as context:
+            self.assertEqual(context.read_char(), 'd')
+        # (todo) : error
 
     ## Positive
 
@@ -62,13 +62,11 @@ class CrupyUnittestLexerLookahead(CrupyUnittestBase):
                 ),
             ),
         })
-        parser.register_stream('abcdeabcdz')
-        node = parser.execute('entry', False)
-        self.assertIsNotNone(node)
-        if node is None:
-            return
+        parser.register_stream('abcdezbcdz')
+        node = parser.execute('entry')
         self.assertEqual(len(node.seq), 1)
         self.assertEqual(node.seq[0].type, 'lex_text')
         self.assertEqual(node.seq[0].text, 'abc')
-        self.assertIsNone(parser.execute('entry', False))
-        self.assertEqual(parser.stream.read_char(), 'd')
+        with parser.stream as context:
+            self.assertEqual(context.read_char(), 'd')
+        # (todo) : error

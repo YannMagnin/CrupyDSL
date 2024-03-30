@@ -32,7 +32,11 @@ class CrupyLexerAssertBase(ABC):
             raise CrupyLexerException(
                 f"Malformated lexer assert class name '{cls.__name__}'"
             )
-        cls._name = cls.__name__[12:].lower()
+        cls._name = ''
+        for letter in cls.__name__[16:]:
+            if cls._name and letter.isupper():
+                cls._name += '_'
+            cls._name += letter.lower()
 
     #---
     # Pulic methods

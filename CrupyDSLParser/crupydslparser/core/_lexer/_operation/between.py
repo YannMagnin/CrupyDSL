@@ -20,32 +20,34 @@ class CrupyParserNodeLexBetween(CrupyParserNode):
     """ string node information """
     text: str
 
-# allow to few methods and unused private methods
-# pylint: disable=locally-disabled,R0903,W0238
+# allow to few methods
+# pylint: disable=locally-disabled,R0903
 class CrupyLexerOpBetween(CrupyLexerOpBase):
     """ capture between delimiter
     """
     def __init__(self, delimiter: str) -> None:
         self._delimiter = delimiter
 
-    def _execute(
-        self,
-        parser: CrupyParserBase,
-        _: bool,
-    ) -> CrupyParserNode|None:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode:
         """ try to strictly match the text
         """
-        with parser.stream as lexem:
-            if lexem.read_char() != self._delimiter:
-                return None
+        with parser.stream as context:
+            if context.read_char() != self._delimiter:
+                self._raise_from_context(
+                    context,
+                    'Unable to validate the first delimiter',
+                )
             content = ''
             while True:
-                if not (curr := lexem.read_char()):
-                    return None
+                if not (curr := context.read_char()):
+                    self._raise_from_context(
+                        context,
+                        'Reached end-of-file'
+                    )
                 if curr == self._delimiter:
                     break
                 content += curr
             return CrupyParserNodeLexBetween(
-                stream_ctx  = lexem.validate(),
-                text        = content,
+                context = context.validate(),
+                text    = content,
             )

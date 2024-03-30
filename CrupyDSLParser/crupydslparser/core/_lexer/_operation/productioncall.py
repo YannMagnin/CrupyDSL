@@ -26,4 +26,11 @@ class CrupyLexerOpProductionCall(CrupyLexerOpBase):
     def __call__(self, parser: CrupyParserBase) -> CrupyParserNode:
         """ invoke another production rule
         """
+        with parser.stream as context:
+            if self._production_name not in parser.production_book:
+                self._raise_from_context(
+                    context,
+                    'Unable to find the production named '
+                    f"'{self._production_name}'"
+                )
         return parser.execute(self._production_name)

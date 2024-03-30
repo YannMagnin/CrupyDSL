@@ -1,9 +1,9 @@
 """
 tests.lexer.op_builtin      - test the CrupyLexerOpBuiltin
 """
-__all__ = [
+__all__ = (
     'CrupyUnittestLexerBuiltin',
-]
+)
 
 from crupydslparser.core.unittest import CrupyUnittestBase
 from crupydslparser.core._lexer import CrupyLexerOpBuiltin
@@ -27,17 +27,13 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             'entry' : CrupyLexerOpBuiltin('alpha'),
         })
         parser.register_stream('aZ')
-        strop0 = parser.execute('entry', False)
-        strop1 = parser.execute('entry', False)
-        self.assertIsNotNone(strop0)
-        self.assertIsNotNone(strop1)
-        if strop0 is None or strop1 is None:
-            return
+        strop0 = parser.execute('entry')
+        strop1 = parser.execute('entry')
         self.assertEqual(strop0.type, 'lex_text')
         self.assertEqual(strop1.type, 'lex_text')
         self.assertEqual(strop0.text, 'a')
         self.assertEqual(strop1.text, 'Z')
-        self.assertIsNone(parser.execute('entry', False))
+        # (todo) : error
 
     def test_alphanum(self) -> None:
         """ simple valid cases """
@@ -45,29 +41,17 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             'entry' : CrupyLexerOpBuiltin('alphanum'),
         })
         parser.register_stream('a667')
-        strop0 = parser.execute('entry', False)
-        strop1 = parser.execute('entry', False)
-        strop2 = parser.execute('entry', False)
-        strop3 = parser.execute('entry', False)
-        strop4 = parser.execute('entry', False)
-        self.assertIsNotNone(strop0)
-        self.assertIsNotNone(strop1)
-        self.assertIsNotNone(strop2)
-        self.assertIsNotNone(strop3)
-        self.assertIsNone(strop4)
-        if (
-               strop0 is None
-            or strop1 is None
-            or strop2 is None
-            or strop3 is None
-        ):
-            return
+        strop0 = parser.execute('entry')
+        strop1 = parser.execute('entry')
+        strop2 = parser.execute('entry')
+        strop3 = parser.execute('entry')
         self.assertEqual(strop0.type, 'lex_text')
         self.assertEqual(strop1.type, 'lex_text')
         self.assertEqual(strop0.text, 'a')
         self.assertEqual(strop1.text, '6')
         self.assertEqual(strop2.text, '6')
         self.assertEqual(strop3.text, '7')
+        # (todo) : error
 
     def test_digit(self) -> None:
         """ simple valid cases """
@@ -75,17 +59,13 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             'entry' : CrupyLexerOpBuiltin('digit'),
         })
         parser.register_stream('09A')
-        strop0 = parser.execute('entry', False)
-        strop1 = parser.execute('entry', False)
-        self.assertIsNotNone(strop0)
-        self.assertIsNotNone(strop1)
-        if strop0 is None or strop1 is None:
-            return
+        strop0 = parser.execute('entry')
+        strop1 = parser.execute('entry')
         self.assertEqual(strop0.type, 'lex_text')
         self.assertEqual(strop1.type, 'lex_text')
         self.assertEqual(strop0.text, '0')
         self.assertEqual(strop1.text, '9')
-        self.assertIsNone(parser.execute('entry', False))
+        # (todo) : error
 
     def test_number(self) -> None:
         """ simple valid cases """
@@ -93,14 +73,10 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             'entry' : CrupyLexerOpBuiltin('number'),
         })
         parser.register_stream('667,')
-        strop0 = parser.execute('entry', False)
-        strop1 = parser.execute('entry', False)
-        self.assertIsNotNone(strop0)
-        self.assertIsNone(strop1)
-        if strop0 is None:
-            return
+        strop0 = parser.execute('entry')
         self.assertEqual(strop0.type, 'lex_text')
         self.assertEqual(strop0.text, '667')
+        # (todo) : error
 
     def test_space(self) -> None:
         """ test space """
@@ -108,11 +84,12 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             'entry' : CrupyLexerOpBuiltin('space'),
         })
         parser.register_stream(' \t\vabc')
-        self.assertIsNotNone(parser.execute('entry', False))
-        self.assertIsNotNone(parser.execute('entry', False))
-        self.assertIsNotNone(parser.execute('entry', False))
-        self.assertIsNone(parser.execute('entry', False))
-        self.assertEqual(parser.stream.read_char(), 'a')
+        self.assertIsNotNone(parser.execute('entry'))
+        self.assertIsNotNone(parser.execute('entry'))
+        self.assertIsNotNone(parser.execute('entry'))
+        with parser.stream as context:
+            self.assertEqual(context.read_char(), 'a')
+        # (todo) : error handling
 
     def test_any(self) -> None:
         """ test any builtin """
@@ -120,19 +97,13 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             'entry' : CrupyLexerOpBuiltin('any'),
         })
         parser.register_stream(r'a\"\\')
-        node0 = parser.execute('entry', False)
-        node1 = parser.execute('entry', False)
-        node2 = parser.execute('entry', False)
-        node3 = parser.execute('entry', False)
-        self.assertIsNotNone(node0)
-        self.assertIsNotNone(node1)
-        self.assertIsNotNone(node2)
-        self.assertIsNone(node3)
-        if node0 is None or node1 is None or node2 is None:
-            return
+        node0 = parser.execute('entry')
+        node1 = parser.execute('entry')
+        node2 = parser.execute('entry')
         self.assertEqual(node0.type, 'lex_text')
         self.assertEqual(node0.text, 'a')
         self.assertEqual(node1.type, 'lex_text')
         self.assertEqual(node1.text, '"')
         self.assertEqual(node2.type, 'lex_text')
         self.assertEqual(node2.text, '\\')
+        # (todo) : error

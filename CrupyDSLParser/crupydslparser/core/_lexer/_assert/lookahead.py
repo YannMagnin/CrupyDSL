@@ -24,15 +24,15 @@ class CrupyLexerAssertLookaheadNegative(CrupyLexerAssertBase):
         for i, arg in enumerate(args):
             if CrupyLexerOpBase not in type(arg).mro():
                 raise CrupyLexerException(
-                    'Unable to initialise the CrupyLexerSeq because the '
-                    f"argument {i} is not of type CrupyLexer "
+                    f"Unable to initialise the {type(self).__name__} "
+                    f"because the argument {i} is not of type CrupyLexer "
                     f"({type(arg)})"
                 )
             self._seq.append(arg)
         if not self._seq:
             raise CrupyLexerException(
-                'Unable to initialise the CrupyLexerSeq because not '
-                'sequence has been presented'
+                f"Unable to initialise the {type(self).__name__} because "
+                'not sequence has been presented'
             )
 
     def __call__(self, parser: CrupyParserBase) -> bool:
@@ -41,10 +41,9 @@ class CrupyLexerAssertLookaheadNegative(CrupyLexerAssertBase):
         with parser.stream as _:
             for lexer in self._seq:
                 try:
-                    if not lexer(parser):
-                        return True
+                    lexer(parser)
                 except CrupyLexerException:
-                    break
+                    return True
             return False
 
 class CrupyLexerAssertLookaheadPositive(CrupyLexerAssertLookaheadNegative):

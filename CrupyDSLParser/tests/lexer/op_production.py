@@ -1,16 +1,16 @@
 """
 tests.lexer.op_production   - test the CrupyLexerOpProduction
 """
-__all__ = [
-    'CrupyUnittestLexerProd'
-]
+__all__ = (
+    'CrupyUnittestLexerProd',
+)
 
 from crupydslparser.core.unittest import CrupyUnittestBase
 from crupydslparser.core.parser import CrupyParserBase
-from crupydslparser.core.parser.exception import CrupyParserException
 from crupydslparser.core._lexer import (
     CrupyLexerOpProductionCall,
     CrupyLexerOpText,
+    CrupyLexerException,
 )
 
 #---
@@ -32,13 +32,11 @@ class CrupyUnittestLexerProd(CrupyUnittestBase):
             'entry2' : CrupyLexerOpText('abcdef')
         })
         parser.register_stream('abcdefijkl')
-        test = parser.execute('entry', False)
-        self.assertIsNotNone(test)
-        if test is None:
-            return
+        test = parser.execute('entry')
         self.assertEqual(test.text, 'abcdef')
-        with parser.stream as lexem:
-            self.assertEqual(lexem.read(), 'ijkl')
+        with parser.stream as context:
+            for n in 'ijkl':
+                self.assertEqual(context.read_char(), n)
 
     def test_raise_error(self) -> None:
         """ force production calling that not exists """
@@ -47,9 +45,12 @@ class CrupyUnittestLexerProd(CrupyUnittestBase):
         })
         parser.register_stream('abcdefijkl')
         self.assertRaises(
-            exc_obj     = CrupyParserException(
-                'Unable to find the primary production entry name '
-                '\'entry2\''
+            CrupyLexerException(
+                'Stream: line 1, column 1\n'
+                'abcdefijkl\n'
+                '^\n'
+                'CrupyLexerOpProductionCall: Unable to find the '
+                'production named \'entry2\''
             ),
-            request     = (parser, 'execute', 'entry', False),
+            (parser, 'execute', 'entry'),
         )

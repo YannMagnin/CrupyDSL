@@ -57,4 +57,9 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
                     context,
                     'Unable to validate the sequense, empty sequense',
                 )
-        raise best_choice_error
+        self._raise_from_context(
+            best_choice_error.context,
+            'Unable to find an alternative that match the provided '
+            'stream. Reason:\n'
+            f"{best_choice_error.reason}",
+        )

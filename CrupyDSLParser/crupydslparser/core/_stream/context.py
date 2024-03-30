@@ -35,32 +35,13 @@ class CrupyStreamContext():
         column: int,
     ) -> None:
         self._stream = stream
-        self._index  = index
-        self._lineno = lineno
-        self._column = column
-        self._readed = 0
+        self.index  = index
+        self.lineno = lineno
+        self.column = column
+        self.readded = 0
 
     def __gt__(self, context: CrupyStreamContext) -> bool:
-        return self._index > context._index
-
-    #---
-    # Public properties
-    #---
-
-    @property
-    def index(self) -> int:
-        """ return the stream index """
-        return self._index
-
-    @property
-    def lineno(self) -> int:
-        """ return the stream line number """
-        return self._lineno
-
-    @property
-    def column(self) -> int:
-        """ return the stream column """
-        return self._column
+        return self.index > context.index
 
     #---
     # Public methods
@@ -70,8 +51,8 @@ class CrupyStreamContext():
 
     def peek_char(self) -> str|None:
         """ return the current char """
-        if self._index < self._stream.size:
-            return chr(self._stream[self._index] & 0xff)
+        if self.index < self._stream.size:
+            return chr(self._stream[self.index] & 0xff)
         return None
 
     def read_char(self) -> str|None:
@@ -79,11 +60,11 @@ class CrupyStreamContext():
         if not (curr := self.peek_char()):
             return None
         if curr == '\n':
-            self._lineno += 1
-            self._column  = 0
-        self._index  += 1
-        self._column += 1
-        self._readed += 1
+            self.lineno += 1
+            self.column  = 0
+        self.index  += 1
+        self.column += 1
+        self.readded += 1
         return curr
 
     ## error handling

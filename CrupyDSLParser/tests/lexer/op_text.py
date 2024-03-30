@@ -29,17 +29,14 @@ class CrupyUnittestLexerText(CrupyUnittestBase):
         parser = CrupyParserBase({
             'entry0' : CrupyLexerOpText('abcdef'),
             'entry1' : CrupyLexerOpText('i'),
-            'entry2' : CrupyLexerOpText('jkc'),
             'entry3' : CrupyLexerOpText('jkl'),
         })
         parser.register_stream('abcdefijkl')
-        strop0 = parser.execute('entry0', False)
-        strop1 = parser.execute('entry1', False)
-        strop2 = parser.execute('entry2', False)
-        strop3 = parser.execute('entry3', False)
+        strop0 = parser.execute('entry0')
+        strop1 = parser.execute('entry1')
+        strop3 = parser.execute('entry3')
         self.assertIsNotNone(strop0)
         self.assertIsNotNone(strop1)
-        self.assertIsNone(strop2)
         self.assertIsNotNone(strop3)
 
     def test_simple_error(self) -> None:
@@ -49,17 +46,31 @@ class CrupyUnittestLexerText(CrupyUnittestBase):
             'entry1' : CrupyLexerOpText('jkl'),
         })
         parser.register_stream('abcdefijkl')
-        self.assertIsNotNone(parser.execute('entry0', False))
+        self.assertIsNotNone(parser.execute('entry0'))
         self.assertRaises(
             CrupyLexerException(
-                'Parsing exception occured:\n'
-                '\n'
                 'Stream: line 1, column 7\n'
                 'abcdefijkl\n'
                 '      ^\n'
-                '\n'
-                'SyntaxError: invalid syntax (unable to find '
-                'appropriate production to parse this stream here)'
+                'CrupyLexerOpText: Unable to match the text \'jkl\''
             ),
-            (parser, 'execute', 'entry1', True),
+            (parser, 'execute', 'entry1'),
+        )
+
+    def test_eof_error(self) -> None:
+        """ test EOF handling """
+        parser = CrupyParserBase({
+            'entry0' : CrupyLexerOpText('abcdef'),
+            'entry1' : CrupyLexerOpText('ijklm'),
+        })
+        parser.register_stream('abcdefijkl')
+        self.assertIsNotNone(parser.execute('entry0'))
+        self.assertRaises(
+            CrupyLexerException(
+                'Stream: line 1, column 11\n'
+                'abcdefijkl\n'
+                '          ^\n'
+                'CrupyLexerOpText: Reached end-of-file'
+            ),
+            (parser, 'execute', 'entry1'),
         )

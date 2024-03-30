@@ -1,15 +1,16 @@
 """
 tests.lexer.op_or   - test the CrupyLexerOpOr
 """
-__all__ = [
+__all__ = (
     'CrupyUnittestLexerOr',
-]
+)
 
 from crupydslparser.core.unittest import CrupyUnittestBase
 from crupydslparser.core.parser import CrupyParserBase
 from crupydslparser.core._lexer import (
     CrupyLexerOpOr,
     CrupyLexerOpText,
+    CrupyLexerException,
 )
 
 #---
@@ -33,13 +34,11 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
             ),
         })
         parser.register_stream('abcdefijkl')
-        or_op = parser.execute('entry', False)
-        self.assertIsNotNone(or_op)
-        if or_op is None:
-            return
+        or_op = parser.execute('entry')
         self.assertEqual(or_op.text, 'abc')
-        with parser.stream as lexem:
-            self.assertEqual(lexem.read(), 'defijkl')
+        with parser.stream as context:
+            for n in 'defijkl':
+                self.assertEqual(context.read_char(), n)
 
     def test_simple_success1(self) -> None:
         """ simple valid case """
@@ -53,10 +52,32 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
             ),
         })
         parser.register_stream('abcdefijkl')
-        or_op = parser.execute('entry', False)
-        self.assertIsNotNone(or_op)
-        if or_op is None:
-            return
+        or_op = parser.execute('entry')
         self.assertEqual(or_op.text, 'abcdef')
-        with parser.stream as lexem:
-            self.assertEqual(lexem.read(), 'ijkl')
+        with parser.stream as context:
+            for n in 'ijkl':
+                self.assertEqual(context.read_char(), n)
+
+    def test_error(self) -> None:
+        """ depth error handling test """
+        parser = CrupyParserBase({
+            'entry' : CrupyLexerOpOr(
+                CrupyLexerOpText('ax'),
+                CrupyLexerOpText('abcdef'),
+                CrupyLexerOpText('abcx'),
+                CrupyLexerOpText('xx'),
+                CrupyLexerOpText('ekip'),
+            ),
+        })
+        parser.register_stream('abcdexxx')
+        self.assertRaises(
+            CrupyLexerException(
+                'Stream: line 1, column 6\n'
+                'abcdexxx\n'
+                '     ^\n'
+                'CrupyLexerOpOr: Unable to find an alternative that match '
+                'the provided stream. Reason:\n'
+                'CrupyLexerOpText: Unable to match the text \'abcdef\''
+            ),
+            (parser, 'execute', 'entry'),
+        )

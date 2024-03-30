@@ -28,19 +28,19 @@ class CrupyUnittestNode(CrupyUnittestBase):
     def test_simple(self) -> None:
         """ simply check the read/peek """
         stream = CrupyStream.from_any('abcd')
-        with stream as lexem:
+        with stream as context:
             node = CrupyParserNode(
-                stream_ctx  = lexem.validate(),
+                context = context.validate(),
             )
             self.assertIsNotNone(node)
 
     def test_custom(self) -> None:
         """ custom tests """
         stream = CrupyStream.from_any('abcd')
-        with stream as lexem:
+        with stream as context:
             node = CrupyParserNodeTest(
-                stream_ctx  = lexem.validate(),
-                name        = 'coucou',
+                context = context.validate(),
+                name    = 'coucou',
             )
             self.assertIsNotNone(node)
             self.assertEqual(node.type, 'test')

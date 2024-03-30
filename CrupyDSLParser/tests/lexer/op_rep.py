@@ -1,9 +1,9 @@
 """
 tests.lexer.op_rep  - tes for the CrupyLexerOpRep0N, and CrupyLexerOpRep1N
 """
-__all__ = [
+__all__ = (
     'CrupyUnittestLexerRep',
-]
+)
 
 from crupydslparser.core.unittest import CrupyUnittestBase
 from crupydslparser.core.parser import CrupyParserBase
@@ -11,6 +11,7 @@ from crupydslparser.core._lexer import (
     CrupyLexerOpText,
     CrupyLexerOpRep0N,
     CrupyLexerOpRep1N,
+    CrupyLexerException,
 )
 
 #---
@@ -37,10 +38,7 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
             ),
         })
         parser.register_stream('abcdefijabcdefijklnm')
-        reptok = parser.execute('entry', False)
-        self.assertIsNotNone(reptok)
-        if reptok is None:
-            return
+        reptok = parser.execute('entry')
         self.assertIsNotNone(reptok.rep)
         self.assertEqual(len(reptok.rep), 2)
         self.assertEqual(len(reptok.rep[0]), 3)
@@ -61,10 +59,7 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
             ),
         })
         parser.register_stream('abcdefijabcdefijklnm')
-        reptok = parser.execute('entry', False)
-        self.assertIsNotNone(reptok)
-        if reptok is None:
-            return
+        reptok = parser.execute('entry')
         self.assertIsNotNone(reptok.rep)
         self.assertEqual(len(reptok.rep), 0)
 
@@ -80,10 +75,7 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
             ),
         })
         parser.register_stream('abcdefij')
-        reptok = parser.execute('entry', False)
-        self.assertIsNotNone(reptok)
-        if reptok is None:
-            return
+        reptok = parser.execute('entry')
         self.assertIsNotNone(reptok.rep)
         self.assertEqual(len(reptok.rep), 1)
         self.assertEqual(len(reptok.rep[0]), 3)
@@ -95,23 +87,20 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
         """ simple empty """
         parser = CrupyParserBase({
             'entry' : CrupyLexerOpRep1N(
-                CrupyLexerOpText('zzz'),
+                CrupyLexerOpText('abc'),
                 CrupyLexerOpText('def'),
                 CrupyLexerOpText('ijk'),
             ),
         })
         parser.register_stream('abcdefijabcdefijklnm')
-        reptok = parser.execute('entry', False)
-        self.assertIsNone(reptok)
-
-    def test_rep1n_error(self) -> None:
-        """ error handling """
-        parser = CrupyParserBase({
-            'entry' : CrupyLexerOpRep1N(
-                CrupyLexerOpText('abcdef'),
-                CrupyLexerOpText('def'),
-                CrupyLexerOpText('ijk'),
+        self.assertRaises(
+            CrupyLexerException(
+                'Stream: line 1, column 9\n'
+                'abcdefijabcdefijklnm\n'
+                '        ^\n'
+                'CrupyLexerOpRep1N: Unable to perform at least one '
+                'repetition of the sequence. Reason:\n'
+                'CrupyLexerOpText: Unable to match the text \'ijk\''
             ),
-        })
-        parser.register_stream('abcdefijabcdefijklnm')
-        TODO
+            (parser, 'execute', 'entry'),
+        )

@@ -33,11 +33,17 @@ class CrupyLexerOpText(CrupyLexerOpBase):
         """
         with parser.stream as context:
             for char in self._text:
-                if context.read_char() != char:
+                if not (curr := context.peek_char()):
+                    self._raise_from_context(
+                        context,
+                        'Reached end-of-file',
+                    )
+                if curr != char:
                     self._raise_from_context(
                         context,
                         f"Unable to match the text '{self._text}'",
                     )
+                context.read_char()
             return CrupyParserNodeLexText(
                 context = context.validate(),
                 text    = self._text,

@@ -84,7 +84,7 @@ class CrupyParserBase():
     ) -> CrupyParserNode:
         """ execute a hook if available
         """
-        hook_book = getattr(self, f"_{target}_book")
+        hook_book = getattr(self, f"_hook_{target}_book")
         if production_name not in hook_book:
             if target == 'postprocess':
                 return cast(CrupyParserNode, args[0])

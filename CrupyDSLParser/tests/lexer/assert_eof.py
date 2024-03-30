@@ -1,9 +1,9 @@
 """
 tests.lexer.assert_eof  - test the CrupyLexerAssertEOF
 """
-__all__ = [
-    'CrupyUnittestLexerAssertEOF',
-]
+__all__ = (
+    'CrupyUnittestLexerAssertEof',
+)
 
 from crupydslparser.core.unittest import CrupyUnittestBase
 from crupydslparser.core.parser import CrupyParserBase
@@ -17,7 +17,7 @@ from crupydslparser.core._lexer import (
 # Public
 #---
 
-class CrupyUnittestLexerAssertEOF(CrupyUnittestBase):
+class CrupyUnittestLexerAssertEof(CrupyUnittestBase):
     """ unittest suite for cruper lexer end-of-file assertion
     """
 
@@ -34,11 +34,9 @@ class CrupyUnittestLexerAssertEOF(CrupyUnittestBase):
             )
         })
         parser.register_stream('a')
-        node = parser.execute('entry', False)
-        self.assertIsNotNone(node)
-        if node is None:
-            return
+        node = parser.execute('entry')
         self.assertEqual(node.type, 'lex_seq')
         self.assertEqual(len(node.seq), 1)
         self.assertEqual(node.seq[0].type, 'lex_text')
         self.assertEqual(node.seq[0].text, 'a')
+        # (todo) : error

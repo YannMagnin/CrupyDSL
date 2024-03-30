@@ -25,10 +25,12 @@ class CrupyLexerException(CrupyDSLCoreException):
         message: str,
         context: Optional[CrupyStreamContext] = None,
     ) -> None:
+        reason = message
         if context:
             message = f"{context.generate_error_log()}\n{message}"
         super().__init__(message)
         self._context = context
+        self._reason = reason
 
     #---
     # Properties
@@ -44,3 +46,9 @@ class CrupyLexerException(CrupyDSLCoreException):
             'Accessing stream non existing stream context in lexer '
             'exception'
         )
+
+    @property
+    def reason(self) -> str:
+        """ return the reason of the exception
+        """
+        return self._reason

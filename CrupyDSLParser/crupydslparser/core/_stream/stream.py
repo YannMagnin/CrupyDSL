@@ -75,12 +75,17 @@ class CrupyStream():
     def __init__(self, memory_area: mmap) -> None:
         """ initialise our attribute
         """
-        self._context_stack: list[_CrupyStreamContextState] = []
-        self._context = {
-            'index'  : 0,
-            'lineno' : 1,
-            'column' : 1,
-        }
+        self._context_stack = [
+            _CrupyStreamContextState(
+                context = CrupyStreamContext(
+                    stream  = self,
+                    index   = 0,
+                    lineno  = 1,
+                    column  = 1,
+                ),
+                validated   = True,
+            ),
+        ]
         self._memory_area = memory_area
         self._memory_area.seek(0)
         self._memory_area_size = len(memory_area)
@@ -127,11 +132,12 @@ class CrupyStream():
     def context_push(self) -> CrupyStreamContext:
         """ push the current context to the stack
         """
+        context_cur = self._context_stack[-1].context
         context_new = CrupyStreamContext(
             stream  = self,
-            index   = self._context['index'],
-            lineno  = self._context['lineno'],
-            column  = self._context['column'],
+            index   = context_cur.index,
+            lineno  = context_cur.lineno,
+            column  = context_cur.column,
         )
         self._context_stack.append(
             _CrupyStreamContextState(
@@ -144,14 +150,17 @@ class CrupyStream():
     def context_pop(self) -> None:
         """ restore the saved context
         """
-        if not self._context_stack:
-            raise CrupyStreamException('context_restore(): empty stack')
-        if not self._context_stack[-1].validated:
+        if len(self._context_stack) < 1:
+            raise CrupyStreamException(
+                'context_restore(): trying to removing the primary context'
+            )
+        context_status = self._context_stack.pop()
+        if context_status.validated:
             context_new = self._context_stack[-1].context
-            self._context['index']  = context_new.index
-            self._context['lineno'] = context_new.lineno
-            self._context['column'] = context_new.column
-        self._context_stack.pop()
+            context_new.index    = context_status.context.index
+            context_new.lineno   = context_status.context.lineno
+            context_new.column   = context_status.context.column
+            context_new.readded += context_status.context.readded
 
     def context_validate(
         self,
