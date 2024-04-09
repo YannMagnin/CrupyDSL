@@ -97,9 +97,11 @@ class CrupyStream():
         """
         self._memory_area.close()
 
-    def __getitem__(self, idx: int) -> int:
+    def __getitem__(self, idx: int) -> int|None:
         """ do not expose directly the memory mapping
         """
+        if idx >= self._memory_area_size:
+            return None
         return self._memory_area[idx]
 
     #---
@@ -160,7 +162,6 @@ class CrupyStream():
             context_new.index    = context_status.context.index
             context_new.lineno   = context_status.context.lineno
             context_new.column   = context_status.context.column
-            context_new.readded += context_status.context.readded
 
     def context_validate(
         self,

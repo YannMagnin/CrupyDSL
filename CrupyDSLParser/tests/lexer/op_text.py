@@ -69,7 +69,7 @@ class CrupyUnittestLexerText(CrupyUnittestBase):
             CrupyLexerException(
                 'Stream: line 1, column 11\n'
                 'abcdefijkl\n'
-                '          ^\n'
+                '      ~~~~^\n'
                 'CrupyLexerOpText: Reached end-of-file'
             ),
             (parser, 'execute', 'entry1'),

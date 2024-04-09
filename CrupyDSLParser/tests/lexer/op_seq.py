@@ -63,8 +63,8 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
             CrupyLexerException(
                 'Stream: line 1, column 6\n'
                 'abcdef ijkl\n'
-                '     ^\n'
-                'CrupyLexerOpText: Unable to match the text \'dex\''
+                '~~~~~^\n'
+                'CrupyLexerOpSeq: Unable to validate the operation number 2'
             ),
             (parser, 'execute', 'entry'),
         )

@@ -38,10 +38,27 @@ class CrupyStreamContext():
         self.index  = index
         self.lineno = lineno
         self.column = column
-        self.readded = 0
+        self.index_start = index
 
     def __gt__(self, context: CrupyStreamContext) -> bool:
         return self.index > context.index
+
+    def __str__(self) -> str:
+        info  = f"<{type(self).__name__}: "
+        info += f"index={self.index}, "
+        info += f"lineno={self.lineno}, "
+        info += f"column={self.column}, "
+        info += f"index_start={self.index_start}>"
+        return info
+
+    #---
+    # Public properties
+    #---
+
+    @property
+    def has_read(self) -> int:
+        """ calculated the readded counter """
+        return self.index - self.index_start
 
     #---
     # Public methods
@@ -51,8 +68,8 @@ class CrupyStreamContext():
 
     def peek_char(self) -> str|None:
         """ return the current char """
-        if self.index < self._stream.size:
-            return chr(self._stream[self.index] & 0xff)
+        if curr := self._stream[self.index]:
+            return chr(curr & 0xff)
         return None
 
     def read_char(self) -> str|None:
@@ -64,7 +81,6 @@ class CrupyStreamContext():
             self.column  = 0
         self.index  += 1
         self.column += 1
-        self.readded += 1
         return curr
 
     ## error handling
@@ -73,14 +89,20 @@ class CrupyStreamContext():
         """ generate error context information
         """
         error = f"Stream: line {self.lineno}, column {self.column}\n"
-        i = self.index - (self.column - 1)
-        while i < self._stream.size:
-            if (curr := chr(self._stream[i] & 0xff)) in '\r\n':
+        line_index_start = self.index - (self.column - 1)
+        line_index_stop = line_index_start
+        while True:
+            if not (curr := self._stream[line_index_stop]):
                 break
-            error += curr
-            i += 1
+            if (curr_char := chr(curr & 0xff)) in '\r\n':
+                break
+            error += curr_char
+            line_index_stop += 1
         error += '\n'
-        error += f"{' ' * (self.column - 1)}^"
+        while line_index_start < self.index:
+            error += '~' if line_index_start >= self.index_start else ' '
+            line_index_start += 1
+        error += '^'
         return error
 
     ## context validate short-cut

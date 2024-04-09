@@ -74,7 +74,7 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
             CrupyLexerException(
                 'Stream: line 1, column 6\n'
                 'abcdexxx\n'
-                '     ^\n'
+                '~~~~~^\n'
                 'CrupyLexerOpOr: Unable to find an alternative that match '
                 'the provided stream. Reason:\n'
                 'CrupyLexerOpText: Unable to match the text \'abcdef\''

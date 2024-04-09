@@ -53,19 +53,28 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
         """
         with parser.stream as context:
             token_list: list[CrupyParserNode] = []
-            for lexer in self._seq:
-                if issubclass(type(lexer), CrupyLexerAssertBase):
-                    assert_op = cast(CrupyLexerAssertBase, lexer)
-                    if not assert_op(parser):
-                        self._raise_from_context(
-                            context,
-                            'Unable to validate the assertion '
-                            f"{assert_op.name}"
-                        )
-                    continue
-                token_list.append(
-                   cast(CrupyLexerOpBase, lexer)(parser)
-                )
+            for i, lexer in enumerate(self._seq):
+                try:
+                    if issubclass(type(lexer), CrupyLexerAssertBase):
+                        assert_op = cast(CrupyLexerAssertBase, lexer)
+                        if not assert_op(parser):
+                            self._raise_from_context(
+                                context,
+                                'Unable to validate the assertion '
+                                f"{assert_op.name}"
+                            )
+                        continue
+                    token_list.append(
+                        cast(CrupyLexerOpBase, lexer)(parser)
+                    )
+                except CrupyLexerException as err:
+                    context.index = err.context.index
+                    context.lineno = err.context.lineno
+                    context.column = err.context.column
+                    self._raise_from_context(
+                        context,
+                        f"Unable to validate the operation number {i + 1}",
+                    )
             return CrupyParserNodeLexSeq(
                 context = context.validate(),
                 seq     = token_list,

@@ -63,5 +63,44 @@ class CrupyUnittestStream(CrupyUnittestBase):
                 context.generate_error_log(),
                 'Stream: line 1, column 3\n'
                 'abcdef\n'
-                '  ^'
+                '~~^'
+            )
+
+    def test_error_context_multiline(self) -> None:
+        """ check context error generation in multiline
+        """
+        stream = CrupyStream.from_any('abc\noui')
+        with stream as context:
+            self.assertEqual(context.read_char(), 'a')
+            self.assertEqual(context.read_char(), 'b')
+            context.validate()
+        with stream as context:
+            self.assertEqual(context.read_char(), 'c')
+            self.assertEqual(context.read_char(), '\n')
+            self.assertEqual(context.read_char(), 'o')
+            self.assertEqual(
+                context.generate_error_log(),
+                'Stream: line 2, column 2\n'
+                'oui\n'
+                '~^'
+            )
+
+    def test_error_context_longline(self) -> None:
+        """ check context error generation in longline
+        """
+        stream = CrupyStream.from_any('abc oui')
+        with stream as context:
+            self.assertEqual(context.read_char(), 'a')
+            self.assertEqual(context.read_char(), 'b')
+            self.assertEqual(context.read_char(), 'c')
+            self.assertEqual(context.read_char(), ' ')
+            context.validate()
+        with stream as context:
+            self.assertEqual(context.read_char(), 'o')
+            self.assertEqual(context.read_char(), 'u')
+            self.assertEqual(
+                context.generate_error_log(),
+                'Stream: line 1, column 7\n'
+                'abc oui\n'
+                '    ~~^'
             )

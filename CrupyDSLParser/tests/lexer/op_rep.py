@@ -97,10 +97,10 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
             CrupyLexerException(
                 'Stream: line 1, column 9\n'
                 'abcdefijabcdefijklnm\n'
-                '        ^\n'
+                '~~~~~~~~^\n'
                 'CrupyLexerOpRep1N: Unable to perform at least one '
                 'repetition of the sequence. Reason:\n'
-                'CrupyLexerOpText: Unable to match the text \'ijk\''
+                'CrupyLexerOpRep1N: Unable to validate the operation number 3'
             ),
             (parser, 'execute', 'entry'),
         )
