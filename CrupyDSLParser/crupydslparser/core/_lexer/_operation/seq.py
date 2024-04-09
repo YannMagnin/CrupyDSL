@@ -1,10 +1,10 @@
 """
 crupydslparser.core._lexer._operation.seq   - sequence operation
 """
-__all__ = (
+__all__ = [
     'CrupyParserNodeLexSeq',
     'CrupyLexerOpSeq',
-)
+]
 from typing import Any, cast
 
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase

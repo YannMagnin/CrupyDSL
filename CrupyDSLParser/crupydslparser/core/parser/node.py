@@ -1,9 +1,9 @@
 """
 crupydslparser.core.parser.node     - parser node base class
 """
-__all__ = (
+__all__ = [
     'CrupyParserNode',
-)
+]
 from typing import Any, get_origin
 
 from crupydslparser.core.parser.exception import CrupyParserException

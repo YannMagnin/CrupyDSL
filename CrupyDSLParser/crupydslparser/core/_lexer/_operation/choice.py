@@ -1,9 +1,9 @@
 """
 crupydslparser.core._lexer._operation.choice    - lexer or operation
 """
-__all__ = (
+__all__ = [
     'CrupyLexerOpOr',
-)
+]
 from typing import Any
 
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase

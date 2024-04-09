@@ -1,9 +1,9 @@
 """
 crupydslparser.core.grammar.base     - base grammar class
 """
-__all__ = (
+__all__ = [
     'CrupyGrammarBase',
-)
+]
 from typing import Optional, Any, IO
 
 from crupydslparser.core._stream import CrupyStream

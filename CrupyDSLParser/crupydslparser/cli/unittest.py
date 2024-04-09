@@ -1,9 +1,9 @@
 """
 crupydslparser.cli.unittest     - unittest framework
 """
-__all__ = (
+__all__ = [
     'crupydslparser_cli_unittest_entry',
-)
+]
 from typing import NoReturn, Optional
 import sys
 

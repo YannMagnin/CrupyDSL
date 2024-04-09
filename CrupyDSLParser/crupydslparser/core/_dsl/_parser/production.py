@@ -1,9 +1,9 @@
 """
 crupydslparser.core._dsl._parser.production  - DSL production hook
 """
-__all__ = (
+__all__ = [
     'dsl_production_hook',
-)
+]
 
 from crupydslparser.core.parser import CrupyParserNode
 

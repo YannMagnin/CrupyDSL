@@ -1,9 +1,9 @@
 """
 crupydslparser.core._dsl.compile     - DSL compile abstraction
 """
-__all__ = (
+__all__ = [
     'crupy_dsl_compile',
-)
+]
 from typing import Any
 
 #---

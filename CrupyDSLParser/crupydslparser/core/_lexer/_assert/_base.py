@@ -1,9 +1,9 @@
 """
 crupydslparser.core._lexer._assert._base    - Lexer assert abstraction
 """
-__all__ = (
+__all__ = [
     'CrupyLexerAssertBase',
-)
+]
 from typing import Any
 from abc import ABC, abstractmethod
 

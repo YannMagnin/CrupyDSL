@@ -1,9 +1,9 @@
 """
 crupydslparser.core._dsl.parse   - DSL parser abstraction
 """
-__all__ = (
+__all__ = [
     'crupy_dsl_parse',
-)
+]
 from typing import Any
 
 #from crupydslparser.core._stream import CrupyStream

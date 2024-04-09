@@ -1,9 +1,9 @@
 """
 crupydslparser.core._lexer._operation._base - Lexer operation abstraction
 """
-__all__ = (
+__all__ = [
     'CrupyLexerOpBase',
-)
+]
 from typing import Any, NoReturn
 from abc import ABC, abstractmethod
 

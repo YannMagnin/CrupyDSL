@@ -6,9 +6,9 @@ crupydslparser.core.stream.strea     - crupy stream abstraction
 # 'Self' type, but it's more explicit)
 from __future__ import annotations
 
-__all__ = (
+__all__ = [
     'CrupyStream',
-)
+]
 from typing import Any, IO
 from mmap import mmap, ACCESS_READ, ACCESS_WRITE
 from dataclasses import dataclass

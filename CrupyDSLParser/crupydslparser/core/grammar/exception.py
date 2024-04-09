@@ -1,9 +1,9 @@
 """
 crupydslparser.core.grammar.exception    - general grammar exception class
 """
-__all__ = (
+__all__ = [
     'CrupyGrammarException',
-)
+]
 
 from crupydslparser.core.exception import CrupyDSLCoreException
 

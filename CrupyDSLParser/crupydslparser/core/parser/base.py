@@ -5,9 +5,9 @@ crupydslparser.core._parser.base    - parser base class
 # Used as a workaround for the cyclic-import with the `CrupyLexer` class
 from __future__ import annotations
 
-__all__ = (
+__all__ = [
     'CrupyParserBase',
-)
+]
 from typing import Optional, IO, Any, TYPE_CHECKING, cast
 from collections.abc import Callable
 

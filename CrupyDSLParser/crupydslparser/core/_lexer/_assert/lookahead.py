@@ -1,10 +1,10 @@
 """
 crupydslparser.core._lexer._assert.lookahead    - lookehader assert
 """
-__all__ = (
+__all__ = [
     'CrupyLexerAssertLookaheadNegative',
     'CrupyLexerAssertLookaheadPositive',
-)
+]
 from typing import Any
 
 from crupydslparser.core._lexer._assert._base import CrupyLexerAssertBase

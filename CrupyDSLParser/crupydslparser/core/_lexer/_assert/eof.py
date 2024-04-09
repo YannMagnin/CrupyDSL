@@ -1,9 +1,9 @@
 """
 crupydslparser.core._lexer._assert.eof  - end-of-file assert
 """
-__all__ = (
+__all__ = [
     'CrupyLexerAssertEOF',
-)
+]
 
 from crupydslparser.core._lexer._assert._base import CrupyLexerAssertBase
 from crupydslparser.core.parser import CrupyParserBase

@@ -1,11 +1,11 @@
 """
 crupydslparser.core._lexer._operation.rep  - zero or more lexer operation
 """
-__all__ = (
+__all__ = [
     'CrupyParserNodeLexRep',
     'CrupyLexerOpRep0N',
     'CrupyLexerOpRep1N',
-)
+]
 from typing import Any
 
 from crupydslparser.core._lexer.exception import CrupyLexerException

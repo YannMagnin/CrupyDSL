@@ -1,9 +1,9 @@
 """
 crupydslparser.core._dsl._rules  - define manually all grammar rule of DSL
 """
-__all__ = (
+__all__ = [
     'CRUPY_DSL_PARSER_OBJ',
-)
+]
 
 from crupydslparser.core.parser import CrupyParserBase
 from crupydslparser.core._lexer import (

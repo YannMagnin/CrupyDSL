@@ -1,9 +1,9 @@
 """
 crupydslparser.core._lexer._operation.builtin   - builtin operations
 """
-__all__ = (
+__all__ = [
     'CrupyLexerOpBuiltin',
-)
+]
 
 from crupydslparser.core._lexer.exception import CrupyLexerException
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase

@@ -7,9 +7,9 @@ crupydslparser.core._stream.context     - stream context information
 # declared
 from __future__ import annotations
 
-__all__ = (
+__all__ = [
     'CrupyStreamContext',
-)
+]
 from typing import TYPE_CHECKING
 
 # @note : Design mistake

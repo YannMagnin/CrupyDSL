@@ -1,7 +1,7 @@
 """
 crupydslparser.core._lexer   - Lexer tools
 """
-__all__ = (
+__all__ = [
     'CrupyLexerOpText',
     'CrupyLexerOpSeq',
     'CrupyLexerOpOr',
@@ -11,7 +11,7 @@ __all__ = (
     'CrupyLexerOpProductionCall',
     'CrupyLexerOpOptional',
     'CrupyLexerOpBuiltin',
-)
+]
 from crupydslparser.core._lexer._operation.text import CrupyLexerOpText
 from crupydslparser.core._lexer._operation.seq import CrupyLexerOpSeq
 from crupydslparser.core._lexer._operation.choice import CrupyLexerOpOr

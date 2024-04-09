@@ -1,9 +1,9 @@
 """
 crupydslparser.core._dsl._parser.eol  - DSL eol hook
 """
-__all__ = (
+__all__ = [
     'dsl_eol_hook',
-)
+]
 
 from crupydslparser.core.parser import CrupyParserNode
 

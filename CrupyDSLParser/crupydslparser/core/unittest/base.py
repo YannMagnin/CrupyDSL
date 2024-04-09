@@ -1,9 +1,9 @@
 """
 crupydslparser.core.unittest    - unittest abstraction
 """
-__all__ = (
+__all__ = [
     'CrupyUnittestBase',
-)
+]
 from typing import Any, Optional
 from collections.abc import Generator
 from pathlib import Path

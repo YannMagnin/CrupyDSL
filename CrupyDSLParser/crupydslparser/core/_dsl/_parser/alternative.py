@@ -1,9 +1,9 @@
 """
 crupydslparser.core._dsl._parser.alternative  - DSL alternative hook
 """
-__all__ = (
+__all__ = [
     'dsl_alternative_hook',
-)
+]
 
 from crupydslparser.core.parser import CrupyParserNode
 

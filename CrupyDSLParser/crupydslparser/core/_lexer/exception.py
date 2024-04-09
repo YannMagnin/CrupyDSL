@@ -6,9 +6,9 @@ crupydslparser.core._lexer.exception     - lexer exception class
 # exists
 from __future__ import annotations
 
-__all__ = (
+__all__ = [
     'CrupyLexerException',
-)
+]
 from typing import Optional
 
 from crupydslparser.core._stream import CrupyStreamContext

@@ -1,10 +1,10 @@
 """
 crupydslparser.core._lexer._operation.text  - Lexer text tool
 """
-__all__ = (
+__all__ = [
     'CrupyParserNodeLexText',
     'CrupyLexerOpText',
-)
+]
 
 from crupydslparser.core._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.core.parser import (

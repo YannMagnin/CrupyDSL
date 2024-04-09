@@ -1,9 +1,9 @@
 """
 crupy.core.stream.exception - crupy stream general exception
 """
-__all__ = (
+__all__ = [
     'CrupyStreamException',
-)
+]
 
 from crupydslparser.core.exception import CrupyDSLCoreException
 
