@@ -23,10 +23,13 @@ from crupydslparser.core._dsl._parser.dsl import dsl_dsl_hook
 from crupydslparser.core._dsl._parser.eol import dsl_eol_hook
 from crupydslparser.core._dsl._parser.space import dsl_space_hook
 from crupydslparser.core._dsl._parser.builtin import dsl_builtin_hook
-from crupydslparser.core._dsl._parser.string import dsl_string_hook
 from crupydslparser.core._dsl._parser.statement import dsl_statement_hook
 from crupydslparser.core._dsl._parser.group import dsl_group_hook
 from crupydslparser.core._dsl._parser.production import dsl_production_hook
+from crupydslparser.core._dsl._parser.string import (
+    dsl_string_hook,
+    dsl_string_hook_error,
+)
 from crupydslparser.core._dsl._parser.alternative import (
     dsl_alternative_hook,
 )
@@ -230,7 +233,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
         ),
     #
     # end-of-line
-    # > eol ::= "\n" | "\r\n"
+    # > eol ::= "\n" | "\r\n" | :eof:
     #
     'eol' : \
         CrupyLexerOpOr(
@@ -261,3 +264,7 @@ CRUPY_DSL_PARSER_OBJ.register_post_hook(
     'production_name',
     dsl_production_name_hook,
 )
+
+## hook error registration
+
+CRUPY_DSL_PARSER_OBJ.register_error_hook('string', dsl_string_hook_error)

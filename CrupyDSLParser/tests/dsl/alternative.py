@@ -25,10 +25,7 @@ class CrupyUnittestDslAlternative(CrupyUnittestBase):
         CRUPY_DSL_PARSER_OBJ.register_stream(
             '<test_oui> "test" :number: (?!"oui?")?'
         )
-        node = CRUPY_DSL_PARSER_OBJ.execute('alternative', False)
-        self.assertIsNotNone(node)
-        if node is None:
-            return
+        node = CRUPY_DSL_PARSER_OBJ.execute('alternative')
         self.assertEqual(node.type, 'dsl_alternative')
         self.assertEqual(len(node.seq), 4)
         self.assertEqual(node.seq[0].type, 'dsl_production_name')

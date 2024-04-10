@@ -23,10 +23,7 @@ class CrupyUnittestDslDsl(CrupyUnittestBase):
     def test_simple_dsl(self) -> None:
         """ simple valid case """
         CRUPY_DSL_PARSER_OBJ.register_stream("<entry> ::= \"yes\" <test>")
-        node = CRUPY_DSL_PARSER_OBJ.execute('crupy_dsl', True)
-        self.assertIsNotNone(node)
-        if node is None:
-            return
+        node = CRUPY_DSL_PARSER_OBJ.execute('crupy_dsl')
         self.assertEqual(node.type, 'dsl_entry')
         self.assertEqual(len(node.productions), 1)
         self.assertEqual(node.productions[0].type, 'dsl_production')
@@ -37,10 +34,7 @@ class CrupyUnittestDslDsl(CrupyUnittestBase):
         CRUPY_DSL_PARSER_OBJ.register_stream("""
             <entry> ::= "yes" <test>
         """)
-        node = CRUPY_DSL_PARSER_OBJ.execute('crupy_dsl', True)
-        self.assertIsNotNone(node)
-        if node is None:
-            return
+        node = CRUPY_DSL_PARSER_OBJ.execute('crupy_dsl')
         self.assertEqual(node.type, 'dsl_entry')
         self.assertEqual(len(node.productions), 1)
         self.assertEqual(node.productions[0].type, 'dsl_production')

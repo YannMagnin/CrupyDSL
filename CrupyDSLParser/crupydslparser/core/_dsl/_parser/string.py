@@ -3,9 +3,12 @@ crupydslparser._dsl._parser.string  - handle string production
 """
 __all__ = [
     'dsl_string_hook',
+    'dsl_string_hook_error'
 ]
+from typing import NoReturn, Any
 
 from crupydslparser.core.parser import CrupyParserNode
+#from crupydslparser.core._lexer import CrupyLexerException
 
 #---
 # Public
@@ -34,3 +37,10 @@ def dsl_string_hook(node: CrupyParserNode) -> CrupyParserNode:
         parent_node = node,
         text        = text,
     )
+
+def dsl_string_hook_error(err: Any) -> NoReturn:
+    """ string error hook
+    """
+    print('dls string error hook')
+    print(err)
+    raise err

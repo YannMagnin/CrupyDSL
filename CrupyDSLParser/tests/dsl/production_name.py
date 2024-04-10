@@ -23,14 +23,10 @@ class CrupyUnittestDslProdName(CrupyUnittestBase):
     def test_simple_success(self) -> None:
         """ simple valid case """
         CRUPY_DSL_PARSER_OBJ.register_stream('<oui_non><abcd><qwer_')
-        node1 = CRUPY_DSL_PARSER_OBJ.execute('production_name', False)
-        node2 = CRUPY_DSL_PARSER_OBJ.execute('production_name', False)
-        node3 = CRUPY_DSL_PARSER_OBJ.execute('production_name', False)
+        node1 = CRUPY_DSL_PARSER_OBJ.execute('production_name')
+        node2 = CRUPY_DSL_PARSER_OBJ.execute('production_name')
         self.assertIsNotNone(node1)
         self.assertIsNotNone(node2)
-        self.assertIsNone(node3)
-        if node1 is None or node2 is None:
-            return
         self.assertEqual(node1.type, 'dsl_production_name')
         self.assertEqual(node2.type, 'dsl_production_name')
         self.assertEqual(node1.production_name, 'oui_non')

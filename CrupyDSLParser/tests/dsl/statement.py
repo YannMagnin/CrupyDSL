@@ -25,10 +25,7 @@ class CrupyUnittestDslStatement(CrupyUnittestBase):
         CRUPY_DSL_PARSER_OBJ.register_stream(
             '<test_oui> | "coucou" | :any: <ekip>\n'
         )
-        node = CRUPY_DSL_PARSER_OBJ.execute('statement', False)
-        self.assertIsNotNone(node)
-        if node is None:
-            return
+        node = CRUPY_DSL_PARSER_OBJ.execute('statement')
         self.assertEqual(node.type, 'dsl_statement')
         self.assertEqual(len(node.alternatives), 3)
         alts = node.alternatives
@@ -50,10 +47,7 @@ class CrupyUnittestDslStatement(CrupyUnittestBase):
             | "coucou" \
             | :any: <coucou>
         """)
-        node = CRUPY_DSL_PARSER_OBJ.execute('statement', False)
-        self.assertIsNotNone(node)
-        if node is None:
-            return
+        node = CRUPY_DSL_PARSER_OBJ.execute('statement')
         self.assertEqual(node.type, 'dsl_statement')
         self.assertEqual(len(node.alternatives), 3)
         alts = node.alternatives
