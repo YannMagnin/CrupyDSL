@@ -99,9 +99,16 @@ class CrupyStreamContext():
             error += curr_char
             line_index_stop += 1
         error += '\n'
+        workaround = 0
         while line_index_start < self.index:
-            error += '~' if line_index_start >= self.index_start else ' '
+            if not (curr := self._stream[line_index_start]):
+                break
+            padd = '~' if line_index_start >= self.index_start else ' '
+            tabword = ('a' * workaround) + chr(curr & 0xff)
+            tabword = tabword.expandtabs()
+            error += padd * (len(tabword) - workaround)
             line_index_start += 1
+            workaround += 1
         error += '^'
         return error
 

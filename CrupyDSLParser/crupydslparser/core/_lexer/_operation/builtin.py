@@ -37,7 +37,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             'number',
             'symbol',
             'space',
-            'space_n',
+            'space_nl',
             'eof',
         ]:
             raise CrupyLexerException(
@@ -61,7 +61,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             'number'         : self._is_number,
             'symbol'         : self._is_symbol,
             'space'          : self._is_space,
-            'space_n'        : self._is_space,
+            'space_nl'       : self._is_space,
             'eof'            : self._is_end_of_file,
         }[self._operation](parser, self._operation)
 
@@ -83,7 +83,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             for test in (
                 (self._is_alphanum, 'alphanum'),
                 (self._is_symbol, 'ascii'),
-                (self._is_symbol, 'space_n'),
+                (self._is_space, 'space_n'),
             ):
                 try:
                     node = test[0](parser, test[1])
@@ -95,7 +95,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     pass
             self._raise_from_context(
                 context,
-                'Unable to validate the char as "any"'
+                'Unable to validate the current char as "any"'
             )
 
     def _is_alphanum(
@@ -109,19 +109,20 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             return self._is_number(parser, 'digit')
         except CrupyLexerException:
             pass
-        if target in ['alphanum', 'alphanum_upper']:#
+        if target in ['alphanum', 'alphanum_upper']:
             try:
                 return self._is_alpha(parser, 'alpha_upper')
             except CrupyLexerException:
                 pass
-        try:
-            return self._is_alpha(parser, 'alpha_lower')
-        except CrupyLexerException:
-            pass
+        if target != 'alphanum_upper':
+            try:
+                return self._is_alpha(parser, 'alpha_lower')
+            except CrupyLexerException:
+                pass
         with parser.stream as context:
             self._raise_from_context(
                 context,
-                'Unable to validate the current char as "alphanum"'
+                f'Unable to validate the current char as "{target}"'
             )
 
     def _is_alpha(
@@ -132,7 +133,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         """ check if alphabet
         """
         with parser.stream as context:
-            if not (curr := context.read_char()):
+            if not (curr := context.peek_char()):
                 self._raise_from_context(
                     context,
                     'Unable to validate current char as "alpha", no stream '
@@ -146,8 +147,9 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             if valid == 0:
                 self._raise_from_context(
                     context,
-                    'Unable to validate the current char as "alpha"',
+                    f'Unable to validate the current char as "{target}"',
                 )
+            context.read_char()
             return CrupyParserNodeLexText(
                 context = context.validate(),
                 text    = curr,
@@ -201,7 +203,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     'Unable to validate the current char as "symbol", no '
                     'stream available',
                 )
-            if not curr in "| !#$%&()*+,-./:;>=<?@[\\]^_`{}~\"":
+            if not curr in "|!#$%&()*+,-./:;>=<?@[\\]^_`{}~\"":
                 self._raise_from_context(
                     context,
                     'Unable to validate the current char as "symbol"',
@@ -226,11 +228,11 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     'Unable to validate the current char as "space", no '
                     'stream available',
                 )
-            space_list = " \t\v" if target == 'space_n' else " \t\v\r\n"
+            space_list = " \t" if target != 'space_nl' else " \t\r\n"
             if curr not in space_list:
                 self._raise_from_context(
                     context,
-                    'Unable to validate the current char as "space"',
+                    f'Unable to validate the current char as "{target}"',
                 )
             context.read_char()
             return CrupyParserNodeLexText(
