@@ -13,10 +13,8 @@ from typing import Any, IO
 from mmap import mmap, ACCESS_READ, ACCESS_WRITE
 from dataclasses import dataclass
 
-from crupydslparser.parser._stream import (
-    CrupyStreamContext,
-    CrupyStreamException,
-)
+from crupydslparser.parser._stream.context import CrupyStreamContext
+from crupydslparser.parser._stream.exception import CrupyStreamException
 
 #---
 # Internals

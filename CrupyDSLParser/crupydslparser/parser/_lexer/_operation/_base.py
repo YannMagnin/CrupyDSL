@@ -7,7 +7,7 @@ __all__ = [
 from typing import Any, NoReturn
 from abc import ABC, abstractmethod
 
-from crupydslparser.parser._lexer import CrupyLexerException
+from crupydslparser.parser._lexer.exception import CrupyLexerException
 from crupydslparser.parser._stream import CrupyStreamContext
 from crupydslparser.parser import (
     CrupyParserBase,

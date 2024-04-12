@@ -6,8 +6,8 @@ __all__ = (
 )
 
 from crupydsltester.unittest import CrupyUnittestBase
-from crupydsltester.parser import CrupyParserBase
-from crupydsltester._lexer import (
+from crupydslparser.parser import CrupyParserBase
+from crupydslparser.parser._lexer import (
     CrupyLexerOpBuiltin,
     CrupyLexerException,
 )

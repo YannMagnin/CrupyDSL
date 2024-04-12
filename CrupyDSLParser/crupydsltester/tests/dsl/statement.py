@@ -6,7 +6,7 @@ __all__ = [
 ]
 
 from crupydsltester.unittest import CrupyUnittestBase
-from crupydsltester._dsl._parser import CRUPY_DSL_PARSER_OBJ
+from crupydslparser.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
 
 #---
 # Public

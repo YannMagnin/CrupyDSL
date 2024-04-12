@@ -6,11 +6,11 @@ __all__ = (
 )
 
 from crupydsltester.unittest import CrupyUnittestBase
-from crupydsltester.parser import (
+from crupydslparser.parser import (
     CrupyParserBase,
     CrupyParserNode,
 )
-from crupydsltester._lexer import (
+from crupydslparser.parser._lexer import (
     CrupyLexerOpText,
     CrupyLexerOpOptional,
     CrupyLexerOpSeq,

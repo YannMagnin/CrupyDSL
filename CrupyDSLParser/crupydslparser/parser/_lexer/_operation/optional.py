@@ -6,7 +6,7 @@ __all__ = [
     'CrupyLexerOpOptional',
 ]
 
-from crupydslparser.parser._lexer import CrupyLexerException
+from crupydslparser.parser._lexer.exception import CrupyLexerException
 from crupydslparser.parser._lexer._operation.seq import CrupyLexerOpSeq
 from crupydslparser.parser import (
     CrupyParserBase,
