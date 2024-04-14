@@ -7,48 +7,28 @@ crupydslparser.parser._lexer.exception  - lexer exception class
 from __future__ import annotations
 
 __all__ = [
-    'CrupyLexerException',
+    'CrupyParserLexerException',
 ]
-from typing import Optional
 
-from crupydslparser.parser._stream import CrupyStreamContext
-from crupydslparser.parser.exception import CrupyParserException
+from crupydslparser.parser.exception import CrupyParserBaseException
+#from crupydslparser.parser._stream import CrupyStreamContext
 
 #---
 # Public
 #---
 
-class CrupyLexerException(CrupyParserException):
+class CrupyParserLexerException(CrupyParserBaseException):
     """ Crupy lexer exception class """
-    def __init__(
-        self,
-        message: str,
-        context: Optional[CrupyStreamContext] = None,
-    ) -> None:
-        reason = message
-        if context:
-            message = f"{context.generate_error_log()}\n{message}"
-        super().__init__(message)
-        self._context = context
-        self._reason = reason
 
-    #---
-    # Properties
-    #---
-
-    @property
-    def context(self) -> CrupyStreamContext:
-        """ retrurn the stream context
-        """
-        if self._context is not None:
-            return self._context
-        raise CrupyParserException(
-            'Accessing stream non existing stream context in lexer '
-            'exception'
-        )
-
-    @property
-    def reason(self) -> str:
-        """ return the reason of the exception
-        """
-        return self._reason
+    #@classmethod
+    #def from_context(
+    #    cls,
+    #    context: CrupyStreamContext,
+    #    error: str,
+    #) -> NoReturn:
+    #    """ raise generic lexer operation exception
+    #    """
+    #    raise CrupyLexerException(
+    #        message = f"{type(self).__name__}: {error}",
+    #        context = context,
+    #    )

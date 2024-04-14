@@ -5,13 +5,13 @@ __all__ = [
     'dsl_space_hook',
 ]
 
-from crupydslparser.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslSpace(CrupyParserNode):
+class CrupyParserNodeBaseDslSpace(CrupyParserNodeBase):
     """ space node
 
     @note
@@ -19,9 +19,9 @@ class CrupyParserNodeDslSpace(CrupyParserNode):
     to capture anything
     """
 
-def dsl_space_hook(node: CrupyParserNode) -> CrupyParserNode:
+def dsl_space_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     """ handle "space" node
     """
-    return CrupyParserNodeDslSpace(
+    return CrupyParserNodeBaseDslSpace(
         parent_node = node,
     )

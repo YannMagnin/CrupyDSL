@@ -6,14 +6,14 @@ __all__ = [
 ]
 
 from crupydsltester.unittest import CrupyUnittestBase
-from crupydslparser.parser._stream import CrupyStream
-from crupydslparser.parser import CrupyParserNode
+from crupydslparser.parser._stream.stream import CrupyStream
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeTest(CrupyParserNode):
+class CrupyParserNodeTest(CrupyParserNodeBase):
     """ node test """
     name:   str
 

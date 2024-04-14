@@ -5,18 +5,18 @@ __all__ = [
     'dsl_builtin_hook',
 ]
 
-from crupydslparser.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslBuiltin(CrupyParserNode):
+class CrupyParserNodeBaseDslBuiltin(CrupyParserNodeBase):
     """ builtin node
     """
     kind:   str
 
-def dsl_builtin_hook(node: CrupyParserNode) -> CrupyParserNode:
+def dsl_builtin_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     """ handle "builtin" node
     """
     assert node.type == 'lex_seq'
@@ -31,7 +31,7 @@ def dsl_builtin_hook(node: CrupyParserNode) -> CrupyParserNode:
         assert len(text) == 1
         assert text[0].type == 'lex_text'
         kind += text[0].text
-    return CrupyParserNodeDslBuiltin(
+    return CrupyParserNodeBaseDslBuiltin(
         parent_node = node,
         kind        = kind,
     )

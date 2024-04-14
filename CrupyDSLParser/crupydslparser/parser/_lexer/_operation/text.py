@@ -2,21 +2,21 @@
 crupydslparser.parser._lexer._operation.text  - Lexer text tool
 """
 __all__ = [
-    'CrupyParserNodeLexText',
+    'CrupyParserNodeBaseLexText',
     'CrupyLexerOpText',
 ]
 
 from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.parser import (
     CrupyParserBase,
-    CrupyParserNode,
+    CrupyParserNodeBase,
 )
 
 #---
 # Public
 #---
 
-class CrupyParserNodeLexText(CrupyParserNode):
+class CrupyParserNodeBaseLexText(CrupyParserNodeBase):
     """ string token information """
     text: str
 
@@ -28,7 +28,7 @@ class CrupyLexerOpText(CrupyLexerOpBase):
     def __init__(self, text: str) -> None:
         self._text = text
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
         """ try to strictly match the text
         """
         with parser.stream as context:
@@ -44,7 +44,7 @@ class CrupyLexerOpText(CrupyLexerOpBase):
                         f"Unable to match the text '{self._text}'",
                     )
                 context.read_char()
-            return CrupyParserNodeLexText(
+            return CrupyParserNodeBaseLexText(
                 context = context.validate(),
                 text    = self._text,
             )

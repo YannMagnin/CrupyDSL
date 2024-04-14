@@ -8,11 +8,11 @@ __all__ = [
 from crupydslparser.parser._lexer.exception import CrupyLexerException
 from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.parser._lexer._operation.text import (
-    CrupyParserNodeLexText,
+    CrupyParserNodeBaseLexText,
 )
 from crupydslparser.parser import (
     CrupyParserBase,
-    CrupyParserNode,
+    CrupyParserNodeBase,
 )
 
 #---
@@ -46,7 +46,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             )
         self._operation = operation
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
         """ handle builtin
         """
         return {
@@ -73,13 +73,13 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         self,
         parser: CrupyParserBase,
         _: str,
-    ) -> CrupyParserNode:
+    ) -> CrupyParserNodeBase:
         """ check any char
         """
         with parser.stream as context:
             if context.peek_char() == '\\':
                 context.read_char()
-            node: CrupyParserNode|None = None
+            node: CrupyParserNodeBase|None = None
             for test in (
                 (self._is_alphanum, 'alphanum'),
                 (self._is_symbol, 'ascii'),
@@ -87,7 +87,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             ):
                 try:
                     node = test[0](parser, test[1])
-                    return CrupyParserNodeLexText(
+                    return CrupyParserNodeBaseLexText(
                         context = context.validate(),
                         text    = node.text
                     )
@@ -102,7 +102,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         self,
         parser: CrupyParserBase,
         target: str,
-    ) -> CrupyParserNode:
+    ) -> CrupyParserNodeBase:
         """ check alphanum char
         """
         try:
@@ -129,7 +129,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         self,
         parser: CrupyParserBase,
         target: str,
-    ) -> CrupyParserNode:
+    ) -> CrupyParserNodeBase:
         """ check if alphabet
         """
         with parser.stream as context:
@@ -150,7 +150,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     f'Unable to validate the current char as "{target}"',
                 )
             context.read_char()
-            return CrupyParserNodeLexText(
+            return CrupyParserNodeBaseLexText(
                 context = context.validate(),
                 text    = curr,
             )
@@ -159,7 +159,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         self,
         parser: CrupyParserBase,
         target: str,
-    ) -> CrupyParserNode:
+    ) -> CrupyParserNodeBase:
         """ check if number or digit
         """
         with parser.stream as context:
@@ -184,7 +184,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     context,
                     f"Unable to validate the current char as \"{target}\"",
                 )
-            return CrupyParserNodeLexText(
+            return CrupyParserNodeBaseLexText(
                 context = context.validate(),
                 text    = number,
             )
@@ -193,7 +193,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         self,
         parser: CrupyParserBase,
         _: str,
-    ) -> CrupyParserNode:
+    ) -> CrupyParserNodeBase:
         """ check if symbol
         """
         with parser.stream as context:
@@ -209,7 +209,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     'Unable to validate the current char as "symbol"',
                 )
             context.read_char()
-            return CrupyParserNodeLexText(
+            return CrupyParserNodeBaseLexText(
                 context = context.validate(),
                 text    = curr,
             )
@@ -218,7 +218,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         self,
         parser: CrupyParserBase,
         target: str,
-    ) -> CrupyParserNode:
+    ) -> CrupyParserNodeBase:
         """ check if space
         """
         with parser.stream as context:
@@ -235,7 +235,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     f'Unable to validate the current char as "{target}"',
                 )
             context.read_char()
-            return CrupyParserNodeLexText(
+            return CrupyParserNodeBaseLexText(
                 context = context.validate(),
                 text    = curr,
             )
@@ -244,7 +244,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         self,
         parser: CrupyParserBase,
         _: str,
-    ) -> CrupyParserNode:
+    ) -> CrupyParserNodeBase:
         """ check if space
         """
         with parser.stream as context:
@@ -254,7 +254,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     'Unable to validate the current char as "EOF", '
                     'stream available',
                 )
-            return CrupyParserNodeLexText(
+            return CrupyParserNodeBaseLexText(
                 context = context.validate(),
                 text    = '',
             )

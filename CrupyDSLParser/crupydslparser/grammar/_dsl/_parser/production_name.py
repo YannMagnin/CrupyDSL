@@ -5,17 +5,17 @@ __all__ = [
     'dsl_production_name_hook',
 ]
 
-from crupydslparser.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslProductionName(CrupyParserNode):
+class CrupyParserNodeBaseDslProductionName(CrupyParserNodeBase):
     """ production name node """
     production_name: str
 
-def dsl_production_name_hook(node: CrupyParserNode) -> CrupyParserNode:
+def dsl_production_name_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     """ hook the `crupy_dsl_production_name` production
 
     @note
@@ -33,7 +33,7 @@ def dsl_production_name_hook(node: CrupyParserNode) -> CrupyParserNode:
         assert len(text) == 1
         assert text[0].type == 'lex_text'
         rule_name += text[0].text
-    return CrupyParserNodeDslProductionName(
+    return CrupyParserNodeBaseDslProductionName(
         context         = node.stream_context,
         production_name = rule_name,
     )

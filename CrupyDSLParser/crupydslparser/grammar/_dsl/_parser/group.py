@@ -5,19 +5,19 @@ __all__ = [
     'dsl_group_hook',
 ]
 
-from crupydslparser.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslGroup(CrupyParserNode):
+class CrupyParserNodeBaseDslGroup(CrupyParserNodeBase):
     """ group node """
     lookahead:  str|None
-    statement:  CrupyParserNode
+    statement:  CrupyParserNodeBase
     operation:  str|None
 
-def dsl_group_hook(node: CrupyParserNode) -> CrupyParserNode:
+def dsl_group_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     """ handle "group" node
     """
     assert node.type == 'lex_seq'
@@ -49,7 +49,7 @@ def dsl_group_hook(node: CrupyParserNode) -> CrupyParserNode:
             operation = 'one_plus'
         if node.seq[6].seq[0].text == '?':
             operation = 'optional'
-    return CrupyParserNodeDslGroup(
+    return CrupyParserNodeBaseDslGroup(
         parent_node = node,
         lookahead   = lookahead,
         statement   = node.seq[3],

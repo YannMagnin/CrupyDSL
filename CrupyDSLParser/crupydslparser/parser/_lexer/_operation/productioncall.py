@@ -8,7 +8,7 @@ __all__ = [
 from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.parser import (
     CrupyParserBase,
-    CrupyParserNode,
+    CrupyParserNodeBase,
 )
 
 #---
@@ -23,7 +23,7 @@ class CrupyLexerOpProductionCall(CrupyLexerOpBase):
     def __init__(self, production_name: str) -> None:
         self._production_name = production_name
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
         """ invoke another production rule
         """
         with parser.stream as context:

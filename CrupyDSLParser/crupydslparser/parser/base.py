@@ -8,13 +8,13 @@ from __future__ import annotations
 __all__ = [
     'CrupyParserBase',
 ]
-from typing import Optional, IO, Any, TYPE_CHECKING, cast
+from typing import Optional, IO, Any, NoReturn, TYPE_CHECKING, cast
 from collections.abc import Callable
 
 
 from crupydslparser.parser._stream import CrupyStream
-from crupydslparser.parser.exception import CrupyParserException
-from crupydslparser.parser.node import CrupyParserNode
+from crupydslparser.parser.exception import CrupyParserBaseException
+from crupydslparser.parser.node import CrupyParserNodeBase
 
 # @note : Design mistake
 #
@@ -49,11 +49,11 @@ class CrupyParserBase():
             self._production_book = production_book
         self._hook_postprocess_book: dict[
             str,
-            list[Callable[[CrupyParserNode], CrupyParserNode]],
+            list[Callable[[CrupyParserNodeBase], CrupyParserNodeBase]],
         ]= {}
         self._hook_error_book: dict[
             str,
-            list[Callable[[str], None]],
+            list[Callable[[CrupyParserBaseException], NoReturn]],
         ]= {}
 
     #---
@@ -65,7 +65,7 @@ class CrupyParserBase():
         """ return the current stream if any """
         if self._stream:
             return self._stream
-        raise CrupyParserException('No stream registered')
+        raise CrupyParserBaseException('No stream registered')
 
     @property
     def production_book(self) -> dict[str,CrupyLexerOpBase]:
@@ -81,22 +81,22 @@ class CrupyParserBase():
         target: str,
         production_name: str,
         *args: Any,
-    ) -> CrupyParserNode:
+    ) -> CrupyParserNodeBase:
         """ execute a hook if available
         """
         hook_book = getattr(self, f"_hook_{target}_book")
         if production_name not in hook_book:
             if target == 'postprocess':
-                return cast(CrupyParserNode, args[0])
+                return cast(CrupyParserNodeBase, args[0])
             raise args[0]
         try:
             for hook in hook_book[production_name]:
-                node = cast(CrupyParserNode, hook(*args))
+                node = cast(CrupyParserNodeBase, hook(*args))
             return node
         except Exception as err:
             if target == 'error':
                 raise err
-            raise CrupyParserException(
+            raise CrupyParserBaseException(
                 f"{args[0].stream_context.traceback()}\n"
                 '\n'
                 f"Exception durring '{hook.__name__}' hook, abort\n"
@@ -107,17 +107,17 @@ class CrupyParserBase():
     # Public methods
     #---
 
-    def execute(self, production_name: str) -> CrupyParserNode:
+    def execute(self, production_name: str) -> CrupyParserNodeBase:
         """ execute a particular production name
         """
         if production_name not in self._production_book:
-            raise CrupyParserException(
+            raise CrupyParserBaseException(
                 'Unable to find the primary production entry name '
                 f"'{production_name}'"
             )
         try:
             node = self._production_book[production_name](self)
-        except CrupyParserException as err:
+        except CrupyParserBaseException as err:
             self._execute_hook('error', production_name, err)
         return self._execute_hook('postprocess', production_name, node)
 
@@ -132,12 +132,12 @@ class CrupyParserBase():
     def register_post_hook(
         self,
         production_name: str,
-        hook: Callable[[CrupyParserNode],CrupyParserNode],
+        hook: Callable[[CrupyParserNodeBase],CrupyParserNodeBase],
     ) -> None:
         """ register a new hook for a production
         """
         if production_name not in self._production_book:
-            raise CrupyParserException(
+            raise CrupyParserBaseException(
                 'Unable to find the primary production entry name '
                 f"'{production_name}'"
             )
@@ -148,12 +148,12 @@ class CrupyParserBase():
     def register_error_hook(
         self,
         production_name: str,
-        hook: Callable[[str],None],
+        hook: Callable[[CrupyParserBaseException],NoReturn],
     ) -> None:
         """ register a new hook for a production in case of error
         """
         if production_name not in self._production_book:
-            raise CrupyParserException(
+            raise CrupyParserBaseException(
                 'Unable to find the primary production entry name '
                 f"'{production_name}'"
             )

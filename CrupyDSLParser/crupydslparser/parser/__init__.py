@@ -2,10 +2,10 @@
 crupydslparser.parser   - parser object
 """
 __all__ = [
-    'CrupyParserException',
-    'CrupyParserNode',
+    'CrupyParserBaseException',
+    'CrupyParserNodeBase',
     'CrupyParserBase',
 ]
-from crupydslparser.parser.exception import CrupyParserException
-from crupydslparser.parser.node import CrupyParserNode
+from crupydslparser.parser.exception import CrupyParserBaseException
+from crupydslparser.parser.node import CrupyParserNodeBase
 from crupydslparser.parser.base import CrupyParserBase

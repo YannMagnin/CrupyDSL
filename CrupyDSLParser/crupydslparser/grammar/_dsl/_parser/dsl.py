@@ -5,17 +5,17 @@ __all__ = [
     'dsl_dsl_hook',
 ]
 
-from crupydslparser.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslEntry(CrupyParserNode):
+class CrupyParserNodeBaseDslEntry(CrupyParserNodeBase):
     """ dsl node """
-    productions:    list[CrupyParserNode]
+    productions:    list[CrupyParserNodeBase]
 
-def dsl_dsl_hook(node: CrupyParserNode) -> CrupyParserNode:
+def dsl_dsl_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     """ handle "dsl" node
     """
     assert node.type == 'lex_seq'
@@ -23,12 +23,12 @@ def dsl_dsl_hook(node: CrupyParserNode) -> CrupyParserNode:
     assert node.seq[0].type == 'lex_rep'
     assert node.seq[1].type == 'lex_optional'
     assert node.seq[2].type == 'lex_text'
-    production_list: list[CrupyParserNode] = []
+    production_list: list[CrupyParserNodeBase] = []
     for seq in node.seq[0].rep:
         assert len(seq) == 1
         assert seq[0].type == 'dsl_production'
         production_list.append(seq[0])
-    return CrupyParserNodeDslEntry(
+    return CrupyParserNodeBaseDslEntry(
         parent_node = node,
         productions = production_list,
     )

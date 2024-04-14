@@ -269,4 +269,4 @@ CRUPY_DSL_PARSER_OBJ.register_post_hook(
 
 ## hook error registration
 
-#CRUPY_DSL_PARSER_OBJ.register_error_hook('string', dsl_string_hook_error)
+CRUPY_DSL_PARSER_OBJ.register_error_hook('string', dsl_string_hook_error)

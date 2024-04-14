@@ -2,7 +2,7 @@
 crupydslparser.parser._lexer._operation.rep  - zero or more lexer operation
 """
 __all__ = [
-    'CrupyParserNodeLexRep',
+    'CrupyParserNodeBaseLexRep',
     'CrupyLexerOpRep0N',
     'CrupyLexerOpRep1N',
 ]
@@ -12,7 +12,7 @@ from crupydslparser.parser._lexer.exception import CrupyLexerException
 from crupydslparser.parser._lexer._operation.seq import CrupyLexerOpSeq
 from crupydslparser.parser import (
     CrupyParserBase,
-    CrupyParserNode,
+    CrupyParserNodeBase,
 )
 
 #---
@@ -35,10 +35,10 @@ class _CrupyLexerOpRepxN(CrupyLexerOpSeq):
     def _core_rep(
         self,
         parser: CrupyParserBase,
-    ) -> list[list[CrupyParserNode]]:
+    ) -> list[list[CrupyParserNodeBase]]:
         """ execute all lexer operation
         """
-        rep: list[list[CrupyParserNode]] = []
+        rep: list[list[CrupyParserNodeBase]] = []
         while True:
             with parser.stream as context:
                 try:
@@ -54,20 +54,20 @@ class _CrupyLexerOpRepxN(CrupyLexerOpSeq):
 
 ## nodes
 
-class CrupyParserNodeLexRep(CrupyParserNode):
+class CrupyParserNodeBaseLexRep(CrupyParserNodeBase):
     """ sequence token information """
-    rep: list[list[CrupyParserNode]]
+    rep: list[list[CrupyParserNodeBase]]
 
 ## operations
 
 class CrupyLexerOpRep0N(_CrupyLexerOpRepxN):
     """ required at least one repetition
     """
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
         """ execute lexer operation and require at least one sequence
         """
         with parser.stream as context:
-            return CrupyParserNodeLexRep(
+            return CrupyParserNodeBaseLexRep(
                 context = context.validate(),
                 rep     = self._core_rep(parser),
             )
@@ -75,7 +75,7 @@ class CrupyLexerOpRep0N(_CrupyLexerOpRepxN):
 class CrupyLexerOpRep1N(_CrupyLexerOpRepxN):
     """ required at least one repetition
     """
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
         """ execute lexer operation and require at least one sequence
         """
         with parser.stream as context:
@@ -91,7 +91,7 @@ class CrupyLexerOpRep1N(_CrupyLexerOpRepxN):
                     'sequence. Reason:\n'
                     f"{self._error.reason}"
                 )
-            return CrupyParserNodeLexRep(
+            return CrupyParserNodeBaseLexRep(
                 context = context.validate(),
                 rep     = req,
             )

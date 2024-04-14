@@ -5,13 +5,13 @@ __all__ = [
     'dsl_eol_hook',
 ]
 
-from crupydslparser.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslEol(CrupyParserNode):
+class CrupyParserNodeBaseDslEol(CrupyParserNodeBase):
     """ eol node
 
     @note
@@ -19,9 +19,9 @@ class CrupyParserNodeDslEol(CrupyParserNode):
     to capture anything
     """
 
-def dsl_eol_hook(node: CrupyParserNode) -> CrupyParserNode:
+def dsl_eol_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     """ handle "eol" node
     """
-    return CrupyParserNodeDslEol(
+    return CrupyParserNodeBaseDslEol(
         parent_node = node,
     )

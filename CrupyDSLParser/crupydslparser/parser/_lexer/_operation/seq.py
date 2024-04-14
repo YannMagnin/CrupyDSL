@@ -2,7 +2,7 @@
 crupydslparser.parser._lexer._operation.seq - sequence operation
 """
 __all__ = [
-    'CrupyParserNodeLexSeq',
+    'CrupyParserNodeBaseLexSeq',
     'CrupyLexerOpSeq',
 ]
 from typing import Any, cast
@@ -12,16 +12,16 @@ from crupydslparser.parser._lexer._assert._base import CrupyLexerAssertBase
 from crupydslparser.parser._lexer.exception import CrupyLexerException
 from crupydslparser.parser import (
     CrupyParserBase,
-    CrupyParserNode,
+    CrupyParserNodeBase,
 )
 
 #---
 # Public
 #---
 
-class CrupyParserNodeLexSeq(CrupyParserNode):
+class CrupyParserNodeBaseLexSeq(CrupyParserNodeBase):
     """ sequence token information """
-    seq: list[CrupyParserNode]
+    seq: list[CrupyParserNodeBase]
 
 
 # allow to few methods and unused private methods
@@ -48,11 +48,11 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
                 'not sequence has been presented'
             )
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
         """ execute all lexer operation
         """
         with parser.stream as context:
-            token_list: list[CrupyParserNode] = []
+            token_list: list[CrupyParserNodeBase] = []
             for i, lexer in enumerate(self._seq):
                 try:
                     if issubclass(type(lexer), CrupyLexerAssertBase):
@@ -75,7 +75,7 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
                         context,
                         f"Unable to validate the operation number {i + 1}",
                     )
-            return CrupyParserNodeLexSeq(
+            return CrupyParserNodeBaseLexSeq(
                 context = context.validate(),
                 seq     = token_list,
             )

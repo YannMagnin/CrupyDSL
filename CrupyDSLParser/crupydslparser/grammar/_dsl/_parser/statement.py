@@ -5,17 +5,17 @@ __all__ = [
     'dsl_statement_hook',
 ]
 
-from crupydslparser.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslStatement(CrupyParserNode):
+class CrupyParserNodeBaseDslStatement(CrupyParserNodeBase):
     """ statement node """
-    alternatives:    list[CrupyParserNode]
+    alternatives:    list[CrupyParserNodeBase]
 
-def dsl_statement_hook(node: CrupyParserNode) -> CrupyParserNode:
+def dsl_statement_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     """ handle "statement" node
     """
     assert node.type == 'lex_seq'
@@ -33,7 +33,7 @@ def dsl_statement_hook(node: CrupyParserNode) -> CrupyParserNode:
         assert rep[2].type == 'dsl_space'
         assert rep[3].type == 'dsl_alternative'
         alternatives.append(rep[3])
-    return CrupyParserNodeDslStatement(
+    return CrupyParserNodeBaseDslStatement(
         parent_node     = node,
         alternatives    = alternatives,
     )

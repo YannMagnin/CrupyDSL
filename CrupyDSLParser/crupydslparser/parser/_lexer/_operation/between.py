@@ -2,21 +2,21 @@
 crupydslparser.parser._lexer._operation.between - Lexer between operation
 """
 __all__ = [
-    'CrupyParserNodeLexBetween',
+    'CrupyParserNodeBaseLexBetween',
     'CrupyLexerOpBetween',
 ]
 
 from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.parser import (
     CrupyParserBase,
-    CrupyParserNode,
+    CrupyParserNodeBase,
 )
 
 #---
 # Public
 #---
 
-class CrupyParserNodeLexBetween(CrupyParserNode):
+class CrupyParserNodeBaseLexBetween(CrupyParserNodeBase):
     """ string node information """
     text: str
 
@@ -28,7 +28,7 @@ class CrupyLexerOpBetween(CrupyLexerOpBase):
     def __init__(self, delimiter: str) -> None:
         self._delimiter = delimiter
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
         """ try to strictly match the text
         """
         with parser.stream as context:
@@ -47,7 +47,7 @@ class CrupyLexerOpBetween(CrupyLexerOpBase):
                 if curr == self._delimiter:
                     break
                 content += curr
-            return CrupyParserNodeLexBetween(
+            return CrupyParserNodeBaseLexBetween(
                 context = context.validate(),
                 text    = content,
             )

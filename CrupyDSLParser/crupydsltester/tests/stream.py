@@ -6,7 +6,7 @@ __all__ = (
 )
 
 from crupydsltester.unittest import CrupyUnittestBase
-from crupydslparser.parser._stream import CrupyStream
+from crupydslparser.parser._stream.stream import CrupyStream
 
 #---
 # Public

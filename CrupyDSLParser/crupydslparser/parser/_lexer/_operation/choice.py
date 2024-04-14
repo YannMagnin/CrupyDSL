@@ -10,7 +10,7 @@ from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.parser._lexer.exception import CrupyLexerException
 from crupydslparser.parser import (
     CrupyParserBase,
-    CrupyParserNode,
+    CrupyParserNodeBase,
 )
 
 #---
@@ -38,7 +38,7 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
                 "because not sequence has been presented"
             )
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNode:
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
         """ try to match at least one of the two lexer operation
         """
         best_choice_error: CrupyLexerException|None = None

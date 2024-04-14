@@ -8,19 +8,19 @@ __all__ = [
 from typing import NoReturn
 
 from crupydslparser.parser import (
-    CrupyParserNode,
-    CrupyParserException,
+    CrupyParserNodeBase,
+    CrupyParserBaseException,
 )
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslString(CrupyParserNode):
+class CrupyParserNodeBaseDslString(CrupyParserNodeBase):
     """ DSL "string" node """
     text:   str
 
-def dsl_string_hook(node: CrupyParserNode) -> CrupyParserNode:
+def dsl_string_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     """ handle `string` node
     """
     assert node.type == 'lex_seq'
@@ -35,14 +35,44 @@ def dsl_string_hook(node: CrupyParserNode) -> CrupyParserNode:
         assert len(seq) == 1
         assert seq[0].type == 'lex_text'
         text += seq[0].text
-    return CrupyParserNodeDslString(
+    return CrupyParserNodeBaseDslString(
         parent_node = node,
         text        = text,
     )
 
-def dsl_string_hook_error(err: CrupyParserException) -> NoReturn:
+def dsl_string_hook_error(err: CrupyParserBaseException) -> NoReturn:
     """ string error hook
     """
-    print('dls string error hook')
-    print(err)
-    raise err
+    assert err.type == 'lexer_op_seq'
+    if err.validated_operation == 0:
+        raise CrupyParserBaseException(
+            'Parsing exception occured:\n'
+            '\n'
+            f"{err.context.generate_error_log()}\n"
+            '\n'
+            'SyntaxError: missing starting quote\n'
+        )
+    if err.validated_operation == 1:
+        raise CrupyParserBaseException(
+            'Parsing exception occured:\n'
+            '\n'
+            f"{err.context.generate_error_log()}\n"
+            '\n'
+            'SyntaxError: unable to capture string content\n'
+        )
+    if err.validated_operation == 2:
+        raise CrupyParserBaseException(
+            'Parsing exception occured:\n'
+            '\n'
+            f"{err.context.generate_error_log()}\n"
+            '\n'
+            'SyntaxError: missing enclosing quote\n'
+        )
+    raise CrupyParserBaseException(
+        'Parsing exception occured:\n'
+        '\n'
+        f"{err.context.generate_error_log()}\n"
+        '\n'
+        'InternalError: unsupported sequence, too many validated '
+        f"operation ({err.validated_operation} > 2)"
+    )
