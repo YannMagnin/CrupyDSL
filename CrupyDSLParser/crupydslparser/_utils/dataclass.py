@@ -25,7 +25,7 @@ class _CrupyDataclass():
     A detail that description with underscore will be ignored and en error
     will be raised if initialised through the object initialisation
     """
-    hook_init_book: dict[Any,Any] = {}
+    hook_init_book: dict[str,Any] = {}
 
     def __init__(self, /, **kwargs: Any) -> None:
         cls_annotations = self.__class__.__annotations__

@@ -4,7 +4,7 @@ crupydsltester.unittest    - unittest abstraction
 __all__ = [
     'CrupyUnittestBase',
 ]
-from typing import Any, Optional
+from typing import Any, Optional, NoReturn
 from collections.abc import Generator
 from pathlib import Path
 from importlib import import_module
@@ -187,3 +187,7 @@ class CrupyUnittestBase():
             self._error(
                 f"assertRaises: Unable to execute the request ('{err}')"
             )
+
+    def assertAlways(self, text: str) -> NoReturn:
+        """ always raise exception """
+        raise CrupyUnittestException(text)
