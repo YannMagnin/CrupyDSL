@@ -5,7 +5,7 @@ __all__ = [
     'CRUPY_DSL_PARSER_OBJ',
 ]
 
-from crupydslparser.parser import CrupyParserBase
+from crupydslparser.parser.base import CrupyParserBase
 from crupydslparser.parser._lexer import (
     CrupyLexerOpSeq,
     CrupyLexerOpText,

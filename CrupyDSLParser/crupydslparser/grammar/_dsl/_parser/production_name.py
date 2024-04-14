@@ -34,6 +34,6 @@ def dsl_production_name_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
         assert text[0].type == 'lex_text'
         rule_name += text[0].text
     return CrupyParserNodeBaseDslProductionName(
-        context         = node.stream_context,
+        context         = node.context,
         production_name = rule_name,
     )

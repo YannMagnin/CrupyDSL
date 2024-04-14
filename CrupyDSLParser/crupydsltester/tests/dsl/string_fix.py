@@ -7,7 +7,7 @@ __all__ = [
 
 from crupydsltester.unittest import CrupyUnittestBase
 from crupydslparser.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
-from crupydslparser.parser import CrupyParserBaseException
+from crupydslparser.parser.exception import CrupyParserBaseException
 
 #---
 # Public
@@ -39,14 +39,14 @@ class CrupyUnittestDslString(CrupyUnittestBase):
         """ test error handling """
         CRUPY_DSL_PARSER_OBJ.register_stream('"allo?')
         self.assertRaises(
-            CrupyParserBaseException(
+            cls_exc = CrupyParserBaseException,
+            request = (CRUPY_DSL_PARSER_OBJ, 'execute', 'string'),
+            error   = \
                 'Parsing exception occured:\n'
                 '\n'
                 'Stream: line 1, column 7\n'
                 '"allo?\n'
                 '~~~~~~^\n'
                 '\n'
-                'SyntaxError: invalid syntax, missing string closing quote'
-            ),
-            (CRUPY_DSL_PARSER_OBJ, 'execute', 'string'),
+                'SyntaxError: missing enclosing quote'
         )

@@ -53,7 +53,7 @@ class _CrupyLexerOpRepxN(CrupyLexerOpSeq):
 
 ## nodes
 
-class CrupyParserNodeBaseLexRep(CrupyParserNodeBase):
+class CrupyParserNodeLexRep(CrupyParserNodeBase):
     """ sequence token information """
     rep: list[list[CrupyParserNodeBase]]
 
@@ -70,7 +70,7 @@ class CrupyLexerOpRep0N(_CrupyLexerOpRepxN):
         """ execute lexer operation and require at least one sequence
         """
         with parser.stream as context:
-            return CrupyParserNodeBaseLexRep(
+            return CrupyParserNodeLexRep(
                 context = context.validate(),
                 rep     = self._core_rep(parser),
             )
@@ -97,7 +97,7 @@ class CrupyLexerOpRep1N(_CrupyLexerOpRepxN):
                         'unable to perform at least one repetition of '
                         f"the sequence. Reason: {self._error.reason}",
                 )
-            return CrupyParserNodeBaseLexRep(
+            return CrupyParserNodeLexRep(
                 context = context.validate(),
                 rep     = req,
             )

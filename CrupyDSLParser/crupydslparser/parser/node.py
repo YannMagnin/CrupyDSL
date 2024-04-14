@@ -76,10 +76,10 @@ class CrupyParserNodeBase():
         already been handled. The only thing that we should care, is to
         ensure that the context has been provided.
         """
-        if not self.context:
-            if not self.parent_node:
+        if not getattr(self, 'context', None):
+            if not (node := getattr(self, 'parent_node', None)):
                 raise CrupyParserBaseException(
                     'Missing \'context\' declaration for '
                     f"'{type(self).__name__}'"
                 )
-            self.context = self.parent_node.context
+            setattr(self, 'context', node.context)

@@ -97,7 +97,7 @@ class CrupyParserBase():
             if target == 'error':
                 raise err
             raise CrupyParserBaseException(
-                f"{args[0].stream_context.traceback()}\n"
+                f"{args[0].context.generate_error_log()}\n"
                 '\n'
                 f"Exception durring '{hook.__name__}' hook, abort\n"
                 f"{err}"
