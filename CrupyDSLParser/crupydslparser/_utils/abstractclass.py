@@ -89,7 +89,7 @@ def crupyabstractclass(origin_class: Any) -> Any:
         hook_init_func = f"__init_{origin_class.__name__}_hook"
         exec(
             f"def {hook_init_func}(self, *args, **kwargs):\n"
-             '    return _CrupyAbstractClass.__init_crupy_common__(\n'
+             '    _CrupyAbstractClass.__init_crupy_common__(\n'
              '        self        = self,\n'
             f"        class_type  = '{origin_class.__name__}',\n"
              '        args        = args,\n'

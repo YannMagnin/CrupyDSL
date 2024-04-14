@@ -120,7 +120,5 @@ def crupydataclass(
             origin_class.__str__ = _CrupyDataclass.__str__
         return origin_class
     if origin_class is None:
-        print('ORIGIN_CLASS IS NONE, RETURN WRAPPER')
         return wrap
-    print('ORIGIN_CLASS VALID, INVOKE WRAPPER')
     return wrap(origin_class)

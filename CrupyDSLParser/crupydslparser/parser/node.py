@@ -46,7 +46,7 @@ class CrupyParserNodeBase():
     for the creation of the object
     """
     type: str
-    parent_node: CrupyParserNodeBaseBase|None
+    parent_node: CrupyParserNodeBase|None
     context: CrupyStreamContext
 
     def __init__(self, /, **_: Any) -> None:
