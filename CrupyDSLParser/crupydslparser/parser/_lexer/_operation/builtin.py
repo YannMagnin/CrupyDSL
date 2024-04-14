@@ -8,7 +8,7 @@ __all__ = [
 from crupydslparser.parser._lexer.exception import CrupyLexerException
 from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.parser._lexer._operation.text import (
-    CrupyParserNodeBaseLexText,
+    CrupyParserNodeLexText,
 )
 from crupydslparser.parser import (
     CrupyParserBase,
@@ -21,6 +21,7 @@ from crupydslparser.parser import (
 
 # allow to few methods and unused private methods
 # pylint: disable=locally-disabled,R0903,W0238
+
 class CrupyLexerOpBuiltin(CrupyLexerOpBase):
     """ builtin operations
     """
@@ -87,7 +88,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             ):
                 try:
                     node = test[0](parser, test[1])
-                    return CrupyParserNodeBaseLexText(
+                    return CrupyParserNodeLexText(
                         context = context.validate(),
                         text    = node.text
                     )
@@ -150,7 +151,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     f'Unable to validate the current char as "{target}"',
                 )
             context.read_char()
-            return CrupyParserNodeBaseLexText(
+            return CrupyParserNodeLexText(
                 context = context.validate(),
                 text    = curr,
             )
@@ -184,7 +185,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     context,
                     f"Unable to validate the current char as \"{target}\"",
                 )
-            return CrupyParserNodeBaseLexText(
+            return CrupyParserNodeLexText(
                 context = context.validate(),
                 text    = number,
             )
@@ -209,7 +210,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     'Unable to validate the current char as "symbol"',
                 )
             context.read_char()
-            return CrupyParserNodeBaseLexText(
+            return CrupyParserNodeLexText(
                 context = context.validate(),
                 text    = curr,
             )
@@ -235,7 +236,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     f'Unable to validate the current char as "{target}"',
                 )
             context.read_char()
-            return CrupyParserNodeBaseLexText(
+            return CrupyParserNodeLexText(
                 context = context.validate(),
                 text    = curr,
             )
@@ -254,7 +255,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     'Unable to validate the current char as "EOF", '
                     'stream available',
                 )
-            return CrupyParserNodeBaseLexText(
+            return CrupyParserNodeLexText(
                 context = context.validate(),
                 text    = '',
             )

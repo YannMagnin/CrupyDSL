@@ -12,7 +12,7 @@ from typing import Optional, IO, Any, NoReturn, TYPE_CHECKING, cast
 from collections.abc import Callable
 
 
-from crupydslparser.parser._stream import CrupyStream
+from crupydslparser.parser._stream.stream import CrupyStream
 from crupydslparser.parser.exception import CrupyParserBaseException
 from crupydslparser.parser.node import CrupyParserNodeBase
 

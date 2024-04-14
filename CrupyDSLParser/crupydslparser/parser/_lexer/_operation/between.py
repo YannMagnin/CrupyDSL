@@ -7,21 +7,25 @@ __all__ = [
 ]
 
 from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
-from crupydslparser.parser import (
-    CrupyParserBase,
-    CrupyParserNodeBase,
-)
+from crupydslparser.parser.base import CrupyParserBase
+from crupydslparser.parser.node import CrupyParserNodeBase
+from crupydslparser.parser._lexer.exception import CrupyLexerException
 
 #---
 # Public
 #---
 
+# allow to few methods
+# pylint: disable=locally-disabled,R0903
+
 class CrupyParserNodeBaseLexBetween(CrupyParserNodeBase):
     """ string node information """
     text: str
 
-# allow to few methods
-# pylint: disable=locally-disabled,R0903
+class CrupyLexerOpBetweenException(CrupyLexerException):
+    """ custom exception handling """
+    step: int
+
 class CrupyLexerOpBetween(CrupyLexerOpBase):
     """ capture between delimiter
     """
@@ -33,16 +37,18 @@ class CrupyLexerOpBetween(CrupyLexerOpBase):
         """
         with parser.stream as context:
             if context.read_char() != self._delimiter:
-                self._raise_from_context(
-                    context,
-                    'Unable to validate the first delimiter',
+                raise CrupyLexerOpBetweenException(
+                    context = context,
+                    reason  = 'Unable to validate the first delimiter',
+                    step    = 0,
                 )
             content = ''
             while True:
                 if not (curr := context.read_char()):
-                    self._raise_from_context(
-                        context,
-                        'Reached end-of-file'
+                    raise CrupyLexerOpBetweenException(
+                        context = context,
+                        reason  = 'Reached end-of-file',
+                        step    = 1,
                     )
                 if curr == self._delimiter:
                     break

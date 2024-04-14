@@ -7,9 +7,9 @@ __all__ = [
 
 from crupydsltester.unittest import CrupyUnittestBase
 from crupydslparser.parser import CrupyParserBase
-from crupydslparser.parser._lexer import (
+from crupydslparser.parser._lexer._operation.text import (
     CrupyLexerOpText,
-    CrupyLexerException,
+    CrupyLexerOpTextException,
 )
 
 #---
@@ -48,13 +48,14 @@ class CrupyUnittestLexerText(CrupyUnittestBase):
         parser.register_stream('abcdefijkl')
         self.assertIsNotNone(parser.execute('entry0'))
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpTextException,
+            request = (parser, 'execute', 'entry1'),
+            error   = \
                 'Stream: line 1, column 7\n'
                 'abcdefijkl\n'
                 '      ^\n'
-                'CrupyLexerOpText: Unable to match the text \'jkl\''
-            ),
-            (parser, 'execute', 'entry1'),
+                'CrupyLexerOpTextException: Unable to match the text '
+                '\'jkl\'',
         )
 
     def test_eof_error(self) -> None:
@@ -66,11 +67,11 @@ class CrupyUnittestLexerText(CrupyUnittestBase):
         parser.register_stream('abcdefijkl')
         self.assertIsNotNone(parser.execute('entry0'))
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpTextException,
+            request = (parser, 'execute', 'entry1'),
+            error   = \
                 'Stream: line 1, column 11\n'
                 'abcdefijkl\n'
                 '      ~~~~^\n'
-                'CrupyLexerOpText: Reached end-of-file'
-            ),
-            (parser, 'execute', 'entry1'),
+                'CrupyLexerOpTextException: Reached end-of-file',
         )

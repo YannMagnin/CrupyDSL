@@ -7,28 +7,43 @@ crupydslparser.parser._lexer.exception  - lexer exception class
 from __future__ import annotations
 
 __all__ = [
-    'CrupyParserLexerException',
+    'CrupyLexerException',
 ]
 
 from crupydslparser.parser.exception import CrupyParserBaseException
-#from crupydslparser.parser._stream import CrupyStreamContext
+from crupydslparser.parser._stream.context import CrupyStreamContext
+from crupydslparser._utils import (
+    crupyabstractclass,
+    crupydataclass,
+)
 
 #---
 # Public
 #---
 
-class CrupyParserLexerException(CrupyParserBaseException):
-    """ Crupy lexer exception class """
+@crupyabstractclass
+@crupydataclass(
+    enable_repr = False,
+)
+class CrupyLexerException(CrupyParserBaseException):
+    """ Crupy lexer exception class
+    """
+    def __init__(
+        self,
+        reason: str,
+        context: CrupyStreamContext,
+    ) -> None:
+        """ simply wrap the parser base exception and handle dataclass
 
-    #@classmethod
-    #def from_context(
-    #    cls,
-    #    context: CrupyStreamContext,
-    #    error: str,
-    #) -> NoReturn:
-    #    """ raise generic lexer operation exception
-    #    """
-    #    raise CrupyLexerException(
-    #        message = f"{type(self).__name__}: {error}",
-    #        context = context,
-    #    )
+        Technical notes:
+        To support the `crupydataclass` decoration, we need to allow the
+        `args` and `kwargs` arguments, event if not used here. This because
+        the decorator will hook this constructor and drop-off all provided
+        arguments (even if processed).
+
+        (todo) : remove this limitation
+        """
+        super().__init__(
+            reason  = f"{self.__class__.__name__}: {reason}",
+            context = context,
+        )

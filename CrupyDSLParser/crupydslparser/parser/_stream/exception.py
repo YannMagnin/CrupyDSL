@@ -2,7 +2,7 @@
 crupy.parser._stream.exception  - crupy stream general exception
 """
 __all__ = [
-    'CrupyParserStreamException',
+    'CrupyStreamException',
 ]
 
 from crupydslparser.parser.exception import CrupyParserBaseException
@@ -11,5 +11,5 @@ from crupydslparser.parser.exception import CrupyParserBaseException
 # Public
 #---
 
-class CrupyParserStreamException(CrupyParserBaseException):
+class CrupyStreamException(CrupyParserBaseException):
     """ crupy stream general exception class """

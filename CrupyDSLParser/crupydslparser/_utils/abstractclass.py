@@ -50,7 +50,8 @@ class _CrupyAbstractClass():
             )
         if class_type not in _CrupyAbstractClass.hook_init_book:
             raise CrupyDSLCoreException(
-                f"class '{class_type}' has not been registered o(x_x)o"
+                f"internal error: class '{class_type}' has not been "
+                'registered o(x_x)o'
             )
         hook_init = _CrupyAbstractClass.hook_init_book[class_type]
         if hook_init is not None:
@@ -86,7 +87,7 @@ def crupyabstractclass(origin_class: Any) -> Any:
         _CrupyAbstractClass.hook_init_book[
             origin_class.__name__
         ] = origin_class.__init__
-        hook_init_func = f"__init_{origin_class.__name__}_hook"
+        hook_init_func = f"__init_abc_{origin_class.__name__}_hook"
         exec(
             f"def {hook_init_func}(self, *args, **kwargs):\n"
              '    _CrupyAbstractClass.__init_crupy_common__(\n'

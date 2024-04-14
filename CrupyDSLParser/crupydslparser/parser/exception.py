@@ -4,85 +4,48 @@ crupydslparser.parser.exception - parser exception class
 __all__ = [
     'CrupyParserBaseException',
 ]
-from typing import Optional, Any
-import re
+from typing import Optional
 
 from crupydslparser.exception import CrupyDSLCoreException
 from crupydslparser.parser._stream.context import CrupyStreamContext
+from crupydslparser._utils import (
+    crupynamedclass,
+    crupyabstractclass,
+)
 
 #---
 # Internals
 #---
 
+@crupyabstractclass
+@crupynamedclass(
+    generate_type   = True,
+    regex           = '^Crupy(?P<type>([A-Z][a-z]+)+)Exception$',
+)
 class _CrupyParserAbstractException(CrupyDSLCoreException):
-    """ Crupy parser exception class """
-    _type: str
-
-    #---
-    # Magic class
-    #---
-
-    def __init_subclass__(cls, *args: Any, **kwargs: Any) -> None:
-        """ check the subclass name validity
-        """
-        if not (
-            info := re.match(
-                '^CrupyParser(?P<name>([A-Z][a-z]+)+)Exception$',
-                cls.__name__,
-            )
-        ):
-            raise CrupyDSLCoreException(
-                f"Subclass '{cls.__name__}' is malformated"
-            )
-        cls._type = ''
-        for letter in info['name']:
-            if cls._type and letter.isupper():
-                cls._type += '_'
-            cls._type += letter.lower()
-
-    #---
-    # Magic object
-    #---
-
+    """ Crupy parser exception class
+    """
     def __init__(
         self,
-        message: str,
+        reason: str,
         context: Optional[CrupyStreamContext] = None,
     ) -> None:
         """ intialise the new object
         """
-        reason = message
+        reason_saved = reason
         if context:
-            message = f"{context.generate_error_log()}\n{message}"
-        super().__init__(message)
+            reason = f"{context.generate_error_log()}\n{reason}"
+        super().__init__(reason)
         self._context = context
-        self._reason = reason
+        self._reason = reason_saved
+        self._message = reason
 
-    def __getattr__(self, name: str) -> Any:
-        """ return the attribute `name`
-
-        @note
-        We are constraint to raise `AttributeError` if the attribute `name`
-        is not found, otherwise the `getattr(obj, key, default)` will never
-        return the default value
-        """
-        if name in self.__dict__:
-            return self.__dict__[name]
-        if name in self.__class__.__dict__:
-            return self.__class__.__dict__[name]
-        raise AttributeError(
-            f"Unable to fetch the attribute '{name}' for the class "
-            f"{self.__class__.__name__}"
-        )
+    #def __str__(self) -> str:
+    #    return self._message
 
     #---
     # Properties
     #---
-
-    @property
-    def type(self) -> str:
-        """ return the class type """
-        return self._type
 
     @property
     def context(self) -> CrupyStreamContext:

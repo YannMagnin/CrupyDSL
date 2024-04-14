@@ -19,13 +19,16 @@ from crupydslparser._utils import (
 # Public
 #---
 
-#@crupydataclass
-#@crupyabstractclass
-#@crupynamedclass(
-#    generate_type   = True,
-#    regex           = '^CrupyParserNode(?P<type>([A-Z][a-z]+)+)$',
-#    error           = 'malformated parser node subclass',
-#)
+# Allow too few public methods
+# pylint: disable=locally-disabled,R0903
+
+@crupydataclass
+@crupyabstractclass
+@crupynamedclass(
+    generate_type   = True,
+    regex           = '^CrupyParserNode(?P<type>([A-Z][a-z]+)+)$',
+    error           = 'malformated parser node subclass',
+)
 class CrupyParserNodeBase():
     """ Crupy parser node abstraction
 

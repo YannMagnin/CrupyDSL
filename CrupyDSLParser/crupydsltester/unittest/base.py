@@ -171,17 +171,22 @@ class CrupyUnittestBase():
     # Allow method to catch too general exception
     # pylint: disable=locally-disabled,W0718
 
-    def assertRaises(self, exc_obj: Any, request: tuple[Any,...]) -> None:
+    def assertRaises(
+        self,
+        cls_exc: Any,
+        request: tuple[Any,...],
+        error: str,
+    ) -> None:
         """ check if the request raise exception """
         try:
             getattr(request[0], request[1])(*request[2:])
             self._error(
-                f"WARNING: No exception {type(exc_obj).__name__} occured"
+                f"WARNING: No exception {type(cls_exc).__name__} occured"
             )
-        except exc_obj.__class__ as err:
-            if str(exc_obj) != str(err):
+        except cls_exc as err:
+            if error != str(err):
                 self._error(
-                    f"assertRaises:  mismatch '{exc_obj}' != '{err}'"
+                    f"assertRaises:  mismatch '{error}' != '{err}'"
                 )
         except Exception as err:
             self._error(

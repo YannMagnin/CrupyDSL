@@ -27,14 +27,32 @@ class _CrupyDataclass():
     """
     hook_init_book: dict[str,Any] = {}
 
-    def __init__(self, /, **kwargs: Any) -> None:
-        cls_annotations = self.__class__.__annotations__
+    def __init__(
+        self,
+        class_type: Any,
+        args: list[Any],
+        kwargs: dict[str,Any],
+    ) -> None:
+        """ special constructor to generate property based on annotation
+
+        Note that to perform this, we use some shenanigans:
+        - fetch all annotation from all subclasses
+        - validate the provided filed data type for the annotation
+        - generate the property
+        - invoke the original constructor if provided
+        """
+        cls_annotations_list = []
+        for mro_class_type in self.__class__.mro()[:-1]:
+            if getattr(mro_class_type, '__annotations__', None):
+                cls_annotations_list.append(mro_class_type.__annotations__)
+        cls_annotations: dict[str,Any] = {}
+        for annotation in cls_annotations_list[::-1]:
+            cls_annotations.update(**annotation)
+        new_kwargs: dict[str,Any] = {}
         for item in kwargs.items():
             if item[0] not in cls_annotations:
-                raise CrupyDSLCoreException(
-                    f"Unable to assign class property '{item[0]}' for "
-                    f"parser node subclass '{type(self)}'"
-                )
+                new_kwargs[item[0]] = item[1]
+                continue
             if not crupy_typing_check(item[1], cls_annotations[item[0]]):
                 raise CrupyDSLCoreException(
                     f"{type(self)}: unable to validate the argument "
@@ -43,14 +61,20 @@ class _CrupyDataclass():
                 )
             setattr(self, item[0], item[1])
         # (todo) : check missing attribute definition
-        if self.__class__.__name__ in _CrupyDataclass.hook_init_book:
-            _CrupyDataclass.hook_init_book[self.__class__.__name__](self)
+        if class_type not in _CrupyDataclass.hook_init_book:
+            raise CrupyDSLCoreException(
+                f"internal error: class '{class_type}' has not been "
+                'registered o(x_x)o'
+            )
+        hook_init = _CrupyDataclass.hook_init_book[class_type]
+        if hook_init is not None:
+            hook_init(self, *args, **new_kwargs)
 
     def __str__(self) -> str:
         """ generate the string information about the object
         """
         content = f"<{self.__class__.__name__}("
-        attributes = ['type'] + list(self.__class__.__annotations__)
+        attributes = list(self.__class__.__annotations__)
         for i, keyname in enumerate(attributes):
             if i != 0:
                 content += ', '
@@ -91,6 +115,9 @@ class _CrupyDataclass():
 # Public
 #---
 
+# Allow the use of `exec` builtin
+# pylint: disable=locally-disabled,W0122
+
 def crupydataclass(
     origin_class: Any       = None,
     enable_getattr: bool    = True,
@@ -110,7 +137,17 @@ def crupydataclass(
         _CrupyDataclass.hook_init_book[
             origin_class.__name__
         ] = origin_class.__init__
-        origin_class.__init__ = _CrupyDataclass.__init__
+        hook_init_func = f"__init_dataclass_{origin_class.__name__}_hook"
+        exec(
+            f"def {hook_init_func}(self, *args, **kwargs):\n"
+             '    _CrupyDataclass.__init__(\n'
+             '        self        = self,\n'
+            f"        class_type  = '{origin_class.__name__}',\n"
+             '        args        = args,\n'
+             '        kwargs      = kwargs,\n'
+             '    )'
+        )
+        origin_class.__init__ = locals()[hook_init_func]
         if enable_getitem:
             origin_class.__getitem__ = _CrupyDataclass.__getitem__
         if enable_getattr:

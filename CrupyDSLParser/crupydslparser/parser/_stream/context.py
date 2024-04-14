@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING
 # `CrupyStreamContext` class in the `CrupyStream`. So, we are in a circular
 # dependencies problem.
 if TYPE_CHECKING:
-    from crupydslparser.parser._stream import CrupyStream
+    from crupydslparser.parser._stream.stream import CrupyStream
 
 #---
 # Public

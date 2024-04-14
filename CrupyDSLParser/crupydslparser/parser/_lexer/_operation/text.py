@@ -2,26 +2,31 @@
 crupydslparser.parser._lexer._operation.text  - Lexer text tool
 """
 __all__ = [
-    'CrupyParserNodeBaseLexText',
+    'CrupyParserNodeLexText',
     'CrupyLexerOpText',
 ]
 
 from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
-from crupydslparser.parser import (
-    CrupyParserBase,
-    CrupyParserNodeBase,
-)
+from crupydslparser.parser._lexer.exception import CrupyLexerException
+from crupydslparser.parser.base import CrupyParserBase
+from crupydslparser.parser.node import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeBaseLexText(CrupyParserNodeBase):
+# allow to few methods
+# pylint: disable=locally-disabled,R0903
+
+class CrupyParserNodeLexText(CrupyParserNodeBase):
     """ string token information """
     text: str
 
-# allow to few methods
-# pylint: disable=locally-disabled,R0903
+class CrupyLexerOpTextException(CrupyLexerException):
+    """ custom exception handling """
+    read: int
+    match: str
+
 class CrupyLexerOpText(CrupyLexerOpBase):
     """ strict string matcher
     """
@@ -32,19 +37,26 @@ class CrupyLexerOpText(CrupyLexerOpBase):
         """ try to strictly match the text
         """
         with parser.stream as context:
+            has_read = 0
             for char in self._text:
                 if not (curr := context.peek_char()):
-                    self._raise_from_context(
-                        context,
-                        'Reached end-of-file',
+                    raise CrupyLexerOpTextException(
+                        context = context,
+                        reason  = 'Reached end-of-file',
+                        read    = has_read,
+                        match   = self._text,
                     )
                 if curr != char:
-                    self._raise_from_context(
-                        context,
-                        f"Unable to match the text '{self._text}'",
+                    raise CrupyLexerOpTextException(
+                        context = context,
+                        read    = has_read,
+                        match   = self._text,
+                        reason  = \
+                            f"Unable to match the text '{self._text}'",
                     )
                 context.read_char()
-            return CrupyParserNodeBaseLexText(
+                has_read += 1
+            return CrupyParserNodeLexText(
                 context = context.validate(),
                 text    = self._text,
             )

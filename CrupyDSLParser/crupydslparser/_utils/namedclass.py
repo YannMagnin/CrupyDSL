@@ -13,7 +13,7 @@ from crupydslparser.exception import CrupyDSLCoreException
 # Internals
 #---
 
-# Allow too few public methods and too manu arguments
+# Allow too few public methods and too many arguments
 # pylint: disable=locally-disabled,R0903,R0913
 
 class _CrupyNamedClass():
@@ -38,21 +38,22 @@ class _CrupyNamedClass():
                 error  = f"subclass '{self.__class__.__name__}' is "
                 error += f"malformated to be compliant with {class_origin}"
             raise CrupyDSLCoreException(error)
-        if generate_type and 'type' not in info.groupdict():
-            raise CrupyDSLCoreException(
-                'Unable to generate the type information for the subclass '
-                f"{self.__class__.__name__} because the given regex for "
-                f"all subclass of {class_origin} do not provide the "
-                '\'type\' group'
-            )
-        class_type = ''
-        for char in info['type']:
-            if class_type and char.isupper():
-                class_type += '_'
-            class_type += char.lower()
-        # (todo) : correct property behaviour
-        # (todo) : check if the attribute 'type' already exists
-        setattr(self, 'type', class_type)
+        if generate_type:
+            if 'type' not in info.groupdict():
+                raise CrupyDSLCoreException(
+                    'Unable to generate the \'type\' information for the '
+                    f"subclass '{self.__class__.__name__}' because the "
+                    f"given regex for all subclass of '{class_origin}' do "
+                    'not provide the \'type\' group'
+                )
+            class_type = ''
+            for char in info['type']:
+                if class_type and char.isupper():
+                    class_type += '_'
+                class_type += char.lower()
+            # (todo) : correct property behaviour
+            # (todo) : check if the attribute 'type' already exists
+            setattr(self, 'type', class_type)
         if class_origin not in _CrupyNamedClass.hook_init_book:
             raise CrupyDSLCoreException(
                 f"internal error: class '{class_type}' has not been "
@@ -82,7 +83,7 @@ def crupynamedclass(
         _CrupyNamedClass.hook_init_book[
             origin_class.__name__
         ] = origin_class.__init__
-        hook_init_func = f"__init_subclass_{origin_class.__name__}_hook"
+        hook_init_func = f"__init_named_{origin_class.__name__}_hook"
         exec(
             f"def {hook_init_func}(self, *args, **kwargs):\n"
              '    _CrupyNamedClass.__init_crupy_subclass__(\n'

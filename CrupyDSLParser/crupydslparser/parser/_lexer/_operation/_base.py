@@ -4,13 +4,13 @@ crupydslparser.parser._lexer._operation._base - Lexer operation abstraction
 __all__ = [
     'CrupyLexerOpBase',
 ]
-from typing import Any
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
-from crupydslparser.parser._lexer.exception import CrupyLexerException
-from crupydslparser.parser import (
-    CrupyParserBase,
-    CrupyParserNodeBase,
+from crupydslparser.parser.base import CrupyParserBase
+from crupydslparser.parser.node import CrupyParserNodeBase
+from crupydslparser._utils import (
+    crupyabstractclass,
+    crupynamedclass,
 )
 
 #---
@@ -19,24 +19,15 @@ from crupydslparser.parser import (
 
 # allow too few public methods
 # pylint: disable=locally-disabled,R0903
-class CrupyLexerOpBase(ABC):
+
+@crupyabstractclass
+@crupynamedclass(
+    generate_type   = True,
+    regex           = '^(_)?CrupyLexerOp(?<type>([A-Z][a-z]+)+)$',
+)
+class CrupyLexerOpBase():
     """ Lexer capture operation
     """
-
-    #---
-    # Magic mechanism used to ensure class formalism
-    #---
-
-    def __init_subclass__(cls, /, **kwargs: dict[str,Any]) -> None:
-        """ guess token name based on class name
-        """
-        if (
-                cls.__name__.find('CrupyLexerOp') != 0
-            and cls.__name__.find('_CrupyLexerOp') != 0
-        ):
-            raise CrupyLexerException(
-                f"Malformated lexer operation class name '{cls.__name__}'"
-            )
 
     #---
     # Magic operation
