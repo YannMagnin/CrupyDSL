@@ -3,15 +3,15 @@ crupydslparser.parser._lexer._operation.choice    - lexer or operation
 """
 __all__ = [
     'CrupyLexerOpOr',
+    'CrupyLexerOpOrException',
 ]
 from typing import Any
 
 from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.parser._lexer.exception import CrupyLexerException
-from crupydslparser.parser import (
-    CrupyParserBase,
-    CrupyParserNodeBase,
-)
+from crupydslparser.parser.base import CrupyParserBase
+from crupydslparser.parser.node import CrupyParserNodeBase
+from crupydslparser.parser.exception import CrupyParserBaseException
 
 #---
 # Public
@@ -19,6 +19,11 @@ from crupydslparser.parser import (
 
 # allow to few methods and unused private methods
 # pylint: disable=locally-disabled,R0903,W0238
+
+class CrupyLexerOpOrException(CrupyLexerException):
+    """ exception class """
+    deepest_error: CrupyLexerException
+
 class CrupyLexerOpOr(CrupyLexerOpBase):
     """ OR lexer operation
     """
@@ -26,14 +31,14 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
         self._seq: list[CrupyLexerOpBase] = []
         for i, arg in enumerate(args):
             if CrupyLexerOpBase not in type(arg).mro():
-                raise CrupyLexerException(
+                raise CrupyParserBaseException(
                     f"Unable to initialise the {type(arg).__name__} "
                     f"because the argument {i} is not of type "
                     f"CrupyLexerOpBase ({type(arg).__name__})"
                 )
             self._seq.append(arg)
         if not self._seq:
-            raise CrupyLexerException(
+            raise CrupyParserBaseException(
                 f"Unable to initialise the {self.__class__.__name__} "
                 "because not sequence has been presented"
             )
@@ -53,13 +58,16 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
                     best_choice_error = err
         if not best_choice_error:
             with parser.stream as context:
-                self._raise_from_context(
-                    context,
-                    'Unable to validate the sequense, empty sequense',
+                raise CrupyLexerOpOrException(
+                    context         = context,
+                    deepest_error   = None,
+                    reason          = \
+                        'unable to validate the sequense, empty sequense',
                 )
-        self._raise_from_context(
-            best_choice_error.context,
-            'Unable to find an alternative that match the provided '
-            'stream. Reason:\n'
-            f"{best_choice_error.reason}",
+        raise CrupyLexerOpOrException(
+            context         = best_choice_error.context,
+            deepest_error   = best_choice_error.context,
+            reason          = \
+                'unable to find an alternative that match the provided '
+                f"stream. Reason: {best_choice_error.reason}",
         )

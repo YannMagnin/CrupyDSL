@@ -20,8 +20,8 @@ def crupy_typing_check(type_a: Any, type_b: Any) -> bool:
         exception
     - For now, ignore `typing` module import typing check
     """
-    if not get_origin(type_a) and get_origin(type_b):
-        return isinstance(type_a, type_b)
+    #if not get_origin(type_a) and not get_origin(type_b):
+    #    return isinstance(type_a, type_b)
     # (todo) : proper handle typing module
     # (todo) : use get_args() to proper match type info
     return True

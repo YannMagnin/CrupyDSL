@@ -10,10 +10,9 @@ from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.parser._lexer._operation.text import (
     CrupyParserNodeLexText,
 )
-from crupydslparser.parser import (
-    CrupyParserBase,
-    CrupyParserNodeBase,
-)
+from crupydslparser.parser.base import CrupyParserBase
+from crupydslparser.parser.node import CrupyParserNodeBase
+from crupydslparser.parser.exception import CrupyParserBaseException
 
 #---
 # Public
@@ -21,6 +20,9 @@ from crupydslparser.parser import (
 
 # allow to few methods and unused private methods
 # pylint: disable=locally-disabled,R0903,W0238
+
+class CrupyLexerOpBuiltinException(CrupyLexerException):
+    """ exception class """
 
 class CrupyLexerOpBuiltin(CrupyLexerOpBase):
     """ builtin operations
@@ -41,7 +43,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             'space_nl',
             'eof',
         ]:
-            raise CrupyLexerException(
+            raise CrupyParserBaseException(
                 'Unable to configure the CrupyLexerOpBuiltin: '
                 f"unrecognized operation '{operation}'"
             )
@@ -94,9 +96,9 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     )
                 except CrupyLexerException:
                     pass
-            self._raise_from_context(
-                context,
-                'Unable to validate the current char as "any"'
+            raise CrupyLexerOpBuiltinException(
+                context = context,
+                reason  ='unable to validate the current char as "any"',
             )
 
     def _is_alphanum(
@@ -121,9 +123,10 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             except CrupyLexerException:
                 pass
         with parser.stream as context:
-            self._raise_from_context(
-                context,
-                f'Unable to validate the current char as "{target}"'
+            raise CrupyLexerOpBuiltinException(
+                context = context,
+                reason  = \
+                    f'unable to validate the current char as "{target}"'
             )
 
     def _is_alpha(
@@ -135,10 +138,11 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         """
         with parser.stream as context:
             if not (curr := context.peek_char()):
-                self._raise_from_context(
-                    context,
-                    'Unable to validate current char as "alpha", no stream '
-                    'input available',
+                raise CrupyLexerOpBuiltinException(
+                    context = context,
+                    reason  = \
+                        'unable to validate current char as "alpha", no '
+                        'stream input available',
                 )
             valid = 0
             if target in ['alpha', 'alpha_lower']:
@@ -146,9 +150,11 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             if target in ['alpha', 'alpha_upper']:
                 valid += bool('A' <= curr <= 'Z')
             if valid == 0:
-                self._raise_from_context(
-                    context,
-                    f'Unable to validate the current char as "{target}"',
+                raise CrupyLexerOpBuiltinException(
+                    context = context,
+                    reason  = \
+                        'unable to validate the current char as '
+                        f"\"{target}\"",
                 )
             context.read_char()
             return CrupyParserNodeLexText(
@@ -169,10 +175,11 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                 if not (curr := context.peek_char()):
                     if number:
                         break
-                    self._raise_from_context(
-                        context,
-                        'Unable to validate the current char as '
-                        f"\"{target}\", no stream available",
+                    raise CrupyLexerOpBuiltinException(
+                        context = context,
+                        reason  = \
+                            'unable to validate the current char as '
+                            f"\"{target}\", no stream available",
                     )
                 if not '0' <= curr <= '9':
                     break
@@ -181,9 +188,11 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                 if target == 'digit':
                     break
             if not number:
-                self._raise_from_context(
-                    context,
-                    f"Unable to validate the current char as \"{target}\"",
+                raise CrupyLexerOpBuiltinException(
+                    context = context,
+                    reason  = \
+                        'unable to validate the current char as '
+                        f"\"{target}\"",
                 )
             return CrupyParserNodeLexText(
                 context = context.validate(),
@@ -199,15 +208,17 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         """
         with parser.stream as context:
             if not (curr := context.peek_char()):
-                self._raise_from_context(
-                    context,
-                    'Unable to validate the current char as "symbol", no '
-                    'stream available',
+                raise CrupyLexerOpBuiltinException(
+                    context = context,
+                    reason  = \
+                        'unable to validate the current char as '
+                        '"symbol", no stream available',
                 )
             if not curr in "|!#$%&()*+,-./:;>=<?@[\\]^_`{}~\"":
-                self._raise_from_context(
-                    context,
-                    'Unable to validate the current char as "symbol"',
+                raise CrupyLexerOpBuiltinException(
+                    context = context,
+                    reason  = \
+                        'unable to validate the current char as "symbol"',
                 )
             context.read_char()
             return CrupyParserNodeLexText(
@@ -224,16 +235,19 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         """
         with parser.stream as context:
             if not (curr := context.peek_char()):
-                self._raise_from_context(
-                    context,
-                    'Unable to validate the current char as "space", no '
-                    'stream available',
+                raise CrupyLexerOpBuiltinException(
+                    context = context,
+                    reason  = \
+                        'unable to validate the current char as '
+                        '"space", no stream available',
                 )
             space_list = " \t" if target != 'space_nl' else " \t\r\n"
             if curr not in space_list:
-                self._raise_from_context(
-                    context,
-                    f'Unable to validate the current char as "{target}"',
+                raise CrupyLexerOpBuiltinException(
+                    context = context,
+                    reason  = \
+                        'unable to validate the current char as '
+                        f"\"{target}\"",
                 )
             context.read_char()
             return CrupyParserNodeLexText(
@@ -250,10 +264,11 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         """
         with parser.stream as context:
             if context.peek_char():
-                self._raise_from_context(
-                    context,
-                    'Unable to validate the current char as "EOF", '
-                    'stream available',
+                raise CrupyLexerOpBuiltinException(
+                    context = context,
+                    reason  = \
+                        'unable to validate the current char as "EOF", '
+                        'stream available',
                 )
             return CrupyParserNodeLexText(
                 context = context.validate(),

@@ -6,10 +6,8 @@ __all__ = (
 )
 
 from crupydsltester.unittest import CrupyUnittestBase
-from crupydslparser.parser import (
-    CrupyParserBase,
-    CrupyParserNode,
-)
+from crupydslparser.parser.base import CrupyParserBase
+from crupydslparser.parser.node import CrupyParserNodeBase
 from crupydslparser.parser._lexer import (
     CrupyLexerOpText,
     CrupyLexerOpOptional,
@@ -28,13 +26,10 @@ class CrupyUnittestLexerOptional(CrupyUnittestBase):
     # Internals
     #---
 
-    def __check_node(self, node: CrupyParserNode|None, text: str) -> None:
+    def __check_node(self, node: CrupyParserNodeBase, text: str) -> None:
         """ check and return captured information
         """
         content = ''
-        self.assertIsNotNone(node)
-        if node is None:
-            return
         self.assertEqual(node.type, 'lex_seq')
         self.assertEqual(len(node.seq), 3)
         self.assertEqual(node.seq[0].type, 'lex_text')

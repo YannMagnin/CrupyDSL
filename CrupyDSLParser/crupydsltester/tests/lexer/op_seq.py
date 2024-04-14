@@ -9,8 +9,8 @@ from crupydsltester.unittest import CrupyUnittestBase
 from crupydslparser.parser import CrupyParserBase
 from crupydslparser.parser._lexer import (
     CrupyLexerOpSeq,
+    CrupyLexerOpSeqException,
     CrupyLexerOpText,
-    CrupyLexerException,
 )
 
 #---
@@ -36,9 +36,6 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
         })
         parser.register_stream('abcdefijkl')
         seqtok = parser.execute('entry')
-        self.assertIsNotNone(seqtok)
-        if seqtok is None:
-            return
         self.assertIsNotNone(seqtok.seq)
         self.assertEqual(len(seqtok.seq), 3)
         self.assertEqual(seqtok.seq[0].text, 'abc')
@@ -60,14 +57,24 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
         })
         parser.register_stream('abcdef ijkl')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpSeqException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 6\n'
                 'abcdef ijkl\n'
                 '~~~~~^\n'
-                'CrupyLexerOpSeq: Unable to validate the operation number 2'
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpSeqException: Unable to validate the '
+                'operation number 2'
         )
+        try:
+            parser.execute('entry')
+            self.assertAlways('production entry has been executed')
+        except CrupyLexerOpSeqException as err:
+            self.assertEqual(err.validated_operation, 1)
+            self.assertEqual(
+                err.reason,
+                'unable to validate the operation number 2',
+            )
         with parser.stream as context:
             for n in 'abcdef ijkl':
                 self.assertEqual(context.read_char(), n)

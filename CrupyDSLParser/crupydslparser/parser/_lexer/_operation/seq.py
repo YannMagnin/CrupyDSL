@@ -2,7 +2,6 @@
 crupydslparser.parser._lexer._operation.seq - sequence operation
 """
 __all__ = [
-    'CrupyParserNodeBaseLexSeq',
     'CrupyLexerOpSeq',
 ]
 from typing import Any, cast
@@ -10,22 +9,25 @@ from typing import Any, cast
 from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.parser._lexer._assert._base import CrupyLexerAssertBase
 from crupydslparser.parser._lexer.exception import CrupyLexerException
-from crupydslparser.parser import (
-    CrupyParserBase,
-    CrupyParserNodeBase,
-)
+from crupydslparser.parser.exception import CrupyParserBaseException
+from crupydslparser.parser.base import CrupyParserBase
+from crupydslparser.parser.node import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeBaseLexSeq(CrupyParserNodeBase):
+# allow to few methods and unused private methods
+# pylint: disable=locally-disabled,R0903,W0238
+
+class CrupyParserNodeLexSeq(CrupyParserNodeBase):
     """ sequence token information """
     seq: list[CrupyParserNodeBase]
 
+class CrupyLexerOpSeqException(CrupyLexerException):
+    """ class exception for seq operation """
+    validated_operation: int
 
-# allow to few methods and unused private methods
-# pylint: disable=locally-disabled,R0903,W0238
 class CrupyLexerOpSeq(CrupyLexerOpBase):
     """ execute sequence of lexer operation
     """
@@ -36,14 +38,14 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
                     CrupyLexerOpBase not in type(arg).mro()
                 and CrupyLexerAssertBase not in type(arg).mro()
             ):
-                raise CrupyLexerException(
+                raise CrupyParserBaseException(
                     f"Unable to initialise the {type(self).__name__} "
                     f"because the argument {i} is not of type CrupyLexer "
                     f"({type(arg).mro()})"
                 )
             self._seq.append(arg)
         if not self._seq:
-            raise CrupyLexerException(
+            raise CrupyParserBaseException(
                 f"Unable to initialise the {type(self).__name__} because "
                 'not sequence has been presented'
             )
@@ -58,10 +60,12 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
                     if issubclass(type(lexer), CrupyLexerAssertBase):
                         assert_op = cast(CrupyLexerAssertBase, lexer)
                         if not assert_op(parser):
-                            self._raise_from_context(
-                                context,
-                                'Unable to validate the assertion '
-                                f"{assert_op.name}"
+                            raise CrupyLexerOpSeqException(
+                                context             = context,
+                                validated_operation = i,
+                                reason              = \
+                                    'unable to validate the assertion '
+                                    f"{assert_op.name}"
                             )
                         continue
                     token_list.append(
@@ -71,11 +75,14 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
                     context.index = err.context.index
                     context.lineno = err.context.lineno
                     context.column = err.context.column
-                    self._raise_from_context(
-                        context,
-                        f"Unable to validate the operation number {i + 1}",
+                    raise CrupyLexerOpSeqException(
+                        context             = context,
+                        validated_operation = i,
+                        reason              = \
+                            'unable to validate the operation number '
+                            f"{i+1}",
                     )
-            return CrupyParserNodeBaseLexSeq(
+            return CrupyParserNodeLexSeq(
                 context = context.validate(),
                 seq     = token_list,
             )

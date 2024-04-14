@@ -6,10 +6,10 @@ __all__ = (
 )
 
 from crupydsltester.unittest import CrupyUnittestBase
-from crupydslparser.parser import CrupyParserBase
+from crupydslparser.parser.base import CrupyParserBase
 from crupydslparser.parser._lexer import (
     CrupyLexerOpBuiltin,
-    CrupyLexerException,
+    CrupyLexerOpBuiltinException,
 )
 
 #---
@@ -43,14 +43,14 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         self.assertEqual(node3.type, 'lex_text')
         self.assertEqual(node3.text, ' ')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpBuiltinException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 7\n'
                 'a\\"\\\\ \a\n'
                 '      ^\n'
-                'CrupyLexerOpBuiltin: Unable to validate the current '
-                'char as "any"',
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpBuiltinException: Unable to validate the '
+                'current char as "any"',
         )
 
     def test_alphanum(self) -> None:
@@ -72,14 +72,14 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         self.assertEqual(strop3.text, '6')
         self.assertEqual(strop4.text, '7')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpBuiltinException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 6\n'
                 'aZ667-\n'
                 '     ^\n'
-                'CrupyLexerOpBuiltin: Unable to validate the current '
-                'char as "alphanum"',
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpBuiltinException: Unable to validate the '
+                'current char as "alphanum"',
         )
 
     def test_alphanum_lower(self) -> None:
@@ -99,14 +99,14 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         self.assertEqual(strop2.text, '6')
         self.assertEqual(strop3.text, '7')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpBuiltinException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 5\n'
                 'a667Z\n'
                 '    ^\n'
-                'CrupyLexerOpBuiltin: Unable to validate the current '
-                'char as "alphanum_lower"',
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpBuiltinException: Unable to validate the '
+                'current char as "alphanum_lower"',
         )
 
     def test_alphanum_upper(self) -> None:
@@ -126,14 +126,14 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         self.assertEqual(strop2.text, '6')
         self.assertEqual(strop3.text, '7')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpBuiltinException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 5\n'
                 'A667z\n'
                 '    ^\n'
-                'CrupyLexerOpBuiltin: Unable to validate the current '
-                'char as "alphanum_upper"',
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpBuiltinException: Unable to validate the '
+                'current char as "alphanum_upper"',
         )
 
     def test_alpha(self) -> None:
@@ -149,14 +149,14 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         self.assertEqual(strop0.text, 'a')
         self.assertEqual(strop1.text, 'Z')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpBuiltinException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 3\n'
                 'aZ1\n'
                 '  ^\n'
-                'CrupyLexerOpBuiltin: Unable to validate the current '
-                'char as "alpha"',
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpBuiltinException: Unable to validate the '
+                'current char as "alpha"',
         )
 
     def test_alpha_lower(self) -> None:
@@ -172,14 +172,14 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         self.assertEqual(strop0.text, 'a')
         self.assertEqual(strop1.text, 'z')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpBuiltinException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 3\n'
                 'azZ\n'
                 '  ^\n'
-                'CrupyLexerOpBuiltin: Unable to validate the current '
-                'char as "alpha_lower"',
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpBuiltinException: Unable to validate the '
+                'current char as "alpha_lower"',
         )
 
     def test_alpha_upper(self) -> None:
@@ -195,14 +195,14 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         self.assertEqual(strop0.text, 'A')
         self.assertEqual(strop1.text, 'Z')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpBuiltinException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 3\n'
                 'AZw\n'
                 '  ^\n'
-                'CrupyLexerOpBuiltin: Unable to validate the current '
-                'char as "alpha_upper"',
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpBuiltinException: Unable to validate the '
+                'current char as "alpha_upper"',
         )
 
     def test_digit(self) -> None:
@@ -218,14 +218,14 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         self.assertEqual(strop0.text, '0')
         self.assertEqual(strop1.text, '9')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpBuiltinException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 3\n'
                 '09A\n'
                 '  ^\n'
-                'CrupyLexerOpBuiltin: Unable to validate the current '
-                'char as "digit"',
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpBuiltinException: Unable to validate the '
+                'current char as "digit"',
         )
 
     def test_number(self) -> None:
@@ -238,14 +238,14 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         self.assertEqual(strop0.type, 'lex_text')
         self.assertEqual(strop0.text, '667')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpBuiltinException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 4\n'
                 '667,\n'
                 '   ^\n'
-                'CrupyLexerOpBuiltin: Unable to validate the current '
-                'char as "number"',
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpBuiltinException: Unable to validate the '
+                'current char as "number"',
         )
 
     def test_symbol(self) -> None:
@@ -263,14 +263,14 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         self.assertEqual(strop1.text, '*')
         self.assertEqual(strop2.text, '\\')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpBuiltinException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 4\n'
                 '{*\\t\n'
                 '   ^\n'
-                'CrupyLexerOpBuiltin: Unable to validate the current '
-                'char as "symbol"',
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpBuiltinException: Unable to validate the '
+                'current char as "symbol"',
         )
 
     def test_space(self) -> None:
@@ -284,14 +284,14 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         with parser.stream as context:
             self.assertEqual(context.read_char(), 'a')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpBuiltinException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 3\n'
                 ' \tabc\n'
                 '        ^\n'
-                'CrupyLexerOpBuiltin: Unable to validate the current '
-                'char as "space"',
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpBuiltinException: Unable to validate the '
+                'current char as "space"',
         )
 
     def test_space_nl(self) -> None:
@@ -305,14 +305,14 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
         self.assertIsNotNone(parser.execute('entry'))
         self.assertIsNotNone(parser.execute('entry'))
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpBuiltinException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 2, column 1\n'
                 'abc\n'
                 '^\n'
-                'CrupyLexerOpBuiltin: Unable to validate the current '
-                'char as "space_nl"',
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpBuiltinException: Unable to validate the '
+                'current char as "space_nl"',
         )
 
     def test_oef(self) -> None:
@@ -325,12 +325,12 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             context.read_char()
             self.assertIsNotNone(parser.execute('entry'))
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpBuiltinException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 1\n'
                 'a\n'
                 '^\n'
-                'CrupyLexerOpBuiltin: Unable to validate the current '
-                'char as "EOF", stream available',
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpBuiltinException: Unable to validate the '
+                'current char as "EOF", stream available',
         )

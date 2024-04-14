@@ -8,21 +8,20 @@ __all__ = [
 
 from crupydslparser.parser._lexer.exception import CrupyLexerException
 from crupydslparser.parser._lexer._operation.seq import CrupyLexerOpSeq
-from crupydslparser.parser import (
-    CrupyParserBase,
-    CrupyParserNodeBase,
-)
+from crupydslparser.parser.base import CrupyParserBase
+from crupydslparser.parser.node import CrupyParserNodeBase
 
 #---
 # Optional
 #---
 
-class CrupyParserNodeBaseLexOptional(CrupyParserNodeBase):
-    """ optional lexer information """
-    seq:    list[CrupyParserNodeBase]|None
-
 # allow to few methods and unused private methods
 # pylint: disable=locally-disabled,R0903,W0238
+
+class CrupyParserNodeLexOptional(CrupyParserNodeBase):
+    """ optional lexer information """
+    seq: list[CrupyParserNodeBase]|None
+
 class CrupyLexerOpOptional(CrupyLexerOpSeq):
     """ optional operator
     """
@@ -34,7 +33,7 @@ class CrupyLexerOpOptional(CrupyLexerOpSeq):
                 seq = super().__call__(parser).seq
             except CrupyLexerException:
                 seq = None
-            return CrupyParserNodeBaseLexOptional(
+            return CrupyParserNodeLexOptional(
                 context = context.validate(),
                 seq     = seq,
             )

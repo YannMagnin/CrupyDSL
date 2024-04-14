@@ -10,7 +10,8 @@ from typing import Any
 from crupydslparser.parser._lexer._assert._base import CrupyLexerAssertBase
 from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
 from crupydslparser.parser._lexer.exception import CrupyLexerException
-from crupydslparser.parser import CrupyParserBase
+from crupydslparser.parser.base import CrupyParserBase
+from crupydslparser.parser.exception import CrupyParserBaseException
 
 #---
 # Public
@@ -23,14 +24,14 @@ class CrupyLexerAssertLookaheadNegative(CrupyLexerAssertBase):
         self._seq: list[CrupyLexerOpBase] = []
         for i, arg in enumerate(args):
             if CrupyLexerOpBase not in type(arg).mro():
-                raise CrupyLexerException(
+                raise CrupyParserBaseException(
                     f"Unable to initialise the {type(self).__name__} "
                     f"because the argument {i} is not of type CrupyLexer "
                     f"({type(arg)})"
                 )
             self._seq.append(arg)
         if not self._seq:
-            raise CrupyLexerException(
+            raise CrupyParserBaseException(
                 f"Unable to initialise the {type(self).__name__} because "
                 'not sequence has been presented'
             )

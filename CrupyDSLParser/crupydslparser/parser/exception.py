@@ -28,20 +28,19 @@ class _CrupyParserAbstractException(CrupyDSLCoreException):
     def __init__(
         self,
         reason: str,
+        message: Optional[str] = None,
         context: Optional[CrupyStreamContext] = None,
     ) -> None:
         """ intialise the new object
         """
-        reason_saved = reason
+        if message is None:
+            message = reason
         if context:
-            reason = f"{context.generate_error_log()}\n{reason}"
-        super().__init__(reason)
+            message = f"{context.generate_error_log()}\n{message}"
+        super().__init__(message)
         self._context = context
-        self._reason = reason_saved
+        self._reason  = reason
         self._message = reason
-
-    #def __str__(self) -> str:
-    #    return self._message
 
     #---
     # Properties

@@ -94,13 +94,13 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
         })
         parser.register_stream('abcdefijabcdefijklnm')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 9\n'
                 'abcdefijabcdefijklnm\n'
                 '~~~~~~~~^\n'
-                'CrupyLexerOpRep1N: Unable to perform at least one '
-                'repetition of the sequence. Reason:\n'
-                'CrupyLexerOpRep1N: Unable to validate the operation number 3'
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpRepException: Unable to perform at least one '
+                'repetition of the sequence. Reason: unable to validate '
+                'the operation number 3'
         )

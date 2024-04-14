@@ -42,7 +42,7 @@ class CrupyLexerOpText(CrupyLexerOpBase):
                 if not (curr := context.peek_char()):
                     raise CrupyLexerOpTextException(
                         context = context,
-                        reason  = 'Reached end-of-file',
+                        reason  = 'reached end-of-file',
                         read    = has_read,
                         match   = self._text,
                     )
@@ -52,7 +52,7 @@ class CrupyLexerOpText(CrupyLexerOpBase):
                         read    = has_read,
                         match   = self._text,
                         reason  = \
-                            f"Unable to match the text '{self._text}'",
+                            f"unable to match the text '{self._text}'",
                     )
                 context.read_char()
                 has_read += 1

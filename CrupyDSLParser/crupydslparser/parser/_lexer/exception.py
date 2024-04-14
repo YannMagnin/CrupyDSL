@@ -33,17 +33,12 @@ class CrupyLexerException(CrupyParserBaseException):
         reason: str,
         context: CrupyStreamContext,
     ) -> None:
-        """ simply wrap the parser base exception and handle dataclass
-
-        Technical notes:
-        To support the `crupydataclass` decoration, we need to allow the
-        `args` and `kwargs` arguments, event if not used here. This because
-        the decorator will hook this constructor and drop-off all provided
-        arguments (even if processed).
-
-        (todo) : remove this limitation
+        """ wrap the parser exception class to force providing context
         """
+        saved_reason = reason
+        reason = f"{reason[0].upper()}{reason[1:]}"
         super().__init__(
-            reason  = f"{self.__class__.__name__}: {reason}",
+            message = f"{self.__class__.__name__}: {reason}",
+            reason  = saved_reason,
             context = context,
         )

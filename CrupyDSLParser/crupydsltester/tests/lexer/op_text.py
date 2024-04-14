@@ -7,7 +7,7 @@ __all__ = [
 
 from crupydsltester.unittest import CrupyUnittestBase
 from crupydslparser.parser import CrupyParserBase
-from crupydslparser.parser._lexer._operation.text import (
+from crupydslparser.parser._lexer import (
     CrupyLexerOpText,
     CrupyLexerOpTextException,
 )
@@ -57,6 +57,16 @@ class CrupyUnittestLexerText(CrupyUnittestBase):
                 'CrupyLexerOpTextException: Unable to match the text '
                 '\'jkl\'',
         )
+        try:
+            parser.execute('entry1')
+            self.assertAlways('production entry1 has been executed')
+        except CrupyLexerOpTextException as err:
+            self.assertEqual(err.read, 0)
+            self.assertEqual(err.match, 'jkl')
+            self.assertEqual(
+                err.reason,
+                'unable to match the text \'jkl\'',
+            )
 
     def test_eof_error(self) -> None:
         """ test EOF handling """

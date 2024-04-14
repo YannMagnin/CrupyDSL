@@ -47,7 +47,7 @@ class CrupyLexerOpBetween(CrupyLexerOpBase):
                 if not (curr := context.read_char()):
                     raise CrupyLexerOpBetweenException(
                         context = context,
-                        reason  = 'Reached end-of-file',
+                        reason  = 'reached end-of-file',
                         step    = 1,
                     )
                 if curr == self._delimiter:

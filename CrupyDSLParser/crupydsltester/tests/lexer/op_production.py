@@ -10,7 +10,7 @@ from crupydslparser.parser import CrupyParserBase
 from crupydslparser.parser._lexer import (
     CrupyLexerOpProductionCall,
     CrupyLexerOpText,
-    CrupyLexerException,
+    CrupyLexerOpProductionCallException,
 )
 
 #---
@@ -45,12 +45,21 @@ class CrupyUnittestLexerProd(CrupyUnittestBase):
         })
         parser.register_stream('abcdefijkl')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpProductionCallException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 1\n'
                 'abcdefijkl\n'
                 '^\n'
-                'CrupyLexerOpProductionCall: Unable to find the '
+                'CrupyLexerOpProductionCallException: Unable to find the '
                 'production named \'entry2\''
-            ),
-            (parser, 'execute', 'entry'),
         )
+        try:
+            parser.execute('entry')
+            self.assertAlways('production entry has been executed')
+        except CrupyLexerOpProductionCallException as err:
+            self.assertEqual(err.production, 'entry2')
+            self.assertEqual(
+                err.reason,
+                'unable to find the production named \'entry2\''
+            )

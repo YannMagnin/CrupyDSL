@@ -9,8 +9,8 @@ from crupydsltester.unittest import CrupyUnittestBase
 from crupydslparser.parser import CrupyParserBase
 from crupydslparser.parser._lexer import (
     CrupyLexerOpOr,
+    CrupyLexerOpOrException,
     CrupyLexerOpText,
-    CrupyLexerException,
 )
 
 #---
@@ -71,13 +71,23 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
         })
         parser.register_stream('abcdexxx')
         self.assertRaises(
-            CrupyLexerException(
+            cls_exc = CrupyLexerOpOrException,
+            request = (parser, 'execute', 'entry'),
+            error   = \
                 'Stream: line 1, column 6\n'
                 'abcdexxx\n'
                 '~~~~~^\n'
-                'CrupyLexerOpOr: Unable to find an alternative that match '
-                'the provided stream. Reason:\n'
-                'CrupyLexerOpText: Unable to match the text \'abcdef\''
-            ),
-            (parser, 'execute', 'entry'),
+                'CrupyLexerOpOrException: Unable to find an alternative '
+                'that match the provided stream. Reason: unable to match '
+                'the text \'abcdef\''
         )
+        try:
+            parser.execute('entry')
+            self.assertAlways('production entry has been executed')
+        except CrupyLexerOpOrException as err:
+            self.assertIsNotNone(err.deepest_error)
+            self.assertEqual(
+                err.reason,
+                'unable to find an alternative that match the provided '
+                'stream. Reason: unable to match the text \'abcdef\''
+            )
