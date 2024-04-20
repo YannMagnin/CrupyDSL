@@ -103,10 +103,12 @@ class CrupyUnittestBase():
     def run_tests(cls, target_tests: Optional[list[str]]) -> None:
         """ scan the `tests/` folder and load all unittest and test
         """
+        tested_list: list[str] = []
         CrupyUnittestBase.__generate_testsuit_list()
         for test in CrupyUnittestBase._testsuit_list.items():
             if target_tests and test[0] not in target_tests:
                 continue
+            tested_list.append(test[0])
             print(f"\033[1;97mTesting '{test[0]}'...\033[0m")
             obj = test[1]['class']()
             for test_name in test[1]['tests']:
@@ -122,6 +124,15 @@ class CrupyUnittestBase():
                         f"({err.__class__.__name__}) "
                         f"{err}"
                     )
+        if not target_tests:
+            return
+        if target_tests == tested_list:
+            return
+        missing = ''
+        for test_name in target_tests:
+            if test_name not in tested_list:
+                missing += f"\n  * {test_name}"
+        cls._error(f"Unable to find following tests:{missing}")
 
     @classmethod
     def iter_tests(cls) -> Generator[str,None,None]:
