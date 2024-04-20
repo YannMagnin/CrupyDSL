@@ -29,7 +29,10 @@ from crupydslparser.grammar._dsl._parser._builtin import (
 from crupydslparser.grammar._dsl._parser._statement import (
     dsl_statement_hook,
 )
-from crupydslparser.grammar._dsl._parser._group import dsl_group_hook
+from crupydslparser.grammar._dsl._parser._group import (
+    dsl_group_hook,
+    dsl_group_hook_error,
+)
 from crupydslparser.grammar._dsl._parser._production import (
     dsl_production_hook,
 )
@@ -42,6 +45,7 @@ from crupydslparser.grammar._dsl._parser._alternative import (
 )
 from crupydslparser.grammar._dsl._parser._production_name import (
     dsl_production_name_hook,
+    dsl_production_name_hook_error,
 )
 
 #---
@@ -125,14 +129,14 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
             CrupyLexerOpProductionCall('space_opt'),
             CrupyLexerOpOr(
                 CrupyLexerOpProductionCall('production_name'),
-                CrupyLexerOpProductionCall('group'),
                 CrupyLexerOpProductionCall('string'),
                 CrupyLexerOpProductionCall('builtin'),
+                CrupyLexerOpProductionCall('group'),
             ),
         ),
     #
     # Group operation in production's alternatives
-    # > group ::= "(" ("?" ("+"|"-"|"!"|"="))? <statement> ")"
+    # > group ::= "(" ("?" ("!"|"="))? <statement> ")" ("*"|"+"|"?")?
     # (error will be hooked)
     #
     'group' : \
@@ -143,6 +147,10 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
                 CrupyLexerOpOr(
                     CrupyLexerOpText('!'),
                     CrupyLexerOpText('='),
+                    CrupyLexerOpError(
+                        'broken assertion request that can only be '
+                        '"?!" or "?="',
+                    ),
                 ),
             ),
             CrupyLexerOpProductionCall('space_opt'),
@@ -154,6 +162,10 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
                     CrupyLexerOpText('*'),
                     CrupyLexerOpText('+'),
                     CrupyLexerOpText('?'),
+                    CrupyLexerOpError(
+                        'broken group operation request that can only be '
+                        '"*", "+" or "?"',
+                    ),
                 ),
             ),
         ),
@@ -175,7 +187,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
         ),
     #
     # Production name
-    # > production_name ::= "<" (:alpha_lower | "_")+ ">"
+    # > production_name ::= "<" (:alpha_lower: | "_")+ ">"
     # (error will be hooked)
     #
     'production_name' : \
@@ -191,14 +203,14 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
         ),
     #
     # Builtin name
-    # > builtin ::= ":" (:alpha_lower:)+ ":"
+    # > builtin ::= ":" (:alphanum_lower:)+ ":"
     # (error will be hooked)
     #
     'builtin' : \
         CrupyLexerOpSeq(
             CrupyLexerOpText(':'),
             CrupyLexerOpRep1N(
-                CrupyLexerOpBuiltin('alpha_lower'),
+                CrupyLexerOpBuiltin('alphanum_lower'),
             ),
             CrupyLexerOpText(':'),
         ),
@@ -289,3 +301,8 @@ CRUPY_DSL_PARSER_OBJ.register_post_hook(
 
 CRUPY_DSL_PARSER_OBJ.register_error_hook('string', dsl_string_hook_error)
 CRUPY_DSL_PARSER_OBJ.register_error_hook('builtin', dsl_builtin_hook_error)
+CRUPY_DSL_PARSER_OBJ.register_error_hook('group', dsl_group_hook_error)
+CRUPY_DSL_PARSER_OBJ.register_error_hook(
+    'production_name',
+    dsl_production_name_hook_error,
+)

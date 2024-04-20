@@ -20,6 +20,12 @@ class CrupyUnittestDslStatement(CrupyUnittestBase):
     # Public tests
     #---
 
+    def test_prodname(self) -> None:
+        """ test """
+        CRUPY_DSL_PARSER_OBJ.register_stream('<test_oui>')
+        node = CRUPY_DSL_PARSER_OBJ.execute('statement')
+        self.assertEqual(node.type, 'dsl_statement')
+
     def test_one_line(self) -> None:
         """ simple valid case """
         CRUPY_DSL_PARSER_OBJ.register_stream(

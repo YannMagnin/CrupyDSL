@@ -11,7 +11,7 @@ from crupydslparser.parser import CrupyParserNodeBase
 # Public
 #---
 
-class CrupyParserNodeBaseDslAlternative(CrupyParserNodeBase):
+class CrupyParserNodeDslAlternative(CrupyParserNodeBase):
     """ alternative node """
     seq:    list[CrupyParserNodeBase]
 
@@ -31,7 +31,7 @@ def dsl_alternative_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
             'dsl_builtin',
         ]
         node_seq.append(seq[1])
-    return CrupyParserNodeBaseDslAlternative(
+    return CrupyParserNodeDslAlternative(
         parent_node = node,
         seq         = node_seq,
     )

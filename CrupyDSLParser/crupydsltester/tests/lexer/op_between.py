@@ -43,6 +43,8 @@ class CrupyUnittestLexerBetween(CrupyUnittestBase):
             cls_exc = CrupyLexerOpBetweenException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 13\n'
                 '"abcdef ijkl\n'
                 '~~~~~~~~~~~~^\n'

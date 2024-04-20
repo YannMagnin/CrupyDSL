@@ -11,7 +11,7 @@ from crupydslparser.parser import CrupyParserNodeBase
 # Public
 #---
 
-class CrupyParserNodeBaseDslProduction(CrupyParserNodeBase):
+class CrupyParserNodeDslProduction(CrupyParserNodeBase):
     """ production node """
     production_name:    str
     statement:          CrupyParserNodeBase
@@ -29,7 +29,7 @@ def dsl_production_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     assert node.seq[4].type == 'dsl_space'
     assert node.seq[5].type == 'dsl_statement'
     assert node.seq[6].type == 'dsl_eol'
-    return CrupyParserNodeBaseDslProduction(
+    return CrupyParserNodeDslProduction(
         parent_node     = node,
         production_name = node.seq[1].production_name,
         statement       = node.seq[5],

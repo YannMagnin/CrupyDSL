@@ -7,7 +7,7 @@ __all__ = [
 ]
 from typing import Any
 
-from crupydslparser.parser.exception import CrupyParserBaseException
+from crupydslparser.exception import CrupyDSLCoreException
 from crupydslparser.parser._stream.context import CrupyStreamContext
 from crupydslparser._utils import (
     crupydataclass,
@@ -78,8 +78,17 @@ class CrupyParserNodeBase():
         """
         if not getattr(self, 'context', None):
             if not (node := getattr(self, 'parent_node', None)):
-                raise CrupyParserBaseException(
+                raise CrupyDSLCoreException(
                     'Missing \'context\' declaration for '
                     f"'{type(self).__name__}'"
                 )
             setattr(self, 'context', node.context)
+
+    def __getattr__(self, index: str) -> Any:
+        """ workaround to trick pylint
+
+        Since we use a lot of magic to generate this class, pylint is not
+        able to understand what we do with all of the class decorator. So,
+        we have a lot of "no-member" false-possitive, but if we provide this
+        magic method, pylint do not throw the error.
+        """

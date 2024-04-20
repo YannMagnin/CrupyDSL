@@ -12,6 +12,7 @@ from crupydslparser.parser._lexer.exception import CrupyLexerException
 from crupydslparser.parser.exception import CrupyParserBaseException
 from crupydslparser.parser.base import CrupyParserBase
 from crupydslparser.parser.node import CrupyParserNodeBase
+from crupydslparser.exception import CrupyDSLCoreException
 
 #---
 # Public
@@ -38,14 +39,14 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
                     CrupyLexerOpBase not in type(arg).mro()
                 and CrupyLexerAssertBase not in type(arg).mro()
             ):
-                raise CrupyParserBaseException(
+                raise CrupyDSLCoreException(
                     f"Unable to initialise the {type(self).__name__} "
                     f"because the argument {i} is not of type CrupyLexer "
                     f"({type(arg).mro()})"
                 )
             self._seq.append(arg)
         if not self._seq:
-            raise CrupyParserBaseException(
+            raise CrupyDSLCoreException(
                 f"Unable to initialise the {type(self).__name__} because "
                 'not sequence has been presented'
             )
@@ -71,17 +72,16 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
                     token_list.append(
                         cast(CrupyLexerOpBase, lexer)(parser)
                     )
-                except CrupyLexerException as err:
+                except CrupyParserBaseException as err:
                     context.index = err.context.index
                     context.lineno = err.context.lineno
                     context.column = err.context.column
                     raise CrupyLexerOpSeqException(
                         context             = context,
                         validated_operation = i,
-                        reason              = \
-                            'unable to validate the operation number '
-                            f"{i+1}",
-                    )
+                        reason              = err.reason,
+                        message             = err.message,
+                    ) from err
             return CrupyParserNodeLexSeq(
                 context = context.validate(),
                 seq     = token_list,

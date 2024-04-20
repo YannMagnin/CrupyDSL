@@ -12,7 +12,7 @@ from crupydslparser.parser._lexer._operation.text import (
 )
 from crupydslparser.parser.base import CrupyParserBase
 from crupydslparser.parser.node import CrupyParserNodeBase
-from crupydslparser.parser.exception import CrupyParserBaseException
+from crupydslparser.exception import CrupyDSLCoreException
 
 #---
 # Public
@@ -43,7 +43,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             'space_nl',
             'eof',
         ]:
-            raise CrupyParserBaseException(
+            raise CrupyDSLCoreException(
                 'Unable to configure the CrupyLexerOpBuiltin: '
                 f"unrecognized operation '{operation}'"
             )

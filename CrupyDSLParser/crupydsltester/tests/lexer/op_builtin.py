@@ -46,6 +46,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             cls_exc = CrupyLexerOpBuiltinException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 7\n'
                 'a\\"\\\\ \a\n'
                 '      ^\n'
@@ -75,6 +77,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             cls_exc = CrupyLexerOpBuiltinException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 6\n'
                 'aZ667-\n'
                 '     ^\n'
@@ -102,6 +106,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             cls_exc = CrupyLexerOpBuiltinException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 5\n'
                 'a667Z\n'
                 '    ^\n'
@@ -129,6 +135,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             cls_exc = CrupyLexerOpBuiltinException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 5\n'
                 'A667z\n'
                 '    ^\n'
@@ -152,6 +160,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             cls_exc = CrupyLexerOpBuiltinException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 3\n'
                 'aZ1\n'
                 '  ^\n'
@@ -175,6 +185,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             cls_exc = CrupyLexerOpBuiltinException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 3\n'
                 'azZ\n'
                 '  ^\n'
@@ -198,6 +210,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             cls_exc = CrupyLexerOpBuiltinException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 3\n'
                 'AZw\n'
                 '  ^\n'
@@ -221,6 +235,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             cls_exc = CrupyLexerOpBuiltinException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 3\n'
                 '09A\n'
                 '  ^\n'
@@ -241,6 +257,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             cls_exc = CrupyLexerOpBuiltinException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 4\n'
                 '667,\n'
                 '   ^\n'
@@ -266,6 +284,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             cls_exc = CrupyLexerOpBuiltinException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 4\n'
                 '{*\\t\n'
                 '   ^\n'
@@ -287,6 +307,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             cls_exc = CrupyLexerOpBuiltinException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 3\n'
                 ' \tabc\n'
                 '        ^\n'
@@ -308,6 +330,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             cls_exc = CrupyLexerOpBuiltinException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 2, column 1\n'
                 'abc\n'
                 '^\n'
@@ -328,6 +352,8 @@ class CrupyUnittestLexerBuiltin(CrupyUnittestBase):
             cls_exc = CrupyLexerOpBuiltinException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 1\n'
                 'a\n'
                 '^\n'

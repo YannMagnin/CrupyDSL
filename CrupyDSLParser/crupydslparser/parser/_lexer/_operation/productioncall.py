@@ -28,6 +28,9 @@ class CrupyLexerOpProductionCall(CrupyLexerOpBase):
     def __init__(self, production_name: str) -> None:
         self._production_name = production_name
 
+    def __str__(self) -> str:
+        return f"{type(self).__name__}(prodname={self._production_name})"
+
     def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
         """ invoke another production rule
         """
@@ -40,4 +43,5 @@ class CrupyLexerOpProductionCall(CrupyLexerOpBase):
                         'unable to find the production named '
                         f"'{self._production_name}'"
                 )
-        return parser.execute(self._production_name)
+        node = parser.execute(self._production_name)
+        return node

@@ -11,7 +11,7 @@ from crupydslparser.parser import CrupyParserNodeBase
 # Public
 #---
 
-class CrupyParserNodeBaseDslEntry(CrupyParserNodeBase):
+class CrupyParserNodeDslEntry(CrupyParserNodeBase):
     """ dsl node """
     productions:    list[CrupyParserNodeBase]
 
@@ -28,7 +28,7 @@ def dsl_dsl_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
         assert len(seq) == 1
         assert seq[0].type == 'dsl_production'
         production_list.append(seq[0])
-    return CrupyParserNodeBaseDslEntry(
+    return CrupyParserNodeDslEntry(
         parent_node = node,
         productions = production_list,
     )

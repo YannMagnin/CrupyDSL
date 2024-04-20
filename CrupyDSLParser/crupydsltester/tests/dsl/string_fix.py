@@ -47,7 +47,6 @@ class CrupyUnittestDslString(CrupyUnittestBase):
                 'Stream: line 1, column 7\n'
                 '"allo?\n'
                 '~~~~~~^\n'
-                '\n'
                 'SyntaxError: missing enclosing quote'
         )
 
@@ -63,6 +62,5 @@ class CrupyUnittestDslString(CrupyUnittestBase):
                 'Stream: line 1, column 1\n'
                 'allo?"\n'
                 '^\n'
-                '\n'
                 'SyntaxError: missing starting quote'
         )

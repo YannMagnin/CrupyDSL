@@ -51,6 +51,8 @@ class CrupyUnittestLexerText(CrupyUnittestBase):
             cls_exc = CrupyLexerOpTextException,
             request = (parser, 'execute', 'entry1'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 7\n'
                 'abcdefijkl\n'
                 '      ^\n'
@@ -80,6 +82,8 @@ class CrupyUnittestLexerText(CrupyUnittestBase):
             cls_exc = CrupyLexerOpTextException,
             request = (parser, 'execute', 'entry1'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 11\n'
                 'abcdefijkl\n'
                 '      ~~~~^\n'

@@ -60,6 +60,8 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
             cls_exc = CrupyLexerOpSeqException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 6\n'
                 'abcdef ijkl\n'
                 '~~~~~^\n'

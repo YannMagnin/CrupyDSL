@@ -4,7 +4,7 @@ crupydslparser.parser.exception - parser exception class
 __all__ = [
     'CrupyParserBaseException',
 ]
-from typing import Optional
+from typing import Any, Optional, Self
 
 from crupydslparser.exception import CrupyDSLCoreException
 from crupydslparser.parser._stream.context import CrupyStreamContext
@@ -28,19 +28,29 @@ class _CrupyParserAbstractException(CrupyDSLCoreException):
     def __init__(
         self,
         reason: str,
+        context: CrupyStreamContext,
         message: Optional[str] = None,
-        context: Optional[CrupyStreamContext] = None,
     ) -> None:
         """ intialise the new object
         """
-        if message is None:
+        if not message:
             message = reason
-        if context:
-            message = f"{context.generate_error_log()}\n{message}"
         super().__init__(message)
         self._context = context
         self._reason  = reason
         self._message = reason
+
+    def __gt__(self, error: Self) -> bool:
+        return self.context > error.context
+
+    def __getattr__(self, index: str) -> Any:
+        """ workaround to trick pylint
+
+        Since we use a lot of magic to generate this class, pylint is not
+        able to understand what we do with all of the class decorator. So,
+        we have a lot of "no-member" false-possitive, but if we provide this
+        magic method, pylint do not throw the error.
+        """
 
     #---
     # Properties
@@ -50,18 +60,19 @@ class _CrupyParserAbstractException(CrupyDSLCoreException):
     def context(self) -> CrupyStreamContext:
         """ retrurn the stream context
         """
-        if self._context is not None:
-            return self._context
-        raise self.__class__(
-            'Accessing stream non existing stream context in lexer '
-            'exception'
-        )
+        return self._context
 
     @property
     def reason(self) -> str:
         """ return the reason of the exception
         """
         return self._reason
+
+    @property
+    def message(self) -> str:
+        """ return the verbose exception message
+        """
+        return self._message
 
 #---
 # Public

@@ -4,13 +4,13 @@ crupydslparser._utils.typing    - custon typing abstraction
 __all__ = [
     'crupy_typing_check',
 ]
-from typing import Any, get_origin
+from typing import Any#, get_origin
 
 #---
 # Public
 #---
 
-def crupy_typing_check(type_a: Any, type_b: Any) -> bool:
+def crupy_typing_check(_type_a: Any, _type_b: Any) -> bool:
     """ check typing match
 
     @note

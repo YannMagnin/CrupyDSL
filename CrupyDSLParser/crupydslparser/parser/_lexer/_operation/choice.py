@@ -12,6 +12,7 @@ from crupydslparser.parser._lexer.exception import CrupyLexerException
 from crupydslparser.parser.base import CrupyParserBase
 from crupydslparser.parser.node import CrupyParserNodeBase
 from crupydslparser.parser.exception import CrupyParserBaseException
+from crupydslparser.exception import CrupyDSLCoreException
 
 #---
 # Public
@@ -31,14 +32,14 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
         self._seq: list[CrupyLexerOpBase] = []
         for i, arg in enumerate(args):
             if CrupyLexerOpBase not in type(arg).mro():
-                raise CrupyParserBaseException(
+                raise CrupyDSLCoreException(
                     f"Unable to initialise the {type(arg).__name__} "
                     f"because the argument {i} is not of type "
                     f"CrupyLexerOpBase ({type(arg).__name__})"
                 )
             self._seq.append(arg)
         if not self._seq:
-            raise CrupyParserBaseException(
+            raise CrupyDSLCoreException(
                 f"Unable to initialise the {self.__class__.__name__} "
                 "because not sequence has been presented"
             )
@@ -46,17 +47,22 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
     def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
         """ try to match at least one of the two lexer operation
         """
-        best_choice_error: CrupyLexerException|None = None
+        best_choice_error_special = False
+        best_choice_error: CrupyParserBaseException|None = None
         for lexer in self._seq:
             try:
                 return lexer(parser)
-            except CrupyLexerException as err:
+            except CrupyParserBaseException as err:
                 if type(err).__name__ == 'CrupyLexerErrorException':
-                    raise err
-                if best_choice_error is None:
+                    if best_choice_error and best_choice_error_special:
+                        best_choice_error = max(best_choice_error, err)
+                    else:
+                        best_choice_error = err
+                    best_choice_error_special = True
+                elif best_choice_error is None:
                     best_choice_error = err
-                    continue
-                best_choice_error = max(best_choice_error, err)
+                else:
+                    best_choice_error = max(best_choice_error, err)
         if not best_choice_error:
             with parser.stream as context:
                 raise CrupyLexerOpOrException(
@@ -67,8 +73,7 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
                 )
         raise CrupyLexerOpOrException(
             context         = best_choice_error.context,
-            deepest_error   = best_choice_error.context,
-            reason          = \
-                'unable to find an alternative that match the provided '
-                f"stream. Reason: {best_choice_error.reason}",
+            deepest_error   = best_choice_error,
+            reason          = best_choice_error.reason,
+            message         = best_choice_error.message,
         )

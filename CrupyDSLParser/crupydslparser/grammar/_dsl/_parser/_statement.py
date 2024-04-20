@@ -11,7 +11,7 @@ from crupydslparser.parser import CrupyParserNodeBase
 # Public
 #---
 
-class CrupyParserNodeBaseDslStatement(CrupyParserNodeBase):
+class CrupyParserNodeDslStatement(CrupyParserNodeBase):
     """ statement node """
     alternatives:    list[CrupyParserNodeBase]
 
@@ -33,7 +33,7 @@ def dsl_statement_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
         assert rep[2].type == 'dsl_space'
         assert rep[3].type == 'dsl_alternative'
         alternatives.append(rep[3])
-    return CrupyParserNodeBaseDslStatement(
+    return CrupyParserNodeDslStatement(
         parent_node     = node,
         alternatives    = alternatives,
     )

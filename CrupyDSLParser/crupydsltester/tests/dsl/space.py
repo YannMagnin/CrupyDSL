@@ -61,3 +61,18 @@ class CrupyUnittestDslSpace(CrupyUnittestBase):
             self.assertAlways('production space has been executed')
         except CrupyParserBaseException as err:
             self.assertEqual(err.reason, 'missing at least one space')
+
+    ## space_opt
+
+    def test_spaceopt_eof(self) -> None:
+        """ space rule """
+        CRUPY_DSL_PARSER_OBJ.register_stream('a')
+        with CRUPY_DSL_PARSER_OBJ.stream as context:
+            context.read_char()
+            context.validate()
+        CRUPY_DSL_PARSER_OBJ.execute('space_opt')
+
+    def test_spaceopt_text(self) -> None:
+        """ space rule """
+        CRUPY_DSL_PARSER_OBJ.register_stream('aa')
+        CRUPY_DSL_PARSER_OBJ.execute('space_opt')

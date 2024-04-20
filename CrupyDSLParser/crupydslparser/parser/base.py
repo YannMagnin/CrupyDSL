@@ -12,6 +12,7 @@ from typing import Optional, IO, Any, NoReturn, TYPE_CHECKING, cast
 from collections.abc import Callable
 
 
+from crupydslparser.exception import CrupyDSLCoreException
 from crupydslparser.parser._stream.stream import CrupyStream
 from crupydslparser.parser.exception import CrupyParserBaseException
 from crupydslparser.parser.node import CrupyParserNodeBase
@@ -65,7 +66,7 @@ class CrupyParserBase():
         """ return the current stream if any """
         if self._stream:
             return self._stream
-        raise CrupyParserBaseException('No stream registered')
+        raise CrupyDSLCoreException('No stream registered')
 
     @property
     def production_book(self) -> dict[str,CrupyLexerOpBase]:
@@ -97,10 +98,12 @@ class CrupyParserBase():
             if target == 'error':
                 raise err
             raise CrupyParserBaseException(
-                f"{args[0].context.generate_error_log()}\n"
-                '\n'
-                f"Exception durring '{hook.__name__}' hook, abort\n"
-                f"{err}"
+                context = args[0].context,
+                reason  = \
+                    f"{args[0].context.generate_error_log()}\n"
+                    '\n'
+                    f"Exception durring '{hook.__name__}' hook, abort\n"
+                    f"{err}"
             ) from err
 
     #---
@@ -111,7 +114,7 @@ class CrupyParserBase():
         """ execute a particular production name
         """
         if production_name not in self._production_book:
-            raise CrupyParserBaseException(
+            raise CrupyDSLCoreException(
                 'Unable to find the primary production entry name '
                 f"'{production_name}'"
             )
@@ -137,7 +140,7 @@ class CrupyParserBase():
         """ register a new hook for a production
         """
         if production_name not in self._production_book:
-            raise CrupyParserBaseException(
+            raise CrupyDSLCoreException(
                 'Unable to find the primary production entry name '
                 f"'{production_name}'"
             )
@@ -153,7 +156,7 @@ class CrupyParserBase():
         """ register a new hook for a production in case of error
         """
         if production_name not in self._production_book:
-            raise CrupyParserBaseException(
+            raise CrupyDSLCoreException(
                 'Unable to find the primary production entry name '
                 f"'{production_name}'"
             )

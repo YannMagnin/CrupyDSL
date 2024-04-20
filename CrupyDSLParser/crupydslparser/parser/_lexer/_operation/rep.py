@@ -9,7 +9,10 @@ __all__ = [
 from typing import Any
 
 from crupydslparser.parser._lexer.exception import CrupyLexerException
-from crupydslparser.parser._lexer._operation.seq import CrupyLexerOpSeq
+from crupydslparser.parser._lexer._operation.seq import (
+    CrupyLexerOpSeq,
+    CrupyLexerOpSeqException,
+)
 from crupydslparser.parser.base import CrupyParserBase
 from crupydslparser.parser.node import CrupyParserNodeBase
 
@@ -25,7 +28,7 @@ class _CrupyLexerOpRepxN(CrupyLexerOpSeq):
     """
     def __init__(self, *args: Any) -> None:
         super().__init__(*args)
-        self._error: CrupyLexerException|None = None
+        self._error: CrupyLexerOpSeqException|None = None
 
     #---
     # Internals
@@ -43,9 +46,10 @@ class _CrupyLexerOpRepxN(CrupyLexerOpSeq):
                 try:
                     rep.append(super().__call__(parser).seq)
                     context.validate()
-                except CrupyLexerException as err:
+                except CrupyLexerOpSeqException as err:
                     self._error = err
-                    return rep
+                    break
+        return rep
 
 #---
 # Public
@@ -82,14 +86,12 @@ class CrupyLexerOpRep1N(_CrupyLexerOpRepxN):
         """ execute lexer operation and require at least one sequence
         """
         with parser.stream as context:
-            if len(req := self._core_rep(parser)) < 1:
-                if not self._error:
-                    raise CrupyLexerOpRepException(
-                        context         = self._error.context,
-                        validated_step  = self._error.validated_operation,
-                        reason          = \
-                            'missing critical error information',
-                    )
+            if len(req := self._core_rep(parser)) >= 1:
+                return CrupyParserNodeLexRep(
+                    context = context.validate(),
+                    rep     = req,
+                )
+            if self._error:
                 raise CrupyLexerOpRepException(
                     context         = self._error.context,
                     validated_step  = self._error.validated_operation,
@@ -97,7 +99,8 @@ class CrupyLexerOpRep1N(_CrupyLexerOpRepxN):
                         'unable to perform at least one repetition of '
                         f"the sequence. Reason: {self._error.reason}",
                 )
-            return CrupyParserNodeLexRep(
-                context = context.validate(),
-                rep     = req,
+            raise CrupyLexerOpRepException(
+                context         = context,
+                validated_step  = 0,
+                reason          = 'missing critical error information',
             )

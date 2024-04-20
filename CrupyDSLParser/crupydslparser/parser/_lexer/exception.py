@@ -9,6 +9,7 @@ from __future__ import annotations
 __all__ = [
     'CrupyLexerException',
 ]
+from typing import Optional
 
 from crupydslparser.parser.exception import CrupyParserBaseException
 from crupydslparser.parser._stream.context import CrupyStreamContext
@@ -32,16 +33,19 @@ class CrupyLexerException(CrupyParserBaseException):
         self,
         reason: str,
         context: CrupyStreamContext,
+        message: Optional[str] = None
     ) -> None:
         """ wrap the parser exception class to force providing context
         """
-        saved_reason = reason
-        reason = f"{reason[0].upper()}{reason[1:]}"
+        if message is None:
+            message = \
+                'Lexer parsing error occured:\n'    \
+                '\n'                                \
+                f"{context.generate_error_log()}\n" \
+                f"{self.__class__.__name__}: "      \
+                f"{reason[0].upper()}{reason[1:]}"
         super().__init__(
-            message = f"{self.__class__.__name__}: {reason}",
-            reason  = saved_reason,
             context = context,
+            reason  = reason,
+            message = message,
         )
-
-    def __gt__(self, error: CrupyLexerException) -> bool:
-        return self.context > error.context

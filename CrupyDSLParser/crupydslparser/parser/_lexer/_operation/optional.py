@@ -2,14 +2,16 @@
 crupydslparser.parser._lexer._operation.optional  - optional operation
 """
 __all__ = [
-    'CrupyParserNodeBaseLexOptional',
+    'CrupyParserNodeLexOptional',
     'CrupyLexerOpOptional',
 ]
 
-from crupydslparser.parser._lexer.exception import CrupyLexerException
-from crupydslparser.parser._lexer._operation.seq import CrupyLexerOpSeq
 from crupydslparser.parser.base import CrupyParserBase
 from crupydslparser.parser.node import CrupyParserNodeBase
+from crupydslparser.parser._lexer._operation.seq import (
+    CrupyLexerOpSeq,
+    CrupyLexerOpSeqException,
+)
 
 #---
 # Optional
@@ -31,7 +33,7 @@ class CrupyLexerOpOptional(CrupyLexerOpSeq):
         with parser.stream as context:
             try:
                 seq = super().__call__(parser).seq
-            except CrupyLexerException:
+            except CrupyLexerOpSeqException:
                 seq = None
             return CrupyParserNodeLexOptional(
                 context = context.validate(),

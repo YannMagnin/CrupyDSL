@@ -48,6 +48,8 @@ class CrupyUnittestLexerProd(CrupyUnittestBase):
             cls_exc = CrupyLexerOpProductionCallException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 1\n'
                 'abcdefijkl\n'
                 '^\n'

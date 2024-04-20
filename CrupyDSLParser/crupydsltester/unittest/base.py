@@ -187,7 +187,7 @@ class CrupyUnittestBase():
         cls_exc: Any,
         request: tuple[Any,...],
         error: str,
-    ) -> None:
+    ) -> Any:
         """ check if the request raise exception """
         try:
             getattr(request[0], request[1])(*request[2:])
@@ -199,6 +199,7 @@ class CrupyUnittestBase():
                 self._error(
                     f"assertRaises:  mismatch '{error}' != '{err}'"
                 )
+            return err
         except Exception as err:
             self._error(
                 'assertRaises: Request has raised unexpected exception '

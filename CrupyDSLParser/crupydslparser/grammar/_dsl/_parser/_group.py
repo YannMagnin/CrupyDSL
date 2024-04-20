@@ -4,14 +4,19 @@ crupydslparser.grammar._dsl._parser.group  - DSL group hook
 __all__ = [
     'dsl_group_hook',
 ]
+from typing import NoReturn
 
 from crupydslparser.parser import CrupyParserNodeBase
+from crupydslparser.parser.exception import CrupyParserBaseException
+from crupydslparser.grammar._dsl._parser.exception import (
+    CrupyDslParserException,
+)
 
 #---
 # Public
 #---
 
-class CrupyParserNodeBaseDslGroup(CrupyParserNodeBase):
+class CrupyParserNodeDslGroup(CrupyParserNodeBase):
     """ group node """
     lookahead:  str|None
     statement:  CrupyParserNodeBase
@@ -49,9 +54,25 @@ def dsl_group_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
             operation = 'one_plus'
         if node.seq[6].seq[0].text == '?':
             operation = 'optional'
-    return CrupyParserNodeBaseDslGroup(
+    return CrupyParserNodeDslGroup(
         parent_node = node,
         lookahead   = lookahead,
         statement   = node.seq[3],
         operation   = operation,
+    )
+
+def dsl_group_hook_error(err: CrupyParserBaseException) -> NoReturn:
+    """ error hook
+    """
+    assert err.type == 'lexer_op_seq'
+    if err.validated_operation == 0:
+        raise CrupyDslParserException(err, 'missing opening parenthesis')
+    if err.validated_operation in (2, 3, 4):
+        raise err
+    if err.validated_operation == 5:
+        raise CrupyDslParserException(err, 'missing enclosing parenthesis')
+    raise CrupyDslParserException(
+        err,
+        '[internal error] unsupported sequence, too many validated '
+        f"operation ({err.validated_operation} > 2)"
     )

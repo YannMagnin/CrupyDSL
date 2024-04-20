@@ -97,6 +97,8 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
             cls_exc = CrupyLexerException,
             request = (parser, 'execute', 'entry'),
             error   = \
+                'Lexer parsing error occured:\n'
+                '\n'
                 'Stream: line 1, column 9\n'
                 'abcdefijabcdefijklnm\n'
                 '~~~~~~~~^\n'

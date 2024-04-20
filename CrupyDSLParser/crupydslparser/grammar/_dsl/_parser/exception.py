@@ -22,11 +22,11 @@ class CrupyDslParserException(CrupyParserBaseException):
         """ generic DSL exception
         """
         super().__init__(
+            context = error.context,
             reason  = reason,
             message = \
-                f"DSL parsing exception occured:\n"
+                'DSL parsing exception occured:\n'
                 '\n'
                 f"{error.context.generate_error_log()}\n"
-                '\n'
                 f"SyntaxError: {reason}",
         )
