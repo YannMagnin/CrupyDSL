@@ -9,6 +9,9 @@ from typing import NoReturn
 
 from crupydslparser.parser.node import CrupyParserNodeBase
 from crupydslparser.parser.exception import CrupyParserBaseException
+from crupydslparser.grammar._dsl._parser.exception import (
+    CrupyDslParserException,
+)
 
 #---
 # Public
@@ -43,34 +46,16 @@ def dsl_string_hook_error(err: CrupyParserBaseException) -> NoReturn:
     """
     assert err.type == 'lexer_op_seq'
     if err.validated_operation == 0:
-        raise CrupyParserBaseException(
-            'Parsing exception occured:\n'
-            '\n'
-            f"{err.context.generate_error_log()}\n"
-            '\n'
-            'SyntaxError: missing starting quote'
-        )
+        raise CrupyDslParserException(err, 'missing starting quote')
     if err.validated_operation == 1:
-        raise CrupyParserBaseException(
-            'Parsing exception occured:\n'
-            '\n'
-            f"{err.context.generate_error_log()}\n"
-            '\n'
-            'SyntaxError: unable to capture string content'
+        raise CrupyDslParserException(
+            err,
+            'unable to capture string content',
         )
     if err.validated_operation == 2:
-        raise CrupyParserBaseException(
-            'Parsing exception occured:\n'
-            '\n'
-            f"{err.context.generate_error_log()}\n"
-            '\n'
-            'SyntaxError: missing enclosing quote'
-        )
-    raise CrupyParserBaseException(
-        'Parsing exception occured:\n'
-        '\n'
-        f"{err.context.generate_error_log()}\n"
-        '\n'
-        'InternalError: unsupported sequence, too many validated '
+        raise CrupyDslParserException(err, 'missing enclosing quote')
+    raise CrupyDslParserException(
+        err,
+        '[internal error] unsupported sequence, too many validated '
         f"operation ({err.validated_operation} > 2)"
     )

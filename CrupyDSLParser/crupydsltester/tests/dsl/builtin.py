@@ -7,6 +7,7 @@ __all__ = [
 
 from crupydsltester.unittest import CrupyUnittestBase
 from crupydslparser.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
+from crupydslparser.parser.exception import CrupyParserBaseException
 
 #---
 # Public
@@ -31,3 +32,27 @@ class CrupyUnittestDslBuiltin(CrupyUnittestBase):
         self.assertEqual(node0.kind, 'digit')
         self.assertEqual(node1.type, 'dsl_builtin')
         self.assertEqual(node1.kind, 'any')
+
+    def test_error_start(self) -> None:
+        """ test error """
+        try:
+            CRUPY_DSL_PARSER_OBJ.register_stream('digit:')
+            CRUPY_DSL_PARSER_OBJ.execute('builtin')
+        except CrupyParserBaseException as err:
+            self.assertEqual(err.reason, 'missing starting colon')
+
+    def test_error_context(self) -> None:
+        """ test error """
+        try:
+            CRUPY_DSL_PARSER_OBJ.register_stream('::')
+            CRUPY_DSL_PARSER_OBJ.execute('builtin')
+        except CrupyParserBaseException as err:
+            self.assertEqual(err.reason, 'missing builtin name')
+
+    def test_error_end(self) -> None:
+        """ test error """
+        try:
+            CRUPY_DSL_PARSER_OBJ.register_stream(':builtin')
+            CRUPY_DSL_PARSER_OBJ.execute('builtin')
+        except CrupyParserBaseException as err:
+            self.assertEqual(err.reason, 'missing enclosing colon')

@@ -15,6 +15,7 @@ from crupydslparser.parser._lexer import (
     CrupyLexerOpOr,
     CrupyLexerOpBuiltin,
     CrupyLexerOpOptional,
+    CrupyLexerOpError,
     CrupyLexerAssertEOF,
     CrupyLexerAssertLookaheadNegative,
     CrupyLexerAssertLookaheadPositive,
@@ -22,7 +23,10 @@ from crupydslparser.parser._lexer import (
 from crupydslparser.grammar._dsl._parser.dsl import dsl_dsl_hook
 from crupydslparser.grammar._dsl._parser.eol import dsl_eol_hook
 from crupydslparser.grammar._dsl._parser.space import dsl_space_hook
-from crupydslparser.grammar._dsl._parser.builtin import dsl_builtin_hook
+from crupydslparser.grammar._dsl._parser.builtin import (
+    dsl_builtin_hook,
+    dsl_builtin_hook_error,
+)
 from crupydslparser.grammar._dsl._parser.statement import dsl_statement_hook
 from crupydslparser.grammar._dsl._parser.group import dsl_group_hook
 from crupydslparser.grammar._dsl._parser.production import (
@@ -49,6 +53,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     #
     # Production entry
     # > <crupy_dsl> ::= (<crupy_dsl_production>)+ :eof:
+    # (will be hooked)
     #
     'crupy_dsl' : \
         CrupyLexerOpSeq(
@@ -70,6 +75,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     #       <space> \
     #       <statements> \
     #       <eol>
+    # (will be hooked)
     #
     'production' : \
         CrupyLexerOpSeq(
@@ -90,6 +96,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     #       <alternative> \
     #       (<space_opt> "|" <space_opt> <alternative>)* \
     #       <eol>
+    # (will be hooked)
     #
     'statement' : \
         CrupyLexerOpSeq(
@@ -110,6 +117,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     # Production' alternatives (right part of the production declaraction,
     # but without the "or" ("|") operation)
     # > alternative ::= (<production_name> | <group> | <string>)+
+    # (will be hooked)
     #
     'alternative' : \
         CrupyLexerOpRep1N(
@@ -124,6 +132,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     #
     # Group operation in production's alternatives
     # > group ::= "(" ("?" ("+"|"-"|"!"|"="))? <statement> ")"
+    # (will be hooked)
     #
     'group' : \
         CrupyLexerOpSeq(
@@ -150,6 +159,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     #
     # String operation (support regex)
     # > string ::= "\"" ((?!"\"") :any:)+ "\""
+    # (will be hooked)
     #
     'string' : \
         CrupyLexerOpSeq(
@@ -165,6 +175,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     #
     # Production name
     # > production_name ::= "<" (:alpha_lower | "_")+ ">"
+    # (will be hooked)
     #
     'production_name' : \
         CrupyLexerOpSeq(
@@ -180,6 +191,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     #
     # Builtin name
     # > builtin ::= ":" (:alpha_lower:)+ ":"
+    # (will be hooked)
     #
     'builtin' : \
         CrupyLexerOpSeq(
@@ -203,7 +215,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
         ),
     #
     # space_opt
-    # space_opt ::= (:space: | ((?="\") <eol>)*
+    # space_opt ::= (<__space>)*
     #
     'space_opt' : \
         CrupyLexerOpRep0N(
@@ -211,15 +223,18 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
         ),
     #
     # space
-    # > space ::= ()+
+    # > space ::= (<__space>)+
     #
     'space' : \
-        CrupyLexerOpRep1N(
-            CrupyLexerOpProductionCall('__space'),
+        CrupyLexerOpOr(
+            CrupyLexerOpRep1N(
+                CrupyLexerOpProductionCall('__space'),
+            ),
+            CrupyLexerOpError('missing at least one space'),
         ),
     #
     # __space
-    # > __space ::= :space: | ((?="\") <eol>)
+    # > __space ::= :space: | ((?="\") <eol>) | @error('not a space')
     #
     '__space' : \
         CrupyLexerOpOr(
@@ -232,16 +247,18 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
                 CrupyLexerOpText('\\'),
                 CrupyLexerOpProductionCall('eol'),
             ),
+            CrupyLexerOpError('not a space'),
         ),
     #
     # end-of-line
-    # > eol ::= "\n" | "\r\n" | :eof:
+    # > eol ::= "\n" | "\r\n" | :eof: | @error('not an end-of-line')
     #
     'eol' : \
         CrupyLexerOpOr(
             CrupyLexerOpText('\n'),
             CrupyLexerOpText('\r\n'),
             CrupyLexerOpBuiltin('eof'),
+            CrupyLexerOpError('not an end-of-file'),
         ),
 })
 
@@ -270,3 +287,4 @@ CRUPY_DSL_PARSER_OBJ.register_post_hook(
 ## hook error registration
 
 CRUPY_DSL_PARSER_OBJ.register_error_hook('string', dsl_string_hook_error)
+CRUPY_DSL_PARSER_OBJ.register_error_hook('builtin', dsl_builtin_hook_error)

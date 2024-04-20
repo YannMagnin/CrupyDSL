@@ -26,17 +26,25 @@ class _CrupyNamedClass():
         class_origin: str,
         generate_type: bool,
         regex: Any,
-        error: Optional[str],
+        error: str,
         args: list[Any],
         kwargs: dict[str,Any],
     ) -> None:
         """ special constructor
         """
         class_name = self.__class__.__name__
-        if not (info := re.match(regex, class_name)):
-            if not error:
-                error  = f"subclass '{self.__class__.__name__}' is "
-                error += f"malformated to be compliant with {class_origin}"
+        try:
+            info = re.match(regex, class_name)
+        except re.error as err:
+            raise CrupyDSLCoreException(
+                f"namedclass '{class_origin}' do not provide a valid "
+                f"regex ({regex}) -> {err}"
+            ) from err
+        if not info:
+            if error == 'None':
+                error  = f"subclass name '{self.__class__.__name__}' is "
+                error += f"malformated to be compliant with {class_origin} "
+                error += f"that require to match with '{regex}'"
             raise CrupyDSLCoreException(error)
         if generate_type:
             if 'type' not in info.groupdict():
@@ -79,7 +87,13 @@ def crupynamedclass(
     """ decorator to add extra class name check befor construction
     """
     def wrap(origin_class: Any) -> Any:
-        # (todo) : raise error if not regex is provided
+        try:
+            re.compile(regex)
+        except re.error as err:
+            raise CrupyDSLCoreException(
+                f"namedclass '{origin_class}' do not provide a valid "
+                f"regex ({regex}) -> {err}"
+            ) from err
         _CrupyNamedClass.hook_init_book[
             origin_class.__name__
         ] = origin_class.__init__

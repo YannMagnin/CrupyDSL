@@ -20,6 +20,7 @@ __all__ = [
     'CrupyLexerOpOptional',
     'CrupyLexerOpBuiltin',
     'CrupyLexerOpBuiltinException',
+    'CrupyLexerOpError',
     # asserts
     'CrupyLexerAssertLookaheadNegative',
     'CrupyLexerAssertLookaheadPositive',
@@ -43,6 +44,7 @@ from crupydslparser.parser._lexer._operation import (
     CrupyLexerOpOptional,
     CrupyLexerOpBuiltin,
     CrupyLexerOpBuiltinException,
+    CrupyLexerOpError,
 )
 from crupydslparser.parser._lexer._assert import (
     CrupyLexerAssertLookaheadNegative,

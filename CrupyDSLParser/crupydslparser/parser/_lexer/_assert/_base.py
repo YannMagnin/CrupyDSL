@@ -7,7 +7,7 @@ __all__ = [
 from typing import Any
 from abc import ABC, abstractmethod
 
-from crupydslparser.parser._lexer.exception import CrupyLexerException
+from crupydslparser.exception import CrupyDSLCoreException
 from crupydslparser.parser import CrupyParserBase
 
 #---
@@ -29,7 +29,7 @@ class CrupyLexerAssertBase(ABC):
         """
         super().__init_subclass__(**kwargs)
         if cls.__name__.find('CrupyLexerAssert') != 0:
-            raise CrupyLexerException(
+            raise CrupyDSLCoreException(
                 f"Malformated lexer assert class name '{cls.__name__}'"
             )
         cls._name = ''

@@ -18,6 +18,7 @@ __all__ = [
     'CrupyLexerOpOptional',
     'CrupyLexerOpBuiltin',
     'CrupyLexerOpBuiltinException',
+    'CrupyLexerOpError',
 ]
 from crupydslparser.parser._lexer._operation.text import (
     CrupyLexerOpText,
@@ -50,4 +51,7 @@ from crupydslparser.parser._lexer._operation.rep import (
     CrupyLexerOpRep0N,
     CrupyLexerOpRep1N,
     CrupyLexerOpRepException,
+)
+from crupydslparser.parser._lexer._operation.error import (
+    CrupyLexerOpError,
 )

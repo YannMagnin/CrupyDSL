@@ -51,11 +51,12 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
             try:
                 return lexer(parser)
             except CrupyLexerException as err:
+                if type(err).__name__ == 'CrupyLexerErrorException':
+                    raise err
                 if best_choice_error is None:
                     best_choice_error = err
                     continue
-                if best_choice_error.context < err.context:
-                    best_choice_error = err
+                best_choice_error = max(best_choice_error, err)
         if not best_choice_error:
             with parser.stream as context:
                 raise CrupyLexerOpOrException(

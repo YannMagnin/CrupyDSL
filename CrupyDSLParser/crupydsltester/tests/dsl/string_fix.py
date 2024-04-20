@@ -35,18 +35,34 @@ class CrupyUnittestDslString(CrupyUnittestBase):
         self.assertEqual(node.type, 'dsl_string')
         self.assertEqual(node.text, '"\\')
 
-    def test_error_simple(self) -> None:
+    def test_error_enclose(self) -> None:
         """ test error handling """
         CRUPY_DSL_PARSER_OBJ.register_stream('"allo?')
         self.assertRaises(
             cls_exc = CrupyParserBaseException,
             request = (CRUPY_DSL_PARSER_OBJ, 'execute', 'string'),
             error   = \
-                'Parsing exception occured:\n'
+                'DSL parsing exception occured:\n'
                 '\n'
                 'Stream: line 1, column 7\n'
                 '"allo?\n'
                 '~~~~~~^\n'
                 '\n'
                 'SyntaxError: missing enclosing quote'
+        )
+
+    def test_error_open(self) -> None:
+        """ test error handling """
+        CRUPY_DSL_PARSER_OBJ.register_stream('allo?"')
+        self.assertRaises(
+            cls_exc = CrupyParserBaseException,
+            request = (CRUPY_DSL_PARSER_OBJ, 'execute', 'string'),
+            error   = \
+                'DSL parsing exception occured:\n'
+                '\n'
+                'Stream: line 1, column 1\n'
+                'allo?"\n'
+                '^\n'
+                '\n'
+                'SyntaxError: missing starting quote'
         )

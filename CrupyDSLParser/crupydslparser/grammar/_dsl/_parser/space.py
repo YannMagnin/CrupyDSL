@@ -11,7 +11,7 @@ from crupydslparser.parser import CrupyParserNodeBase
 # Public
 #---
 
-class CrupyParserNodeBaseDslSpace(CrupyParserNodeBase):
+class CrupyParserNodeDslSpace(CrupyParserNodeBase):
     """ space node
 
     @note
@@ -22,6 +22,6 @@ class CrupyParserNodeBaseDslSpace(CrupyParserNodeBase):
 def dsl_space_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     """ handle "space" node
     """
-    return CrupyParserNodeBaseDslSpace(
+    return CrupyParserNodeDslSpace(
         parent_node = node,
     )

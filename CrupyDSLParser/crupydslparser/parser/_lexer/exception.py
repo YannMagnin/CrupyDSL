@@ -42,3 +42,6 @@ class CrupyLexerException(CrupyParserBaseException):
             reason  = saved_reason,
             context = context,
         )
+
+    def __gt__(self, error: CrupyLexerException) -> bool:
+        return self.context > error.context

@@ -23,7 +23,7 @@ from crupydslparser._utils import (
 @crupyabstractclass
 @crupynamedclass(
     generate_type   = True,
-    regex           = '^(_)?CrupyLexerOp(?<type>([A-Z][a-z]+)+)$',
+    regex           = '^(_)?CrupyLexerOp(?P<type>([A-Z][a-z]+)+)$',
 )
 class CrupyLexerOpBase():
     """ Lexer capture operation

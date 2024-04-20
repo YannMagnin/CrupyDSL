@@ -190,7 +190,8 @@ class CrupyUnittestBase():
                 )
         except Exception as err:
             self._error(
-                f"assertRaises: Unable to execute the request ('{err}')"
+                'assertRaises: Request has raised unexpected exception '
+                f"'{type(err).__name__}' with attached error -> '{err}')"
             )
 
     def assertAlways(self, text: str) -> NoReturn:
