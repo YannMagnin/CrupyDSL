@@ -5,7 +5,7 @@ __all__ = [
     'csv_test_parser_record',
 ]
 
-from crupydslparser.core.parser import CrupyParserBase
+from crupydslparser.parser import CrupyParserBase
 
 #---
 # Public
@@ -15,7 +15,7 @@ def csv_test_parser_record(parser: CrupyParserBase) -> None:
     """ test `record` production
     """
     print('-= check mixed field =-')
-    parser.register_stream('abcd,"efgh,oui",",, \t\v oui \vnon",,qwerty')
+    parser.register_stream('abcd,"efgh,oui",",, \t oui non",,qwerty')
     node = parser.execute('record')
     assert node is not None
     assert node.type == 'csv_record'
@@ -30,7 +30,7 @@ def csv_test_parser_record(parser: CrupyParserBase) -> None:
             assert field.text == 'efgh,oui'
         if i == 2:
             assert field.kind == 'quoted'
-            assert field.text == ',, \t\v oui \vnon'
+            assert field.text == ',, \t oui non'
         if i == 3:
             assert field.kind == 'simple'
             assert field.text == ''

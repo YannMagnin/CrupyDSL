@@ -6,24 +6,21 @@ __all__ = [
     'json_parser_prod_hook_primitive',
 ]
 
-from crupydslparser.core.parser import (
-    CrupyParserNode,
-    CrupyParserException,
-)
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeJsonPrimitive(CrupyParserNode):
+class CrupyParserNodeJsonPrimitive(CrupyParserNodeBase):
     """ JSON "primitive" node
     """
     kind:   str
     data:   str|bool|None
 
 def json_parser_prod_hook_primitive(
-    node: CrupyParserNode,
-) -> CrupyParserNode:
+    node: CrupyParserNodeBase,
+) -> CrupyParserNodeBase:
     """ handle `primitive` node
     """
     if node.type == 'lex_text':
@@ -44,12 +41,9 @@ def json_parser_prod_hook_primitive(
             kind        = 'nullable',
             data        = None,
         )
-    if node.type == 'json_boolean':
-        return CrupyParserNodeJsonPrimitive(
-            parent_node = node,
-            kind        = 'boolean',
-            data        = node.state,
-        )
-    raise CrupyParserException(
-        f"Unable to handle JSON hook transformation, unknown node {node}"
+    assert node.type == 'json_boolean'
+    return CrupyParserNodeJsonPrimitive(
+        parent_node = node,
+        kind        = 'boolean',
+        data        = node.state,
     )

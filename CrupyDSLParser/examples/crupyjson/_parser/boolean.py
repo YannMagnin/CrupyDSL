@@ -6,17 +6,19 @@ __all__ = [
     'json_parser_prod_hook_boolean',
 ]
 
-from crupydslparser.core.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeJsonBoolean(CrupyParserNode):
+class CrupyParserNodeJsonBoolean(CrupyParserNodeBase):
     """ JSON "boolean" node """
     state:  bool
 
-def json_parser_prod_hook_boolean(node: CrupyParserNode) -> CrupyParserNode:
+def json_parser_prod_hook_boolean(
+    node: CrupyParserNodeBase,
+) -> CrupyParserNodeBase:
     """ handle `boolean` node
     """
     assert node.type == 'lex_text'

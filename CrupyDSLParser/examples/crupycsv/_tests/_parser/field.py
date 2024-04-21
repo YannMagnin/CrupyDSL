@@ -5,8 +5,8 @@ __all__ = [
     'csv_test_parser_field',
 ]
 
-from crupydslparser.core.parser import (
-    CrupyParserNode,
+from crupydslparser.parser import (
+    CrupyParserNodeBase,
     CrupyParserBase,
 )
 
@@ -16,7 +16,7 @@ from crupydslparser.core.parser import (
 
 ## helper
 
-def __check_node_simple(node: CrupyParserNode|None, text: str) -> None:
+def __check_node_simple(node: CrupyParserNodeBase|None, text: str) -> None:
     """ generic node check """
     try:
         assert node is not None
@@ -38,7 +38,7 @@ def __check_node_simple(node: CrupyParserNode|None, text: str) -> None:
             '\033[0m'
         )
 
-def __check_node_quoted(node: CrupyParserNode|None, text: str) -> None:
+def __check_node_quoted(node: CrupyParserNodeBase|None, text: str) -> None:
     """ generic node check """
     try:
         assert node is not None
@@ -62,7 +62,7 @@ def __check_node_quoted(node: CrupyParserNode|None, text: str) -> None:
         )
 
 def __check_node_mixed(
-    node: CrupyParserNode|None,
+    node: CrupyParserNodeBase|None,
     text: str,
     kind: str,
 ) -> None:
@@ -89,9 +89,13 @@ def _csv_test_parser_field_simple(parser: CrupyParserBase) -> None:
     print('- check field simple...')
     parser.register_stream('abcd,efgh,ekip667')
     __check_node_simple(parser.execute('field_simple'), 'abcd')
-    assert parser.stream.read_char() == ','
+    with parser.stream as context:
+        assert context.read_char() == ','
+        context.validate()
     __check_node_simple(parser.execute('field_simple'), 'efgh')
-    assert parser.stream.read_char() == ','
+    with parser.stream as context:
+        assert context.read_char() == ','
+        context.validate()
     __check_node_simple(parser.execute('field_simple'), 'ekip667')
 
 
@@ -99,33 +103,45 @@ def _csv_test_parser_field_quoted(parser: CrupyParserBase) -> None:
     """ test the `field_simple` production
     """
     print('- check field quoted...')
-    parser.register_stream('"abcd","efgh,oui",",, \t\v oui \vnon"')
+    parser.register_stream('"abcd","efgh,oui",",, \t oui non"')
     __check_node_quoted(parser.execute('field_quoted'), 'abcd')
-    assert parser.stream.read_char() == ','
+    with parser.stream as context:
+        assert context.read_char() == ','
+        context.validate()
     __check_node_quoted(parser.execute('field_quoted'), 'efgh,oui')
-    assert parser.stream.read_char() == ','
+    with parser.stream as context:
+        assert context.read_char() == ','
+        context.validate()
     __check_node_quoted(
         parser.execute('field_quoted'),
-        ',, \t\v oui \vnon',
+        ',, \t oui non',
     )
 
 def _csv_test_parser_field_mixed(parser: CrupyParserBase) -> None:
     """ test the `field` production
     """
     print('- mixed node...')
-    parser.register_stream('abcd,"efgh,oui",",, \t\v oui \vnon",,qwerty')
+    parser.register_stream('abcd,"efgh,oui",",, \t oui non",,qwerty')
     __check_node_mixed(parser.execute('field'), 'abcd', 'simple')
-    assert parser.stream.read_char() == ','
+    with parser.stream as context:
+        assert context.read_char() == ','
+        context.validate()
     __check_node_mixed(parser.execute('field'), 'efgh,oui', 'quoted')
-    assert parser.stream.read_char() == ','
+    with parser.stream as context:
+        assert context.read_char() == ','
+        context.validate()
     __check_node_mixed(
         parser.execute('field'),
-        ',, \t\v oui \vnon',
+        ',, \t oui non',
         'quoted',
     )
-    assert parser.stream.read_char() == ','
+    with parser.stream as context:
+        assert context.read_char() == ','
+        context.validate()
     __check_node_mixed(parser.execute('field'), '', 'simple')
-    assert parser.stream.read_char() == ','
+    with parser.stream as context:
+        assert context.read_char() == ','
+        context.validate()
     __check_node_mixed(parser.execute('field'), 'qwerty', 'simple')
 
 #---

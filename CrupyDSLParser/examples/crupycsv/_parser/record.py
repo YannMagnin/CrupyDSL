@@ -6,18 +6,20 @@ __all__ = [
 ]
 from typing import List
 
-from crupydslparser.core.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 from crupycsv._parser.field import CrupyParserNodeCsvField
 
 #---
 # Public
 #---
 
-class CrupyParserNodeCsvRecord(CrupyParserNode):
+class CrupyParserNodeCsvRecord(CrupyParserNodeBase):
     """ record information """
     fields: List[CrupyParserNodeCsvField]
 
-def csv_parser_prod_record_hook(node: CrupyParserNode) -> CrupyParserNode:
+def csv_parser_prod_record_hook(
+    node: CrupyParserNodeBase,
+) -> CrupyParserNodeBase:
     """ generate more appropriate node concerning `record` output
 
     @note

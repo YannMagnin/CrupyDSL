@@ -6,13 +6,13 @@ __all__ = [
     'json_parser_prod_hook_nullable',
 ]
 
-from crupydslparser.core.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeJsonNullable(CrupyParserNode):
+class CrupyParserNodeJsonNullable(CrupyParserNodeBase):
     """ JSON "nullable" node
 
     @note
@@ -20,7 +20,9 @@ class CrupyParserNodeJsonNullable(CrupyParserNode):
     to capture anything
     """
 
-def json_parser_prod_hook_nullable(node: CrupyParserNode) -> CrupyParserNode:
+def json_parser_prod_hook_nullable(
+    node: CrupyParserNodeBase,
+) -> CrupyParserNodeBase:
     """ handle `nullable` node
     """
     assert node.type == 'lex_text'

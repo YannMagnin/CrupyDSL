@@ -7,17 +7,17 @@ __all__ = [
 from typing import List
 
 from crupycsv._parser.record import CrupyParserNodeCsvRecord
-from crupydslparser.core.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeCsv(CrupyParserNode):
+class CrupyParserNodeCsv(CrupyParserNodeBase):
     """ CSV general node """
     records:    List[CrupyParserNodeCsvRecord]
 
-def csv_parser_prod_csv_hook(node: CrupyParserNode) -> CrupyParserNode:
+def csv_parser_prod_csv_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     """ generate more appropriate node concerning `csv` output
 
     @note

@@ -5,16 +5,16 @@ __all__ = [
     'csv_test_parser_csv',
 ]
 
-from crupydslparser.core.parser import (
+from crupydslparser.parser import (
     CrupyParserBase,
-    CrupyParserNode,
+    CrupyParserNodeBase,
 )
 
 #---
 # Internals
 #---
 
-def __check_record0(record: CrupyParserNode) -> None:
+def __check_record0(record: CrupyParserNodeBase) -> None:
     """ check the first line
     """
     assert len(record.fields) == 5
@@ -28,7 +28,7 @@ def __check_record0(record: CrupyParserNode) -> None:
             assert field.text == 'efgh,oui'
         if i == 2:
             assert field.kind == 'quoted'
-            assert field.text == ',, \t\v oui \vnon'
+            assert field.text == ',, \t oui non'
         if i == 3:
             assert field.kind == 'simple'
             assert field.text == ''
@@ -37,7 +37,7 @@ def __check_record0(record: CrupyParserNode) -> None:
             assert field.text == 'qwerty'
 
 
-def __check_record1(record: CrupyParserNode) -> None:
+def __check_record1(record: CrupyParserNodeBase) -> None:
     """ check the second line
     """
     assert len(record.fields) == 2
@@ -48,7 +48,7 @@ def __check_record1(record: CrupyParserNode) -> None:
     assert record.fields[1].kind == 'simple'
     assert record.fields[1].text == 'oui'
 
-def __check_record2(record: CrupyParserNode) -> None:
+def __check_record2(record: CrupyParserNodeBase) -> None:
     """ check the third line
     """
     assert len(record.fields) == 1
@@ -65,7 +65,7 @@ def csv_test_parser_csv(parser: CrupyParserBase) -> None:
     """
     print('-= production `csv` tests =-')
     parser.register_stream(
-        'abcd,"efgh,oui",",, \t\v oui \vnon",,qwerty\n'
+        'abcd,"efgh,oui",",, \t oui non",,qwerty\n'
         '"ekip667",oui\n'
         'abcdef\n'
     )

@@ -5,8 +5,8 @@ __all__ = [
     'CSV_PARSER_OBJ',
 ]
 
-from crupydslparser.core.parser import CrupyParserBase
-from crupydslparser.core._lexer import (
+from crupydslparser.parser import CrupyParserBase
+from crupydslparser.parser._lexer import (
     CrupyLexerOpSeq,
     CrupyLexerOpText,
     CrupyLexerOpRep1N,
@@ -82,7 +82,7 @@ CSV_PARSER_OBJ = CrupyParserBase({
                     CrupyLexerOpBuiltin('alpha'),
                     CrupyLexerOpBuiltin('digit'),
                     CrupyLexerOpBuiltin('symbol'),
-                    CrupyLexerOpBuiltin('space_n'),
+                    CrupyLexerOpBuiltin('space_nl'),
                 ),
             ),
             CrupyLexerOpText('"'),
@@ -108,6 +108,6 @@ CSV_PARSER_OBJ = CrupyParserBase({
 
 ## register all hooks
 
-CSV_PARSER_OBJ.register_hook('csv',    csv_parser_prod_csv_hook)
-CSV_PARSER_OBJ.register_hook('record', csv_parser_prod_record_hook)
-CSV_PARSER_OBJ.register_hook('field',  csv_parser_prod_field_hook)
+CSV_PARSER_OBJ.register_post_hook('csv',    csv_parser_prod_csv_hook)
+CSV_PARSER_OBJ.register_post_hook('record', csv_parser_prod_record_hook)
+CSV_PARSER_OBJ.register_post_hook('field',  csv_parser_prod_field_hook)

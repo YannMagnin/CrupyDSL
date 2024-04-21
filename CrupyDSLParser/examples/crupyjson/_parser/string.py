@@ -6,17 +6,19 @@ __all__ = [
     'json_parser_prod_hook_string',
 ]
 
-from crupydslparser.core.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeJsonString(CrupyParserNode):
+class CrupyParserNodeJsonString(CrupyParserNodeBase):
     """ JSON "string" node """
     text:   str
 
-def json_parser_prod_hook_string(node: CrupyParserNode) -> CrupyParserNode:
+def json_parser_prod_hook_string(
+    node: CrupyParserNodeBase,
+) -> CrupyParserNodeBase:
     """ handle `string` node
     """
     assert node.type == 'lex_seq'

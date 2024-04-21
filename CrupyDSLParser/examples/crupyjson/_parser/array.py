@@ -6,31 +6,33 @@ __all__ = [
 ]
 from typing import cast
 
-from crupydslparser.core.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Internals
 #---
 
-def _resolve_node(node: CrupyParserNode) -> CrupyParserNode:
+def _resolve_node(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     """ resolve node to a more appropriate node
     """
     assert node.type == 'json_statement'
     if node.node.type == 'json_primitive':
-        return cast(CrupyParserNode,node.node)
+        return cast(CrupyParserNodeBase, node.node)
     if node.node.node.type == 'json_container':
-        return cast(CrupyParserNode,node.node.node)
+        return cast(CrupyParserNodeBase, node.node.node)
     return node
 
 #---
 # Public
 #---
 
-class CrupyParserNodeJsonArray(CrupyParserNode):
+class CrupyParserNodeJsonArray(CrupyParserNodeBase):
     """ `array` production node """
-    node_list:  list[CrupyParserNode]
+    node_list:  list[CrupyParserNodeBase]
 
-def json_parser_prod_hook_array(node: CrupyParserNode) -> CrupyParserNode:
+def json_parser_prod_hook_array(
+    node: CrupyParserNodeBase,
+) -> CrupyParserNodeBase:
     """ handle `array` node
     """
     assert node.type == 'lex_seq'

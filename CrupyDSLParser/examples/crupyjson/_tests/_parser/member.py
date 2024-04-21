@@ -5,7 +5,7 @@ __all__ = [
     'json_test_parser_member',
 ]
 
-from crupydslparser.core.parser import CrupyParserBase
+from crupydslparser.parser import CrupyParserBase
 
 #---
 # Public

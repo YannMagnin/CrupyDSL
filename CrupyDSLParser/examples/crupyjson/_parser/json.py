@@ -6,16 +6,18 @@ __all__ = [
 ]
 from typing import cast
 
-from crupydslparser.core.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-def json_parser_prod_hook_json(node: CrupyParserNode) -> CrupyParserNode:
+def json_parser_prod_hook_json(
+    node: CrupyParserNodeBase,
+) -> CrupyParserNodeBase:
     """ handle `json` node
     """
     assert node.type == 'lex_seq'
     assert len(node.seq) == 1
     assert node.seq[0].type == 'json_statement'
-    return cast(CrupyParserNode, node.seq[0])
+    return cast(CrupyParserNodeBase, node.seq[0])

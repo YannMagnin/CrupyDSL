@@ -6,9 +6,9 @@ __all__ = [
 ]
 from typing import Any
 
-from crupydslparser.core.parser import (
+from crupydslparser.parser import (
     CrupyParserBase,
-    CrupyParserNode,
+    CrupyParserNodeBase,
 )
 
 #---
@@ -16,7 +16,7 @@ from crupydslparser.core.parser import (
 #---
 
 def __check_primitive_node(
-    node: CrupyParserNode,
+    node: CrupyParserNodeBase,
     kind: str,
     data: Any,
 ) -> None:

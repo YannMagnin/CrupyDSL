@@ -5,21 +5,21 @@ __all__ = [
     'json_parser_prod_hook_container',
 ]
 
-from crupydslparser.core.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeJsonContainer(CrupyParserNode):
+class CrupyParserNodeJsonContainer(CrupyParserNodeBase):
     """ JSON "container" node
     """
     kind: str
-    node: CrupyParserNode
+    node: CrupyParserNodeBase
 
 def json_parser_prod_hook_container(
-    node: CrupyParserNode,
-) -> CrupyParserNode:
+    node: CrupyParserNodeBase,
+) -> CrupyParserNodeBase:
     """ handle `container` node
     """
     assert node.type in ['json_array', 'json_object']

@@ -5,8 +5,8 @@ __all__ = [
     'JSON_PARSER_OBJ',
 ]
 
-from crupydslparser.core.parser import CrupyParserBase
-from crupydslparser.core._lexer import (
+from crupydslparser.parser import CrupyParserBase
+from crupydslparser.parser._lexer import (
     CrupyLexerOpSeq,
     CrupyLexerOpText,
     CrupyLexerOpRep1N,
@@ -161,13 +161,25 @@ JSON_PARSER_OBJ = CrupyParserBase({
 
 ## register all hooks
 
-JSON_PARSER_OBJ.register_hook('nullable', json_parser_prod_hook_nullable)
-JSON_PARSER_OBJ.register_hook('boolean', json_parser_prod_hook_boolean)
-JSON_PARSER_OBJ.register_hook('string', json_parser_prod_hook_string)
-JSON_PARSER_OBJ.register_hook('json', json_parser_prod_hook_json)
-JSON_PARSER_OBJ.register_hook('container', json_parser_prod_hook_container)
-JSON_PARSER_OBJ.register_hook('primitive', json_parser_prod_hook_primitive)
-JSON_PARSER_OBJ.register_hook('array', json_parser_prod_hook_array)
-JSON_PARSER_OBJ.register_hook('object', json_parser_prod_hook_object)
-JSON_PARSER_OBJ.register_hook('member', json_parser_prod_hook_member)
-JSON_PARSER_OBJ.register_hook('statement', json_parser_prod_hook_statement)
+JSON_PARSER_OBJ.register_post_hook('array', json_parser_prod_hook_array)
+JSON_PARSER_OBJ.register_post_hook('object', json_parser_prod_hook_object)
+JSON_PARSER_OBJ.register_post_hook('member', json_parser_prod_hook_member)
+JSON_PARSER_OBJ.register_post_hook('boolean', json_parser_prod_hook_boolean)
+JSON_PARSER_OBJ.register_post_hook('string', json_parser_prod_hook_string)
+JSON_PARSER_OBJ.register_post_hook('json', json_parser_prod_hook_json)
+JSON_PARSER_OBJ.register_post_hook(
+    'nullable',
+    json_parser_prod_hook_nullable,
+)
+JSON_PARSER_OBJ.register_post_hook(
+    'container',
+    json_parser_prod_hook_container,
+)
+JSON_PARSER_OBJ.register_post_hook(
+    'primitive',
+    json_parser_prod_hook_primitive,
+)
+JSON_PARSER_OBJ.register_post_hook(
+    'statement',
+    json_parser_prod_hook_statement,
+)

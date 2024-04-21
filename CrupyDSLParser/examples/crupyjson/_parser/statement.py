@@ -5,24 +5,24 @@ __all__ = [
     'json_parser_prod_hook_statement',
 ]
 
-from crupydslparser.core.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeJsonStatement(CrupyParserNode):
+class CrupyParserNodeJsonStatement(CrupyParserNodeBase):
     """ JSON "statement" node
 
     @note
     we only need to have the node name to statement, because we do not need
     to capture anything
     """
-    node: CrupyParserNode
+    node: CrupyParserNodeBase
 
 def json_parser_prod_hook_statement(
-    node: CrupyParserNode,
-) -> CrupyParserNode:
+    node: CrupyParserNodeBase,
+) -> CrupyParserNodeBase:
     """ handle `statement` node
     """
     assert node.type in ['json_primitive', 'json_container']

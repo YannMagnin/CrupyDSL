@@ -5,17 +5,19 @@ __all__ = [
     'json_parser_prod_hook_object',
 ]
 
-from crupydslparser.core.parser import CrupyParserNode
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeJsonObject(CrupyParserNode):
+class CrupyParserNodeJsonObject(CrupyParserNodeBase):
     """ `array` production node """
-    members:  list[CrupyParserNode]
+    members:  list[CrupyParserNodeBase]
 
-def json_parser_prod_hook_object(node: CrupyParserNode) -> CrupyParserNode:
+def json_parser_prod_hook_object(
+    node: CrupyParserNodeBase,
+) -> CrupyParserNodeBase:
     """ handle `array` node
     """
     assert node.type == 'lex_seq'
