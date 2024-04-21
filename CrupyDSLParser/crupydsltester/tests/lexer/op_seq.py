@@ -56,7 +56,7 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
             ),
         })
         parser.register_stream('abcdef ijkl')
-        self.assertRaises(
+        err = self.assertRaises(
             cls_exc = CrupyLexerOpSeqException,
             request = (parser, 'execute', 'entry'),
             error   = \
@@ -64,19 +64,11 @@ class CrupyUnittestLexerSeq(CrupyUnittestBase):
                 '\n'
                 'Stream: line 1, column 6\n'
                 'abcdef ijkl\n'
-                '~~~~~^\n'
-                'CrupyLexerOpSeqException: Unable to validate the '
-                'operation number 2'
+                '   ~~^\n'
+                'CrupyLexerOpTextException: Unable to match the text \'dex\''
         )
-        try:
-            parser.execute('entry')
-            self.assertAlways('production entry has been executed')
-        except CrupyLexerOpSeqException as err:
-            self.assertEqual(err.validated_operation, 1)
-            self.assertEqual(
-                err.reason,
-                'unable to validate the operation number 2',
-            )
+        self.assertEqual(err.validated_operation, 1)
+        self.assertEqual(err.reason, 'unable to match the text \'dex\'')
         with parser.stream as context:
             for n in 'abcdef ijkl':
                 self.assertEqual(context.read_char(), n)

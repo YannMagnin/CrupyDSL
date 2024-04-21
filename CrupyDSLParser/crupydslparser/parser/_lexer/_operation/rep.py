@@ -95,9 +95,8 @@ class CrupyLexerOpRep1N(_CrupyLexerOpRepxN):
                 raise CrupyLexerOpRepException(
                     context         = self._error.context,
                     validated_step  = self._error.validated_operation,
-                    reason          = \
-                        'unable to perform at least one repetition of '
-                        f"the sequence. Reason: {self._error.reason}",
+                    reason          = self._error.reason,
+                    message         = self._error.message,
                 )
             raise CrupyLexerOpRepException(
                 context         = context,

@@ -93,7 +93,7 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
             ),
         })
         parser.register_stream('abcdefijabcdefijklnm')
-        self.assertRaises(
+        err = self.assertRaises(
             cls_exc = CrupyLexerException,
             request = (parser, 'execute', 'entry'),
             error   = \
@@ -101,8 +101,7 @@ class CrupyUnittestLexerRep(CrupyUnittestBase):
                 '\n'
                 'Stream: line 1, column 9\n'
                 'abcdefijabcdefijklnm\n'
-                '~~~~~~~~^\n'
-                'CrupyLexerOpRepException: Unable to perform at least one '
-                'repetition of the sequence. Reason: unable to validate '
-                'the operation number 3'
+                '      ~~^\n'
+                'CrupyLexerOpTextException: Unable to match the text \'ijk\''
         )
+        self.assertEqual(err.reason, 'unable to match the text \'ijk\'')

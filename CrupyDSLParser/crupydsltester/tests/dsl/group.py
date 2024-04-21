@@ -10,7 +10,6 @@ from crupydslparser.grammar._dsl._parser import (
     CRUPY_DSL_PARSER_OBJ,
     CrupyDslParserException,
 )
-from crupydslparser.parser.exception import CrupyParserBaseException
 
 #---
 # Public

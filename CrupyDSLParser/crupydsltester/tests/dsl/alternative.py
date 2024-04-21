@@ -7,6 +7,7 @@ __all__ = [
 
 from crupydsltester.unittest import CrupyUnittestBase
 from crupydslparser.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
+from crupydslparser.parser.exception import CrupyParserBaseException
 
 #---
 # Public
@@ -19,6 +20,8 @@ class CrupyUnittestDslAlternative(CrupyUnittestBase):
     #---
     # Public tests
     #---
+
+    ## functional
 
     def test_prodname(self) -> None:
         """ test """
@@ -68,3 +71,69 @@ class CrupyUnittestDslAlternative(CrupyUnittestBase):
             node.seq[3].statement.type,
             'dsl_statement',
         )
+
+    ## error
+
+    def test_error_broken_string(self) -> None:
+        """ error test"""
+        CRUPY_DSL_PARSER_OBJ.register_stream('"test oui')
+        err = self.assertRaises(
+            cls_exc = CrupyParserBaseException,
+            request = (CRUPY_DSL_PARSER_OBJ, 'execute', 'alternative'),
+            error   = \
+                'DSL parsing exception occured:\n'
+                '\n'
+                'Stream: line 1, column 10\n'
+                '"test oui\n'
+                '~~~~~~~~~^\n'
+                'SyntaxError: missing enclosing quote',
+        )
+        self.assertEqual(err.reason, 'missing enclosing quote')
+
+    def test_error_broken_prodname(self) -> None:
+        """ error test"""
+        CRUPY_DSL_PARSER_OBJ.register_stream('<foo_barr')
+        err = self.assertRaises(
+            cls_exc = CrupyParserBaseException,
+            request = (CRUPY_DSL_PARSER_OBJ, 'execute', 'alternative'),
+            error   = \
+                'DSL parsing exception occured:\n'
+                '\n'
+                'Stream: line 1, column 10\n'
+                '<foo_barr\n'
+                '~~~~~~~~~^\n'
+                'SyntaxError: missing enclosing chevron',
+        )
+        self.assertEqual(err.reason, 'missing enclosing chevron')
+
+    def test_error_broken_group(self) -> None:
+        """ error test"""
+        CRUPY_DSL_PARSER_OBJ.register_stream('("aaaaabb" ')
+        err = self.assertRaises(
+            cls_exc = CrupyParserBaseException,
+            request = (CRUPY_DSL_PARSER_OBJ, 'execute', 'alternative'),
+            error   = \
+                'DSL parsing exception occured:\n'
+                '\n'
+                'Stream: line 1, column 12\n'
+                '("aaaaabb" \n'
+                '~~~~~~~~~~~^\n'
+                'SyntaxError: missing enclosing parenthesis',
+        )
+        self.assertEqual(err.reason, 'missing enclosing parenthesis')
+
+    def test_error_broken_any(self) -> None:
+        """ error test"""
+        CRUPY_DSL_PARSER_OBJ.register_stream(':yo_man')
+        err = self.assertRaises(
+            cls_exc = CrupyParserBaseException,
+            request = (CRUPY_DSL_PARSER_OBJ, 'execute', 'alternative'),
+            error   = \
+                'DSL parsing exception occured:\n'
+                '\n'
+                'Stream: line 1, column 4\n'
+                ':yo_man\n'
+                '~~~^\n'
+                'SyntaxError: missing enclosing colon',
+        )
+        self.assertEqual(err.reason, 'missing enclosing colon')

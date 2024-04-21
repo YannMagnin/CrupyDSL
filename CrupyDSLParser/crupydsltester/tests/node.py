@@ -29,7 +29,7 @@ class CrupyUnittestNode(CrupyUnittestBase):
         """ simply check the read/peek """
         stream = CrupyStream.from_any('abcd')
         with stream as context:
-            node = CrupyParserNode(
+            node = CrupyParserNodeTest(
                 context = context.validate(),
             )
             self.assertIsNotNone(node)

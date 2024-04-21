@@ -38,7 +38,7 @@ class _CrupyParserAbstractException(CrupyDSLCoreException):
         super().__init__(message)
         self._context = context
         self._reason  = reason
-        self._message = reason
+        self._message = message
 
     def __gt__(self, error: Self) -> bool:
         return self.context > error.context

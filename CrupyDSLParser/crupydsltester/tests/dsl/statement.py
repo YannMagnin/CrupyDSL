@@ -7,6 +7,7 @@ __all__ = [
 
 from crupydsltester.unittest import CrupyUnittestBase
 from crupydslparser.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
+from crupydslparser.parser.exception import CrupyParserBaseException
 
 #---
 # Public
@@ -19,6 +20,8 @@ class CrupyUnittestDslStatement(CrupyUnittestBase):
     #---
     # Public tests
     #---
+
+    ## fonctional
 
     def test_prodname(self) -> None:
         """ test """
@@ -67,3 +70,21 @@ class CrupyUnittestDslStatement(CrupyUnittestBase):
         self.assertEqual(alts[1].seq[0].type, 'dsl_string')
         self.assertEqual(alts[2].seq[0].type, 'dsl_builtin')
         self.assertEqual(alts[2].seq[1].type, 'dsl_production_name')
+
+    ## error
+
+    def test_error_broken_alternative(self) -> None:
+        """ test error """
+        CRUPY_DSL_PARSER_OBJ.register_stream('"yes no maybe')
+        err = self.assertRaises(
+            cls_exc = CrupyParserBaseException,
+            request = (CRUPY_DSL_PARSER_OBJ, 'execute', 'statement'),
+            error   = \
+                'DSL parsing exception occured:\n'
+                '\n'
+                'Stream: line 1, column 14\n'
+                '"yes no maybe\n'
+                '~~~~~~~~~~~~~^\n'
+                'SyntaxError: missing enclosing quote',
+        )
+        self.assertEqual(err.reason, 'missing enclosing quote')

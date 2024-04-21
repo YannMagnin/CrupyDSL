@@ -35,6 +35,7 @@ from crupydslparser.grammar._dsl._parser._group import (
 )
 from crupydslparser.grammar._dsl._parser._production import (
     dsl_production_hook,
+    dsl_production_hook_error,
 )
 from crupydslparser.grammar._dsl._parser._string import (
     dsl_string_hook,
@@ -58,7 +59,6 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     #
     # Production entry
     # > <crupy_dsl> ::= (<crupy_dsl_production>)+ :eof:
-    # (error will be hooked)
     #
     'crupy_dsl' : \
         CrupyLexerOpSeq(
@@ -101,7 +101,6 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     #       <alternative> \
     #       (<space_opt> "|" <space_opt> <alternative>)* \
     #       <eol>
-    # (error will be hooked)
     #
     'statement' : \
         CrupyLexerOpSeq(
@@ -122,7 +121,6 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     # Production' alternatives (right part of the production declaraction,
     # but without the "or" ("|") operation)
     # > alternative ::= (<production_name> | <group> | <string>)+
-    # (error will be hooked)
     #
     'alternative' : \
         CrupyLexerOpRep1N(
@@ -302,6 +300,10 @@ CRUPY_DSL_PARSER_OBJ.register_post_hook(
 CRUPY_DSL_PARSER_OBJ.register_error_hook('string', dsl_string_hook_error)
 CRUPY_DSL_PARSER_OBJ.register_error_hook('builtin', dsl_builtin_hook_error)
 CRUPY_DSL_PARSER_OBJ.register_error_hook('group', dsl_group_hook_error)
+CRUPY_DSL_PARSER_OBJ.register_error_hook(
+    'production',
+    dsl_production_hook_error,
+)
 CRUPY_DSL_PARSER_OBJ.register_error_hook(
     'production_name',
     dsl_production_name_hook_error,

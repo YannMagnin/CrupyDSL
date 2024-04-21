@@ -84,9 +84,8 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
                 'Stream: line 1, column 6\n'
                 'abcdexxx\n'
                 '~~~~~^\n'
-                'CrupyLexerOpOrException: Unable to find an alternative '
-                'that match the provided stream. Reason: unable to match '
-                'the text \'abcdef\''
+                'CrupyLexerOpTextException: Unable to match the '
+                'text \'abcdef\''
         )
         try:
             parser.execute('entry')
@@ -95,8 +94,7 @@ class CrupyUnittestLexerOr(CrupyUnittestBase):
             self.assertIsNotNone(err.deepest_error)
             self.assertEqual(
                 err.reason,
-                'unable to find an alternative that match the provided '
-                'stream. Reason: unable to match the text \'abcdef\''
+                'unable to match the text \'abcdef\'',
             )
 
     def test_error_and_success(self) -> None:
