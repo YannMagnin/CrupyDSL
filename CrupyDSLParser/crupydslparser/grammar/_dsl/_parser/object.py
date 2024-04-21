@@ -48,6 +48,10 @@ from crupydslparser.grammar._dsl._parser._production_name import (
     dsl_production_name_hook,
     dsl_production_name_hook_error,
 )
+from crupydslparser.grammar._dsl._parser._error import (
+    dsl_error_hook,
+    dsl_error_hook_error,
+)
 
 #---
 # Public
@@ -130,6 +134,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
                 CrupyLexerOpProductionCall('string'),
                 CrupyLexerOpProductionCall('builtin'),
                 CrupyLexerOpProductionCall('group'),
+                CrupyLexerOpProductionCall('error')
             ),
         ),
     #
@@ -213,6 +218,23 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
             CrupyLexerOpText(':'),
         ),
     #
+    # manual error
+    # > error ::= "@" ("error"|"error_hook") "(" <string> ")"
+    # (error will be hooked)
+    #
+    'error' : \
+        CrupyLexerOpSeq(
+            CrupyLexerOpText('@'),
+            CrupyLexerOpOr(
+                CrupyLexerOpText('error_hook'),
+                CrupyLexerOpText('error'),
+            ),
+            CrupyLexerOpText('('),
+            CrupyLexerOpProductionCall('string'),
+            CrupyLexerOpText(')')
+        ),
+
+    #
     # space_any
     # space_any ::= (:space: | "\n" | "\r\n")*
     #
@@ -283,6 +305,7 @@ CRUPY_DSL_PARSER_OBJ.register_post_hook('__space', dsl_space_hook)
 CRUPY_DSL_PARSER_OBJ.register_post_hook('builtin', dsl_builtin_hook)
 CRUPY_DSL_PARSER_OBJ.register_post_hook('string', dsl_string_hook)
 CRUPY_DSL_PARSER_OBJ.register_post_hook('group', dsl_group_hook)
+CRUPY_DSL_PARSER_OBJ.register_post_hook('error', dsl_error_hook)
 CRUPY_DSL_PARSER_OBJ.register_post_hook('crupy_dsl', dsl_dsl_hook)
 CRUPY_DSL_PARSER_OBJ.register_post_hook('statement', dsl_statement_hook)
 CRUPY_DSL_PARSER_OBJ.register_post_hook('production', dsl_production_hook)
@@ -300,6 +323,7 @@ CRUPY_DSL_PARSER_OBJ.register_post_hook(
 CRUPY_DSL_PARSER_OBJ.register_error_hook('string', dsl_string_hook_error)
 CRUPY_DSL_PARSER_OBJ.register_error_hook('builtin', dsl_builtin_hook_error)
 CRUPY_DSL_PARSER_OBJ.register_error_hook('group', dsl_group_hook_error)
+CRUPY_DSL_PARSER_OBJ.register_error_hook('error', dsl_error_hook_error)
 CRUPY_DSL_PARSER_OBJ.register_error_hook(
     'production',
     dsl_production_hook_error,
