@@ -29,13 +29,15 @@ class _CrupyParserAbstractException(CrupyDSLCoreException):
         self,
         reason: str,
         context: CrupyStreamContext,
+        *args: Any,
         message: Optional[str] = None,
+        **kwargs: Any,
     ) -> None:
         """ intialise the new object
         """
         if not message:
             message = reason
-        super().__init__(message)
+        super().__init__(message, *args, **kwargs)
         self._context = context
         self._reason  = reason
         self._message = message

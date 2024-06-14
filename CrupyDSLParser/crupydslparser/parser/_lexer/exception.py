@@ -9,7 +9,7 @@ from __future__ import annotations
 __all__ = [
     'CrupyLexerException',
 ]
-from typing import Optional
+from typing import Optional, Any
 
 from crupydslparser.parser.exception import CrupyParserBaseException
 from crupydslparser.parser._stream.context import CrupyStreamContext
@@ -33,7 +33,9 @@ class CrupyLexerException(CrupyParserBaseException):
         self,
         reason: str,
         context: CrupyStreamContext,
-        message: Optional[str] = None
+        *_: Any,
+        message: Optional[str] = None,
+        **__: Any,
     ) -> None:
         """ wrap the parser exception class to force providing context
         """

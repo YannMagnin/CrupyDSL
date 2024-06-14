@@ -4,6 +4,7 @@ test.crupydataclass - custom implementation of dataclass
 __all__ = [
     'CrupyUnittestUtilsDataclass',
 ]
+from typing import Any
 
 from crupydsltester.unittest import CrupyUnittestBase
 from crupydslparser._utils import crupydataclass
@@ -17,13 +18,15 @@ class TestClass():
     """ test dataclass """
     test: int
     oui: str
+    def __init__(self, /, **_: Any) -> None:
+        """ workaround """
 
 @crupydataclass
 class TestClassNested():
     """ test nested init """
     test: int
     oui: str
-    def __init__(self) -> None:
+    def __init__(self, /, **_: Any) -> None:
         print('NESTED INIT')
         self.nested = 'yes'
         self.test = -1

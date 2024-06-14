@@ -57,6 +57,9 @@ class _CrupyAbstractClass():
         if hook_init is not None:
             hook_init(self, *args, **kwargs)
 
+    def __init__(self, *_:Any, **__: Any) -> None:
+        """ aaa """
+
 #---
 # Public
 #---

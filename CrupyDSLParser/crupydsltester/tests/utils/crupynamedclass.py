@@ -4,6 +4,7 @@ test.crupynamedclass - custom class declaration
 __all__ = [
     'CrupyUnittestUtilsNamed',
 ]
+from typing import Any
 
 from crupydsltester.unittest import CrupyUnittestBase
 from crupydslparser._utils import crupynamedclass
@@ -36,7 +37,7 @@ class CrupyUnittestUtilsNamed(CrupyUnittestBase):
     def test_obj(self) -> None:
         """ test simple init """
         obj = TestTypeName()
-        self.assertEqual(obj.type, 'type_name')
+        self.assertEqual(obj.type, 'type_name') # type: ignore
 
     def test_bad_name(self) -> None:
         """ test bad class name """
@@ -49,4 +50,4 @@ class CrupyUnittestUtilsNamed(CrupyUnittestBase):
     def test_parent(self) -> None:
         """ test parent """
         obj = TestParent()
-        self.assertEqual(obj.type, 'parent')
+        self.assertEqual(obj.type, 'parent')    # type: ignore

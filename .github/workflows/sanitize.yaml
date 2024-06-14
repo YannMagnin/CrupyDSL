@@ -1,0 +1,37 @@
+name: 'Sanitize codebase'
+on: [push]
+jobs:
+  sanitize-codebase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'checkout the codebase'
+        uses: actions/checkout@v4
+      - name: 'install CPython 3.11'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 'install poetry'
+        uses: abatilo/actions-poetry@v3
+        with:
+          poetry-version: '1.8'
+      - name: 'Setup a local virtual environment'
+        run: |
+          poetry config virtualenvs.create true --local
+          poetry config virtualenvs.in-project true --local
+      - name: 'define a cache for the virtual environment'
+        uses: actions/cache@v4
+        with:
+          path: ./.venv
+          key: venv-${{ hashFiles('poetry.lock') }}
+      - name: 'install the project dependencies'
+        run: poetry install
+      - name: 'check codebase'
+        run: |
+          poetry run pylint -E CrupyDSLParser/crupydslparser
+          poetry run mypy --strict CrupyDSLParser/crupydslparser
+          poetry run pylint -E CrupyDSLParser/crupydsltester
+          poetry run mypy --strict CrupyDSLParser/crupydsltester
+          poetry run pylint -E CrupyDSLParser/examples/crupycsv
+          poetry run mypy --strict CrupyDSLParser/examples/crupycsv
+          poetry run pylint -E CrupyDSLParser/examples/crupyjson
+          poetry run mypy --strict CrupyDSLParser/examples/crupyjson

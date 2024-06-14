@@ -22,7 +22,7 @@ crupyjson       = 'crupyjson.cli:crupyjson_cli_entry'
 
 [tool.poetry.dependencies]
 python  = "3.11.*"
-click   = "8.1.*"
+click   = "8.*"
 
 [tool.poetry.dev-dependencies]
 pynvim  = "*"

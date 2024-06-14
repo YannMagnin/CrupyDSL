@@ -46,6 +46,7 @@ class _CrupyNamedClass():
                 error += f"malformated to be compliant with {class_origin} "
                 error += f"that require to match with '{regex}'"
             raise CrupyDSLCoreException(error)
+        class_type = ''
         if generate_type:
             if 'type' not in info.groupdict():
                 raise CrupyDSLCoreException(
@@ -54,7 +55,6 @@ class _CrupyNamedClass():
                     f"given regex for all subclass of '{class_origin}' do "
                     'not provide the \'type\' group'
                 )
-            class_type = ''
             for char in info['type']:
                 if class_type and char.isupper():
                     class_type += '_'
