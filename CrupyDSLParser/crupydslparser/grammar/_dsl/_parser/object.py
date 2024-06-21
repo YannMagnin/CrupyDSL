@@ -173,20 +173,34 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
             ),
         ),
     #
-    # String operation (support regex)
-    # > string ::= "\"" ((?!"\"") :any:)+ "\""
+    # string production
+    # > string ::= \
+    #       | "\"" ((?!"\"") :any:)* "\"" \
+    #       | "'" ((?!"'") :any:)* "'"
     # (error will be hooked)
     #
-    'string' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpText('"'),
-            CrupyLexerOpRep1N(
-                CrupyLexerAssertLookaheadNegative(
-                    CrupyLexerOpText('"'),
+    'string' :  \
+        CrupyLexerOpOr(
+            CrupyLexerOpSeq(
+                CrupyLexerOpText('"'),
+                CrupyLexerOpRep0N(
+                    CrupyLexerAssertLookaheadNegative(
+                        CrupyLexerOpText('"'),
+                    ),
+                    CrupyLexerOpBuiltin('any')
                 ),
-                CrupyLexerOpBuiltin('any')
+                CrupyLexerOpText('"'),
             ),
-            CrupyLexerOpText('"'),
+            CrupyLexerOpSeq(
+                CrupyLexerOpText('\''),
+                CrupyLexerOpRep0N(
+                    CrupyLexerAssertLookaheadNegative(
+                        CrupyLexerOpText('\''),
+                    ),
+                    CrupyLexerOpBuiltin('any')
+                ),
+                CrupyLexerOpText('\''),
+            ),
         ),
     #
     # Production name

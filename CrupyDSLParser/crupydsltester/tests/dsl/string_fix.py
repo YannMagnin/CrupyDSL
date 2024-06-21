@@ -21,19 +21,33 @@ class CrupyUnittestDslString(CrupyUnittestBase):
     # Public tests
     #---
 
-    def test_simple_success(self) -> None:
+    def test_dquote_simple(self) -> None:
         """ simple valid case """
         CRUPY_DSL_PARSER_OBJ.register_stream(r'"667 oui ~# \\ dslk"')
         node = CRUPY_DSL_PARSER_OBJ.execute('string')
         self.assertEqual(node.type, 'dsl_string')
         self.assertEqual(node.text, r'667 oui ~# \ dslk')
 
-    def test_escape(self) -> None:
+    def test_dquote_escape(self) -> None:
         """ test escaping """
         CRUPY_DSL_PARSER_OBJ.register_stream('"\\"\\\\"')
         node = CRUPY_DSL_PARSER_OBJ.execute('string')
         self.assertEqual(node.type, 'dsl_string')
         self.assertEqual(node.text, '"\\')
+
+    def test_quote_simple(self) -> None:
+        """ simple valid case """
+        CRUPY_DSL_PARSER_OBJ.register_stream(r"'667 oui ~# \\ dslk'")
+        node = CRUPY_DSL_PARSER_OBJ.execute('string')
+        self.assertEqual(node.type, 'dsl_string')
+        self.assertEqual(node.text, r'667 oui ~# \ dslk')
+
+    def test_quote_escape(self) -> None:
+        """ test escaping """
+        CRUPY_DSL_PARSER_OBJ.register_stream("'\\'\\\\'")
+        node = CRUPY_DSL_PARSER_OBJ.execute('string')
+        self.assertEqual(node.type, 'dsl_string')
+        self.assertEqual(node.text, "'\\")
 
     def test_error_enclose(self) -> None:
         """ test error handling """

@@ -2,6 +2,7 @@
 crupydslparser.parser._lexer    - Lexer tools
 """
 __all__ = [
+    'CrupyLexerOpBase',
     'CrupyLexerOpText',
     'CrupyLexerOpTextException',
     'CrupyLexerOpSeq',
@@ -20,6 +21,9 @@ __all__ = [
     'CrupyLexerOpBuiltinException',
     'CrupyLexerOpError',
 ]
+from crupydslparser.parser._lexer._operation.base import (
+    CrupyLexerOpBase,
+)
 from crupydslparser.parser._lexer._operation.text import (
     CrupyLexerOpText,
     CrupyLexerOpTextException,

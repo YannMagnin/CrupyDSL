@@ -29,8 +29,9 @@ def dsl_string_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     assert node.seq[0].type == 'lex_text'
     assert node.seq[1].type == 'lex_rep'
     assert node.seq[2].type == 'lex_text'
-    assert node.seq[0].text == '"'
-    assert node.seq[2].text == '"'
+    assert node.seq[0].text in '\'"'
+    assert node.seq[2].text in '\'"'
+    assert node.seq[0].text == node.seq[2].text
     text = ''
     for seq in node.seq[1].rep:
         assert len(seq) == 1
@@ -44,6 +45,8 @@ def dsl_string_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
 def dsl_string_hook_error(err: CrupyParserBaseException) -> NoReturn:
     """ string error hook
     """
+    assert err.type == 'lexer_op_or'
+    err = err.deepest_error
     assert err.type == 'lexer_op_seq'
     if err.validated_operation == 0:
         raise CrupyDslParserException(err, 'missing starting quote')

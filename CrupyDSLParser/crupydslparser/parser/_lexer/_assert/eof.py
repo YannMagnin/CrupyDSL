@@ -5,7 +5,7 @@ __all__ = [
     'CrupyLexerAssertEOF',
 ]
 
-from crupydslparser.parser._lexer._assert._base import CrupyLexerAssertBase
+from crupydslparser.parser._lexer._assert.base import CrupyLexerAssertBase
 from crupydslparser.parser import CrupyParserBase
 
 #---

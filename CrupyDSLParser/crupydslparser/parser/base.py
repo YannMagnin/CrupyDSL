@@ -91,8 +91,18 @@ class CrupyParserBase():
                 return cast(CrupyParserNodeBase, args[0])
             raise args[0]
         try:
+            node = None
             for hook in hook_book[production_name]:
                 node = cast(CrupyParserNodeBase, hook(*args))
+            if node is None:
+                raise CrupyParserBaseException(
+                    context = args[0].context,
+                    reason  = \
+                    f"{args[0].context.generate_error_log()}\n"
+                    '\n'
+                    f"Exception durring '{production_name}' hook, abort\n"
+                    'Missing hooks'
+                )
             return node
         except Exception as err:
             if target == 'error':
@@ -102,7 +112,7 @@ class CrupyParserBase():
                 reason  = \
                     f"{args[0].context.generate_error_log()}\n"
                     '\n'
-                    f"Exception durring '{hook.__name__}' hook, abort\n"
+                    f"Exception durring '{production_name}' hook, abort\n"
                     f"{err}"
             ) from err
 
@@ -120,9 +130,12 @@ class CrupyParserBase():
             )
         try:
             node = self._production_book[production_name](self)
+            return self._execute_hook('postprocess', production_name, node)
         except CrupyParserBaseException as err:
             self._execute_hook('error', production_name, err)
-        return self._execute_hook('postprocess', production_name, node)
+            raise CrupyDSLCoreException(
+                f"Error during {production_name} production handling"
+            ) from err
 
     def register_stream(self, stream: CrupyStream|IO[str]|str) -> None:
         """ register a stream

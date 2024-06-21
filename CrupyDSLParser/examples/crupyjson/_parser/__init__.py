@@ -3,6 +3,16 @@ crupyjson._parser     - manual JSON parser object
 """
 __all__ = [
     'JSON_PARSER_OBJ',
+    'json_parser_prod_hook_nullable',
+    'json_parser_prod_hook_boolean',
+    'json_parser_prod_hook_string',
+    'json_parser_prod_hook_json',
+    'json_parser_prod_hook_container',
+    'json_parser_prod_hook_primitive',
+    'json_parser_prod_hook_array',
+    'json_parser_prod_hook_object',
+    'json_parser_prod_hook_member',
+    'json_parser_prod_hook_statement',
 ]
 
 from crupydslparser.parser import CrupyParserBase

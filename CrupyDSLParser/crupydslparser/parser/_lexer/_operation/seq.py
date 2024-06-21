@@ -6,8 +6,8 @@ __all__ = [
 ]
 from typing import Any, cast
 
-from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
-from crupydslparser.parser._lexer._assert._base import CrupyLexerAssertBase
+from crupydslparser.parser._lexer._operation.base import CrupyLexerOpBase
+from crupydslparser.parser._lexer._assert.base import CrupyLexerAssertBase
 from crupydslparser.parser._lexer.exception import CrupyLexerException
 from crupydslparser.parser.exception import CrupyParserBaseException
 from crupydslparser.parser.base import CrupyParserBase

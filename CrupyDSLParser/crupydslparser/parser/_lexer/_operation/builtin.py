@@ -6,7 +6,7 @@ __all__ = [
 ]
 
 from crupydslparser.parser._lexer.exception import CrupyLexerException
-from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
+from crupydslparser.parser._lexer._operation.base import CrupyLexerOpBase
 from crupydslparser.parser._lexer._operation.text import (
     CrupyParserNodeLexText,
 )
@@ -214,7 +214,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                         'unable to validate the current char as '
                         '"symbol", no stream available',
                 )
-            if not curr in "|!#$%&()*+,-./:;>=<?@[\\]^_`{}~\"":
+            if not curr in "|!#$%&()*+,-./:;>=<?@[\\]^_`{}~\"'":
                 raise CrupyLexerOpBuiltinException(
                     context = context,
                     reason  = \

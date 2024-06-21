@@ -7,6 +7,7 @@ __all__ = [
 import click
 
 from crupyjson.cli.tests import crupyjson_cli_tests_entry
+from crupyjson.cli.grammar import crupyjson_cli_grammar_entry
 
 #---
 # Public
@@ -16,6 +17,7 @@ from crupyjson.cli.tests import crupyjson_cli_tests_entry
     'crupyjson',
     commands    = [
         crupyjson_cli_tests_entry,
+        crupyjson_cli_grammar_entry
     ],
 )
 def crupyjson_cli_entry() -> None:

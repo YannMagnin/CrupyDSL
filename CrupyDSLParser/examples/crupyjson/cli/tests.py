@@ -29,7 +29,8 @@ from crupyjson._tests._parser import (
 
 @click.command('tests')
 def crupyjson_cli_tests_entry() -> NoReturn:
-    """ run all tests """
+    """ run all tests
+    """
     json_test_parser_nullable(JSON_PARSER_OBJ)
     json_test_parser_string(JSON_PARSER_OBJ)
     json_test_parser_boolean(JSON_PARSER_OBJ)

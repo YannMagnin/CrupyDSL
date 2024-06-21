@@ -6,7 +6,7 @@ __all__ = [
     'CrupyLexerOpProductionCallException',
 ]
 
-from crupydslparser.parser._lexer._operation._base import CrupyLexerOpBase
+from crupydslparser.parser._lexer._operation.base import CrupyLexerOpBase
 from crupydslparser.parser.base import CrupyParserBase
 from crupydslparser.parser.node import CrupyParserNodeBase
 from crupydslparser.parser._lexer.exception import CrupyLexerException
