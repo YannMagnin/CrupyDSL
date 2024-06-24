@@ -28,6 +28,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
     """ builtin operations
     """
     def __init__(self, operation: str) -> None:
+        super().__init__()
         if operation not in [
             'any',
             'alphanum',
@@ -82,7 +83,6 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         with parser.stream as context:
             if context.peek_char() == '\\':
                 context.read_char()
-            node: CrupyParserNodeBase|None = None
             for test in (
                 (self._is_alphanum, 'alphanum'),
                 (self._is_symbol, 'ascii'),
@@ -274,3 +274,12 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                 context = context.validate(),
                 text    = '',
             )
+
+    #---
+    # Public methods
+    #---
+
+    def show(self, indent: int = 0) -> str:
+        """ display a generic information
+        """
+        return f"{' ' * indent}{type(self).__name__}('{self._operation}')"

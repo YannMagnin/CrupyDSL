@@ -20,5 +20,5 @@ def crupyjson_cli_grammar_entry() -> NoReturn:
     """ grammar check
     """
     test = CrupyGrammarJSON()
-    print(test)
+    print(test.show())
     sys.exit(1)

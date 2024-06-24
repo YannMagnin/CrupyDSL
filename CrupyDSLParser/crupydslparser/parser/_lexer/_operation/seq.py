@@ -33,6 +33,7 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
     """ execute sequence of lexer operation
     """
     def __init__(self, *args: Any) -> None:
+        super().__init__()
         self._seq: list[CrupyLexerOpBase|CrupyLexerAssertBase] = []
         for i, arg in enumerate(args):
             if (
@@ -66,7 +67,7 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
                                 validated_operation = i,
                                 reason              = \
                                     'unable to validate the assertion '
-                                    f"{assert_op.name}"
+                                    f"{assert_op.type}"
                             )
                         continue
                     token_list.append(
@@ -86,3 +87,17 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
                 context = context.validate(),
                 seq     = token_list,
             )
+
+    #---
+    # Public methods
+    #---
+
+    def show(self, indent: int = 0) -> str:
+        """ display a generic information
+        """
+        content = f"{' ' * indent}{type(self).__name__}(\n"
+        for alternative in self._seq:
+            content += alternative.show(indent + 1)
+            content += ',\n'
+        content += f"{' ' * indent})"
+        return content

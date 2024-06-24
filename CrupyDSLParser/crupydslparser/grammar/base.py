@@ -57,12 +57,6 @@ class CrupyGrammarBase():
         self._production_entry = self.production_entry
         self.grammar_update(self)
 
-    def __str__(self) -> str:
-        """ display the full grammar information
-        """
-        content  = ''
-        content += self._target_parser.__str__()
-        return content
 
     #---
     # Internal
@@ -92,6 +86,13 @@ class CrupyGrammarBase():
     #---
     # Public methods
     #---
+
+    def show(self) -> str:
+        """ display the full grammar information
+        """
+        content  = ''
+        content += self._target_parser.show()
+        return content
 
     def parse(self, _stream_origin: IO[str]|str) -> Any:
         """ parse the stream using the current grammar state

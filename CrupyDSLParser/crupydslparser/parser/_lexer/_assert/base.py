@@ -5,52 +5,45 @@ __all__ = [
     'CrupyLexerAssertBase',
 ]
 from typing import Any
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
-from crupydslparser.exception import CrupyDSLCoreException
 from crupydslparser.parser import CrupyParserBase
+from crupydslparser._utils import (
+    crupyabstractclass,
+    crupynamedclass,
+)
 
 #---
 # Public
 #---
 
-class CrupyLexerAssertBase(ABC):
+@crupyabstractclass
+@crupynamedclass(
+    generate_type   = True,
+    regex           = '^(_)?CrupyLexerAssert(?P<type>([A-Z][a-z]+)+)$',
+)
+class CrupyLexerAssertBase():
     """ Lexer assert operation
     """
 
     #---
-    # Magic mechanism used to auto-generate class information
-    #---
-
-    _name: str  = ''
-
-    def __init_subclass__(cls, /, **kwargs: dict[str,Any]) -> None:
-        """ guess token name based on class name
-        """
-        super().__init_subclass__(**kwargs)
-        if cls.__name__.find('CrupyLexerAssert') != 0:
-            raise CrupyDSLCoreException(
-                f"Malformated lexer assert class name '{cls.__name__}'"
-            )
-        cls._name = ''
-        for letter in cls.__name__[16:]:
-            if cls._name and letter.isupper():
-                cls._name += '_'
-            cls._name += letter.lower()
-
-    #---
-    # Pulic methods
+    # Magic operation
     #---
 
     @abstractmethod
     def __call__(self, stream: CrupyParserBase) -> bool:
-        pass
+        """ internal core operation code
+        """
+
+    def __getattribute__(self, name: Any, /) -> Any:
+        """ workaround for mypy and pylint """
+        return super().__getattribute__(name)
 
     #---
-    # Public property
+    # Public methods
     #---
 
-    @property
-    def name(self) -> str:
-        """ return the lexer name """
-        return self._name
+    @abstractmethod
+    def show(self, indent: int = 0) -> str:
+        """ display a generic information
+        """

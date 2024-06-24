@@ -31,6 +31,7 @@ class CrupyLexerOpText(CrupyLexerOpBase):
     """ strict string matcher
     """
     def __init__(self, text: str) -> None:
+        super().__init__()
         self._text = text
 
     def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
@@ -60,3 +61,12 @@ class CrupyLexerOpText(CrupyLexerOpBase):
                 context = context.validate(),
                 text    = self._text,
             )
+
+    #---
+    # Public methods
+    #---
+
+    def show(self, indent: int = 0) -> str:
+        """ display a generic information
+        """
+        return f"{' ' * indent}{type(self).__name__}('{self._text}')"

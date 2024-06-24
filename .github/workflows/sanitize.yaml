@@ -27,11 +27,11 @@ jobs:
         run: poetry install
       - name: 'check codebase'
         run: |
-          poetry run pylint -E CrupyDSLParser/crupydslparser
+          poetry run pylint -d R0903,R0801 CrupyDSLParser/crupydslparser
           poetry run mypy --strict CrupyDSLParser/crupydslparser
-          poetry run pylint -E CrupyDSLParser/crupydsltester
+          poetry run pylint -d R0903,R0801 CrupyDSLParser/crupydsltester
           poetry run mypy --strict CrupyDSLParser/crupydsltester
-          poetry run pylint -E CrupyDSLParser/examples/crupycsv
+          poetry run pylint -d R0903,R0801 CrupyDSLParser/examples/crupycsv
           poetry run mypy --strict CrupyDSLParser/examples/crupycsv
-          poetry run pylint -E CrupyDSLParser/examples/crupyjson
+          poetry run pylint -d R0903,R0801 CrupyDSLParser/examples/crupyjson
           poetry run mypy --strict CrupyDSLParser/examples/crupyjson

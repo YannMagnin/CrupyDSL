@@ -29,7 +29,7 @@ from crupydslparser.parser.node import CrupyParserNodeBase
 # - use the `annotations` import to allow "not well defined class"
 # - import the missing `CrupyLexer` type
 if TYPE_CHECKING:
-    from crupydslparser.parser._lexer._operation._base import (
+    from crupydslparser.parser._lexer._operation.base import (
         CrupyLexerOpBase,
     )
 
@@ -56,6 +56,7 @@ class CrupyParserBase():
             str,
             list[Callable[[CrupyParserBaseException], NoReturn]],
         ]= {}
+
 
     #---
     # Public properties
@@ -119,6 +120,17 @@ class CrupyParserBase():
     #---
     # Public methods
     #---
+
+    def show(self, indent: int = 0) -> str:
+        """ display production information
+        """
+        content = ''
+        for production_info in self._production_book.items():
+            content += f"{' ' * indent}{production_info[0]}: \\\n"
+            content += production_info[1].show(indent + 1)
+            content += '\n'
+            content += '\n'
+        return content[:-2]
 
     def execute(self, production_name: str) -> CrupyParserNodeBase:
         """ execute a particular production name

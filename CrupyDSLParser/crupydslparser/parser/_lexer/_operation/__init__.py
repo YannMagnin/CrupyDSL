@@ -12,8 +12,6 @@ __all__ = [
     'CrupyLexerOpRep0N',
     'CrupyLexerOpRep1N',
     'CrupyLexerOpRepException',
-    'CrupyLexerOpBetween',
-    'CrupyLexerOpBetweenException',
     'CrupyLexerOpProductionCall',
     'CrupyLexerOpProductionCallException',
     'CrupyLexerOpOptional',
@@ -38,10 +36,6 @@ from crupydslparser.parser._lexer._operation.choice import (
 )
 from crupydslparser.parser._lexer._operation.optional import (
     CrupyLexerOpOptional,
-)
-from crupydslparser.parser._lexer._operation.between import (
-    CrupyLexerOpBetween,
-    CrupyLexerOpBetweenException,
 )
 from crupydslparser.parser._lexer._operation.productioncall import (
     CrupyLexerOpProductionCall,

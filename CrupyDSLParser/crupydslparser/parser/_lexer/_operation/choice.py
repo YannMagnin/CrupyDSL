@@ -29,6 +29,7 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
     """ OR lexer operation
     """
     def __init__(self, *args: Any) -> None:
+        super().__init__()
         self._seq: list[CrupyLexerOpBase] = []
         for i, arg in enumerate(args):
             if CrupyLexerOpBase not in type(arg).mro():
@@ -77,3 +78,17 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
             reason          = best_choice_error.reason,
             message         = best_choice_error.message,
         )
+
+    #---
+    # Public methods
+    #---
+
+    def show(self, indent: int = 0) -> str:
+        """ display a generic information
+        """
+        content = f"{' ' * indent}{type(self).__name__}(\n"
+        for alternative in self._seq:
+            content += alternative.show(indent + 1)
+            content += ',\n'
+        content += f"{' ' * indent})"
+        return content

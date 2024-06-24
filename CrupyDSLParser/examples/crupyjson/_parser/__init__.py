@@ -25,7 +25,6 @@ from crupydslparser.parser._lexer import (
     CrupyLexerOpProductionCall,
     CrupyLexerOpBuiltin,
     CrupyLexerAssertLookaheadNegative,
-    CrupyLexerAssertEOF,
 )
 
 from crupyjson._parser.nullable import json_parser_prod_hook_nullable
@@ -51,7 +50,7 @@ JSON_PARSER_OBJ = CrupyParserBase({
     'json' : \
         CrupyLexerOpSeq(
             CrupyLexerOpProductionCall('statement'),
-            CrupyLexerAssertEOF(),
+            CrupyLexerOpBuiltin('eof'),
         ),
     #
     # statement production

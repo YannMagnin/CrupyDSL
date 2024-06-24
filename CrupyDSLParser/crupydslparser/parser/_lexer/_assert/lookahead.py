@@ -21,6 +21,7 @@ class CrupyLexerAssertLookaheadNegative(CrupyLexerAssertBase):
     """ lexer lookahead negative operation
     """
     def __init__(self, *args: Any) -> None:
+        super().__init__()
         self._seq: list[CrupyLexerOpBase] = []
         for i, arg in enumerate(args):
             if CrupyLexerOpBase not in type(arg).mro():
@@ -46,6 +47,21 @@ class CrupyLexerAssertLookaheadNegative(CrupyLexerAssertBase):
                 except CrupyParserBaseException:
                     return True
             return False
+
+    #---
+    # Public methods
+    #---
+
+    def show(self, indent: int = 0) -> str:
+        """ display a generic information
+        """
+        content = f"{' ' * indent}{type(self).__name__}(\n"
+        for alternative in self._seq:
+            content += alternative.show(indent + 1)
+            content += ',\n'
+        content += f"{' ' * indent})"
+        return content
+
 
 class CrupyLexerAssertLookaheadPositive(CrupyLexerAssertLookaheadNegative):
     """ lexer lookahead negative operation

@@ -23,7 +23,7 @@ from crupydslparser._utils import (
 @crupyabstractclass
 @crupynamedclass(
     generate_type   = True,
-    regex           = '^(_)?CrupyLexerOp(?P<type>([A-Z][a-z]+)+)$',
+    regex           = '^(_)?CrupyLexerOp(?P<type>([0-9]*[A-Z][a-z]*)+)$',
 )
 class CrupyLexerOpBase():
     """ Lexer capture operation
@@ -36,4 +36,13 @@ class CrupyLexerOpBase():
     @abstractmethod
     def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
         """ internal core operation code
+        """
+
+    #---
+    # Public (generic) methods
+    #---
+
+    @abstractmethod
+    def show(self, indent: int = 0) -> str:
+        """ display a generic information
         """

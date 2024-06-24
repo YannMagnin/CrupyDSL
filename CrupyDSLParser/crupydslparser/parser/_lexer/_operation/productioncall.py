@@ -26,10 +26,9 @@ class CrupyLexerOpProductionCall(CrupyLexerOpBase):
     """ Rule invocation operation
     """
     def __init__(self, production_name: str) -> None:
+        super().__init__()
         self._production_name = production_name
 
-    def __str__(self) -> str:
-        return f"{type(self).__name__}(prodname={self._production_name})"
 
     def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
         """ invoke another production rule
@@ -45,3 +44,13 @@ class CrupyLexerOpProductionCall(CrupyLexerOpBase):
                 )
         node = parser.execute(self._production_name)
         return node
+
+    #---
+    # Public methods
+    #---
+
+    def show(self, indent: int = 0) -> str:
+        """ display a generic information
+        """
+        return \
+            f"{' ' * indent}{type(self).__name__}('{self._production_name}')"

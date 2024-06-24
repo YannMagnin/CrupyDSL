@@ -4,7 +4,7 @@ crupydslparser.grammar._dsl.compil  - compil a grammar shard
 __all__ = [
     'dsl_compil_grammar_statement',
 ]
-from typing import Any
+from typing import Any, cast
 
 from crupydslparser.parser._lexer._operation import (
     CrupyLexerOpBase,
@@ -34,6 +34,12 @@ from crupydslparser.grammar.exception import CrupyGrammarException
 # Internals
 #---
 
+# allow too many branches to simplify the tranlation (can be cleaned later)
+# also allow access to a private attribute to simplify some operation like
+# `CrupyLexerOpRep0N,CrupyLexerAssertLookaheadPositive,...` that support
+# multiple operations without explicit `CrupyLexerOpSeq`
+# pylint: disable=locally-disabled,W0212,R0911,R0912
+
 def _dsl_compil_grammar_operation(
     operation: Any,
 ) -> CrupyLexerOpBase|CrupyLexerAssertBase:
@@ -47,16 +53,28 @@ def _dsl_compil_grammar_operation(
         return CrupyLexerOpText(operation.text)
     if operation.type == 'dsl_group':
         lexerop = dsl_compil_grammar_statement(operation.statement)
-        if operation.lookahead == 'possitive':
-            return CrupyLexerAssertLookaheadPositive(lexerop)
-        if operation.lookahead == 'negative':
-            return CrupyLexerAssertLookaheadNegative(lexerop)
-        if operation.operation == 'zero_plus':
-            return CrupyLexerOpRep0N(lexerop)
-        if operation.operation == 'one_plus':
-            return CrupyLexerOpRep1N(lexerop)
-        if operation.operation == 'optional':
-            return CrupyLexerOpOptional(lexerop)
+        if isinstance(lexerop, CrupyLexerOpSeq):
+            if operation.lookahead == 'possitive':
+                return CrupyLexerAssertLookaheadPositive(*lexerop._seq)
+            if operation.lookahead == 'negative':
+                return CrupyLexerAssertLookaheadNegative(*lexerop._seq)
+            if operation.operation == 'zero_plus':
+                return CrupyLexerOpRep0N(*lexerop._seq)
+            if operation.operation == 'one_plus':
+                return CrupyLexerOpRep1N(*lexerop._seq)
+            if operation.operation == 'optional':
+                return CrupyLexerOpOptional(*lexerop._seq)
+        else:
+            if operation.lookahead == 'possitive':
+                return CrupyLexerAssertLookaheadPositive(lexerop)
+            if operation.lookahead == 'negative':
+                return CrupyLexerAssertLookaheadNegative(lexerop)
+            if operation.operation == 'zero_plus':
+                return CrupyLexerOpRep0N(lexerop)
+            if operation.operation == 'one_plus':
+                return CrupyLexerOpRep1N(lexerop)
+            if operation.operation == 'optional':
+                return CrupyLexerOpOptional(lexerop)
         raise CrupyGrammarException(
             f"dsl_group: operation '{operation.operation}' not supported")
     raise CrupyGrammarException(
@@ -78,7 +96,7 @@ def _dsl_compil_grammar_alternative(
         op_list.append(
             _dsl_compil_grammar_operation(operation),
         )
-    if len(op_list) <= 0:
+    if len(op_list) <= 1:
         return op_list[0]
     return CrupyLexerOpSeq(*op_list)
 
@@ -98,7 +116,9 @@ def dsl_compil_grammar_statement(
     alt_list: list[CrupyLexerOpBase|CrupyLexerAssertBase] = []
     for alternative in statement.alternatives:
         alt_list.append(
-            _dsl_compil_grammar_alternative(alternative),
+            _dsl_compil_grammar_alternative(
+                cast(CrupyParserNodeDslAlternative, alternative),
+            ),
         )
     if not alt_list:
         raise CrupyGrammarException(
