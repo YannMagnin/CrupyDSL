@@ -11,7 +11,6 @@ __all__ = [
 from typing import Optional, IO, Any, NoReturn, TYPE_CHECKING, cast
 from collections.abc import Callable
 
-
 from crupydslparser.exception import CrupyDSLCoreException
 from crupydslparser.parser._stream.stream import CrupyStream
 from crupydslparser.parser.exception import CrupyParserBaseException
@@ -126,6 +125,15 @@ class CrupyParserBase():
         """
         content = ''
         for production_info in self._production_book.items():
+            if production_info[0] in self._hook_error_book:
+                hook: Any = None
+                for hook in self._hook_error_book[production_info[0]]:
+                    hook = hook.__func__.__qualname__
+                    content += f"{' ' * indent}@error({hook})\n"
+            if production_info[0] in self._hook_postprocess_book:
+                for hook in self._hook_postprocess_book[production_info[0]]:
+                    hook = hook.__func__.__qualname__
+                    content += f"{' ' * indent}@posthook({hook})\n"
             content += f"{' ' * indent}{production_info[0]}: \\\n"
             content += production_info[1].show(indent + 1)
             content += '\n'

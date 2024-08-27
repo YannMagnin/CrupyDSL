@@ -2,6 +2,7 @@
 crupydslparser.grammar._dsl._parser.production_name  - DSL parser hook
 """
 __all__ = [
+    'CrupyParserNodeDslProductionName',
     'dsl_production_name_hook',
     'dsl_production_name_hook_error',
 ]

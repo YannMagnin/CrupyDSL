@@ -2,6 +2,7 @@
 crupydslparser.grammar._dsl._parser.builtin  - DSL builtin hook
 """
 __all__ = [
+    'CrupyParserNodeDslBuiltin',
     'dsl_builtin_hook',
     'dsl_builtin_hook_error',
 ]

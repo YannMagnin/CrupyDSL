@@ -3,6 +3,8 @@ crupydslparser.parser._lexer._operation.builtin   - builtin operations
 """
 __all__ = [
     'CrupyLexerOpBuiltin',
+    'CrupyLexerOpBuiltinException',
+    'CrupyParserNodeBuiltinEof',
 ]
 
 from crupydslparser.parser._lexer.exception import CrupyLexerException
@@ -23,6 +25,9 @@ from crupydslparser.exception import CrupyDSLCoreException
 
 class CrupyLexerOpBuiltinException(CrupyLexerException):
     """ exception class """
+
+class CrupyParserNodeBuiltinEof(CrupyParserNodeBase):
+    """ special end-of-file node """
 
 class CrupyLexerOpBuiltin(CrupyLexerOpBase):
     """ builtin operations
@@ -270,9 +275,8 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                         'unable to validate the current char as "EOF", '
                         'stream available',
                 )
-            return CrupyParserNodeLexText(
+            return CrupyParserNodeBuiltinEof(
                 context = context.validate(),
-                text    = '',
             )
 
     #---

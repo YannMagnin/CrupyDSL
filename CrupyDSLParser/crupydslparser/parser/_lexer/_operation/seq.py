@@ -3,8 +3,10 @@ crupydslparser.parser._lexer._operation.seq - sequence operation
 """
 __all__ = [
     'CrupyLexerOpSeq',
+    'CrupyLexerOpSeqException',
+    'CrupyParserNodeLexSeq',
 ]
-from typing import Any, cast
+from typing import Union, Any, cast
 
 from crupydslparser.parser._lexer._operation.base import CrupyLexerOpBase
 from crupydslparser.parser._lexer._assert.base import CrupyLexerAssertBase
@@ -34,7 +36,7 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
     """
     def __init__(self, *args: Any) -> None:
         super().__init__()
-        self._seq: list[CrupyLexerOpBase|CrupyLexerAssertBase] = []
+        self._seq: list[Union[CrupyLexerOpBase,CrupyLexerAssertBase]] = []
         for i, arg in enumerate(args):
             if (
                     CrupyLexerOpBase not in type(arg).mro()

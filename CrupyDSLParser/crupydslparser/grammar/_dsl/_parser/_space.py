@@ -2,6 +2,7 @@
 crupydslparser.grammar._dsl._parser.space  - DSL space hook
 """
 __all__ = [
+    'CrupyParserNodeDslSpace',
     'dsl_space_hook',
 ]
 

@@ -2,6 +2,7 @@
 crupydslparser.grammar._dsl._parser.dsl  - DSL dsl hook
 """
 __all__ = [
+    'CrupyParserNodeDslEntry',
     'dsl_dsl_hook',
 ]
 
@@ -22,7 +23,7 @@ def dsl_dsl_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     assert len(node.seq) == 3
     assert node.seq[0].type == 'lex_rep'
     assert node.seq[1].type == 'lex_optional'
-    assert node.seq[2].type == 'lex_text'
+    assert node.seq[2].type == 'builtin_eof'
     production_list: list[CrupyParserNodeBase] = []
     for seq in node.seq[0].rep:
         assert len(seq) == 1

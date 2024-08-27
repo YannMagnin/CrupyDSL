@@ -5,7 +5,7 @@ __all__ = [
     'CrupyLexerOpOr',
     'CrupyLexerOpOrException',
 ]
-from typing import Any
+from typing import Union, Any
 
 from crupydslparser.parser._lexer._operation.base import CrupyLexerOpBase
 from crupydslparser.parser._lexer.exception import CrupyLexerException
@@ -49,7 +49,7 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
         """ try to match at least one of the two lexer operation
         """
         best_choice_error_special = False
-        best_choice_error: CrupyParserBaseException|None = None
+        best_choice_error: Union[CrupyParserBaseException,None] = None
         for lexer in self._seq:
             try:
                 return lexer(parser)

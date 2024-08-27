@@ -2,6 +2,7 @@
 crupydslparser.grammar._dsl._parser.error  - DSL error hook
 """
 __all__ = [
+    'CrupyParserNodeDslError',
     'dsl_error_hook',
     'dsl_error_hook_error',
 ]

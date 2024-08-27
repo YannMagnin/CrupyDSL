@@ -8,13 +8,17 @@ __all__ = [
     'CrupyGrammarBase',
 ]
 from typing import Optional, Any, IO
+from pathlib import Path
 
 from crupydslparser.grammar.exception import CrupyGrammarException
 from crupydslparser.grammar._dsl import (
     CRUPY_DSL_PARSER_OBJ,
     dsl_compil_grammar_statement,
 )
-from crupydslparser.parser import CrupyParserBase
+from crupydslparser.parser import (
+    CrupyParserBase,
+    CrupyParserNodeBase,
+)
 
 #---
 # Public
@@ -57,7 +61,6 @@ class CrupyGrammarBase():
         self._production_entry = self.production_entry
         self.grammar_update(self)
 
-
     #---
     # Internal
     #---
@@ -78,11 +81,14 @@ class CrupyGrammarBase():
                 prod.production_name
             ] = dsl_compil_grammar_statement(prod.statement)
 
-    def _grammar_update_hook(self, _grammar: CrupyGrammarBase) -> None:
-        """ scan the grammar shard and check if there is production hook
+    def _grammar_update_hook(self, grammar: CrupyGrammarBase) -> None:
+        """ scan the grammar shard and check if there are production hook
         """
-        print('todo : update grammar hook')
-
+        for production in self._target_parser.production_book.keys():
+            if hook := getattr(grammar, f"_{production}", None):
+                self._target_parser.register_post_hook(production, hook)
+            if hook := getattr(grammar, f"_{production}_error", None):
+                self._target_parser.register_error_hook(production, hook)
     #---
     # Public methods
     #---
@@ -94,10 +100,26 @@ class CrupyGrammarBase():
         content += self._target_parser.show()
         return content
 
-    def parse(self, _stream_origin: IO[str]|str) -> Any:
+    def parse(self, stream_origin: Path|IO[str]|str) -> CrupyParserNodeBase:
         """ parse the stream using the current grammar state
         """
-        print('todo : parse input stream')
+        if not self._production_entry:
+            raise CrupyGrammarException('missing production entry')
+        stream_content: Any = stream_origin
+        if isinstance(stream_origin, Path):
+            if not stream_origin.exists():
+                raise CrupyGrammarException(
+                    f"unable to find the file '{str(stream_origin)}'"
+                )
+            try:
+                with open(stream_origin, 'r', encoding='utf-8') as stream_fd:
+                    stream_content = stream_fd.read()
+            except PermissionError as err:
+                raise CrupyGrammarException(
+                    f"unable to open the file '{stream_origin}'"
+                ) from err
+        self._target_parser.register_stream(stream_content)
+        return self._target_parser.execute(self._production_entry)
 
     def grammar_update(self, grammar_shard: CrupyGrammarBase) -> None:
         """ aggregate the current grammar with an other piece of grammar

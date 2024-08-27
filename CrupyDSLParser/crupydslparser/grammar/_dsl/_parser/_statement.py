@@ -2,6 +2,7 @@
 crupydslparser.grammar._dsl._parser.statement  - DSL statement hook
 """
 __all__ = [
+    'CrupyParserNodeDslStatement',
     'dsl_statement_hook',
 ]
 

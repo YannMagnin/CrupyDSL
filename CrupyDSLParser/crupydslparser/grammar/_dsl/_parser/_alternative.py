@@ -2,6 +2,7 @@
 crupydslparser.grammar._dsl._parser.alternative  - DSL alternative hook
 """
 __all__ = [
+    'CrupyParserNodeDslAlternative',
     'dsl_alternative_hook',
 ]
 

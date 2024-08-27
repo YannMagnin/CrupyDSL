@@ -220,14 +220,17 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
         ),
     #
     # Builtin name
-    # > builtin ::= ":" (:alphanum_lower:)+ ":"
+    # > builtin ::= ":" (:alphanum_lower: | "_")+ ":"
     # (error will be hooked)
     #
     'builtin' : \
         CrupyLexerOpSeq(
             CrupyLexerOpText(':'),
             CrupyLexerOpRep1N(
-                CrupyLexerOpBuiltin('alphanum_lower'),
+                CrupyLexerOpOr(
+                    CrupyLexerOpBuiltin('alphanum_lower'),
+                    CrupyLexerOpText('_')
+                )
             ),
             CrupyLexerOpText(':'),
         ),

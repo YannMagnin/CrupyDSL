@@ -3,6 +3,7 @@ crupydslparser.parser._lexer._operarion.error   - throw context error
 """
 __all__ = [
     'CrupyLexerOpError',
+    'CrupyLexerErrorException',
 ]
 
 from crupydslparser.parser._lexer.exception import CrupyLexerException

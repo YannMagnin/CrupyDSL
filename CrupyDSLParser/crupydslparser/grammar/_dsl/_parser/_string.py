@@ -2,6 +2,7 @@
 crupydslparser._dsl._parser.string  - handle string production
 """
 __all__ = [
+    'CrupyParserNodeDslString',
     'dsl_string_hook',
     'dsl_string_hook_error'
 ]

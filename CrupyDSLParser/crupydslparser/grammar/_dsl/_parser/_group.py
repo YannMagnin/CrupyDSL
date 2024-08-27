@@ -2,9 +2,11 @@
 crupydslparser.grammar._dsl._parser.group  - DSL group hook
 """
 __all__ = [
+    'CrupyParserNodeDslGroup',
     'dsl_group_hook',
+    'dsl_group_hook_error',
 ]
-from typing import NoReturn
+from typing import Union, NoReturn
 
 from crupydslparser.parser import CrupyParserNodeBase
 from crupydslparser.parser.exception import CrupyParserBaseException
@@ -18,9 +20,9 @@ from crupydslparser.grammar._dsl._parser.exception import (
 
 class CrupyParserNodeDslGroup(CrupyParserNodeBase):
     """ group node """
-    lookahead:  str|None
+    lookahead:  Union[str,None]
     statement:  CrupyParserNodeBase
-    operation:  str|None
+    operation:  Union[str,None]
 
 def dsl_group_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     """ handle "group" node
@@ -34,7 +36,7 @@ def dsl_group_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     assert node.seq[4].type == 'dsl_space'
     assert node.seq[5].type == 'lex_text'
     assert node.seq[6].type == 'lex_optional'
-    lookahead: str|None = None
+    lookahead: Union[str,None] = None
     if node.seq[1].seq:
         assert len(node.seq[1].seq) == 2
         assert node.seq[1].seq[0].type == 'lex_text'
@@ -44,7 +46,7 @@ def dsl_group_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
         lookahead = 'negative'
         if node.seq[1].seq[1].text == '=':
             lookahead = 'positive'
-    operation: str|None = None
+    operation: Union[str,None] = None
     if node.seq[6].seq:
         assert len(node.seq[6].seq) == 1
         assert node.seq[6].seq[0].type == 'lex_text'

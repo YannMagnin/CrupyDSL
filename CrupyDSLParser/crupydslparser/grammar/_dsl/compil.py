@@ -4,7 +4,7 @@ crupydslparser.grammar._dsl.compil  - compil a grammar shard
 __all__ = [
     'dsl_compil_grammar_statement',
 ]
-from typing import Any, cast
+from typing import Union, Any, cast
 
 from crupydslparser.parser._lexer._operation import (
     CrupyLexerOpBase,
@@ -42,7 +42,7 @@ from crupydslparser.grammar.exception import CrupyGrammarException
 
 def _dsl_compil_grammar_operation(
     operation: Any,
-) -> CrupyLexerOpBase|CrupyLexerAssertBase:
+) -> Union[CrupyLexerOpBase,CrupyLexerAssertBase]:
     """ DSL grammar operation handling
     """
     if operation.type == 'dsl_production_name':
@@ -84,14 +84,14 @@ def _dsl_compil_grammar_operation(
 
 def _dsl_compil_grammar_alternative(
     alternative: CrupyParserNodeDslAlternative,
-) -> CrupyLexerOpBase|CrupyLexerAssertBase:
+) -> Union[CrupyLexerOpBase,CrupyLexerAssertBase]:
     """ DSL grammar alternative handling
 
     @note
     - handle alternative
     - handle seq
     """
-    op_list: list[CrupyLexerOpBase|CrupyLexerAssertBase] = []
+    op_list: list[Union[CrupyLexerOpBase,CrupyLexerAssertBase]] = []
     for operation in alternative.seq:
         op_list.append(
             _dsl_compil_grammar_operation(operation),
@@ -113,7 +113,7 @@ def dsl_compil_grammar_statement(
     - handle statement
     - handle or
     """
-    alt_list: list[CrupyLexerOpBase|CrupyLexerAssertBase] = []
+    alt_list: list[Union[CrupyLexerOpBase,CrupyLexerAssertBase]] = []
     for alternative in statement.alternatives:
         alt_list.append(
             _dsl_compil_grammar_alternative(

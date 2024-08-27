@@ -1,10 +1,13 @@
 """
 crupydslparser.parser.exception - parser exception class
 """
+# use this magical import to allow partial class type reference
+from __future__ import annotations
+
 __all__ = [
     'CrupyParserBaseException',
 ]
-from typing import Any, Optional, Self
+from typing import Any, Optional
 
 from crupydslparser.exception import CrupyDSLCoreException
 from crupydslparser.parser._stream.context import CrupyStreamContext
@@ -42,7 +45,7 @@ class _CrupyParserAbstractException(CrupyDSLCoreException):
         self._reason  = reason
         self._message = message
 
-    def __gt__(self, error: Self) -> bool:
+    def __gt__(self, error: _CrupyParserAbstractException) -> bool:
         return self.context > error.context
 
     def __getattr__(self, index: str) -> Any:

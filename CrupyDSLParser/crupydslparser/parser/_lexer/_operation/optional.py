@@ -5,6 +5,7 @@ __all__ = [
     'CrupyParserNodeLexOptional',
     'CrupyLexerOpOptional',
 ]
+from typing import Union
 
 from crupydslparser.parser.base import CrupyParserBase
 from crupydslparser.parser.node import CrupyParserNodeBase
@@ -22,7 +23,7 @@ from crupydslparser.parser._lexer._operation.seq import (
 
 class CrupyParserNodeLexOptional(CrupyParserNodeBase):
     """ optional lexer information """
-    seq: list[CrupyParserNodeBase]|None
+    seq: Union[list[CrupyParserNodeBase],None]
 
 class CrupyLexerOpOptional(CrupyLexerOpSeq):
     """ optional operator

@@ -2,6 +2,7 @@
 crupydslparser.grammar._dsl._parser.eol  - DSL eol hook
 """
 __all__ = [
+    'CrupyParserNodeDslEol',
     'dsl_eol_hook',
 ]
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name        = "crupydslparser"
-version     = "0.2.0"
+version     = "0.0.2"
 description = "Crupy DSL parser"
 readme      = "README.md"
 authors     = [
@@ -21,10 +21,11 @@ crupyjson       = 'crupyjson.cli:crupyjson_cli_entry'
 
 
 [tool.poetry.dependencies]
-python  = "3.11.*"
+python  = ">=3.9"
 click   = "8.*"
 
 [tool.poetry.dev-dependencies]
 pynvim  = "*"
 pylint  = "*"
 mypy    = "*"
+pyimportcheck = "*"

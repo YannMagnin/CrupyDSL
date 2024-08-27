@@ -2,11 +2,12 @@
 crupydslparser.parser._lexer._operation.rep  - zero or more lexer operation
 """
 __all__ = [
+    'CrupyParserNodeLexRep',
     'CrupyLexerOpRep0N',
     'CrupyLexerOpRep1N',
     'CrupyLexerOpRepException',
 ]
-from typing import Any
+from typing import Union, Any
 
 from crupydslparser.parser._lexer.exception import CrupyLexerException
 from crupydslparser.parser._lexer._operation.seq import (
@@ -28,7 +29,7 @@ class _CrupyLexerOpRepxN(CrupyLexerOpSeq):
     """
     def __init__(self, *args: Any) -> None:
         super().__init__(*args)
-        self._error: CrupyLexerOpSeqException|None = None
+        self._error: Union[CrupyLexerOpSeqException,None] = None
 
     #---
     # Internals

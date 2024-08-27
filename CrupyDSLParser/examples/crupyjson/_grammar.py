@@ -30,16 +30,17 @@ class CrupyGrammarJSON(CrupyGrammarBase):
     """
     production_entry    = 'json'
     grammar             = r"""
-        <json>      ::= <statement> :eof:
+        <json>      ::= <statement> <sp> :eof:
         <statement> ::= <primitive> | <container>
 
-        <primitive> ::= :digit: | <string> | <boolean> | <nullable>
+        <primitive> ::= :number: | <string> | <boolean> | <nullable>
 
         <container> ::= <object> | <array>
-        <array>     ::= '[' <statement> (',' <statement>)*  ']'
-        <object>    ::= '{' <member> (',' <member>)*  '}'
-        <member>    ::= <string> ':' <statement>
+        <array>     ::= <sp> '[' <sp> <statement> (<sp> ',' <sp> <statement>)* <sp> ']' <sp>
+        <object>    ::= <sp> '{' <sp> <member> ( <sp> ',' <sp> <member>)* <sp> '}' <sp>
+        <member>    ::= <string> <sp> ':' <sp> <statement>
 
+        <sp>        ::= (:space_nl:)*
         <boolean>   ::= 'true' | 'false'
         <nullable>  ::= 'null'
         <string>    ::= \

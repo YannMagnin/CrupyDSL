@@ -4,6 +4,7 @@ crupydslparser.parser._lexer._operation.text  - Lexer text tool
 __all__ = [
     'CrupyParserNodeLexText',
     'CrupyLexerOpText',
+    'CrupyLexerOpTextException',
 ]
 
 from crupydslparser.parser._lexer._operation.base import CrupyLexerOpBase
