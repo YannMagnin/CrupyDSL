@@ -15,7 +15,6 @@ from crupydslparser.parser._lexer import (
     CrupyLexerOpProductionCall,
     CrupyLexerOpBuiltin,
     CrupyLexerAssertLookaheadNegative,
-    CrupyLexerAssertEOF,
 )
 
 from crupycsv._parser.csv import csv_parser_prod_csv_hook
@@ -43,7 +42,7 @@ CSV_PARSER_OBJ = CrupyParserBase({
                     CrupyLexerOpText('\n'),
                 ),
             ),
-            CrupyLexerAssertEOF(),
+            CrupyLexerOpBuiltin('eof'),
         ),
     #
     # CSV record

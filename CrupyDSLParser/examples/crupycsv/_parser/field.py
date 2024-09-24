@@ -3,12 +3,10 @@ crupydslparser.core._parser.field   - `field` production definition
 """
 __all__ = [
     'csv_parser_prod_field_hook',
+    'CrupyParserNodeCsvField',
 ]
 
-from crupydslparser.parser import (
-    CrupyParserNodeBase,
-    CrupyParserBaseException,
-)
+from crupydslparser.parser import CrupyParserNodeBase
 
 #---
 # Internals

@@ -14,7 +14,7 @@ from crupydslparser.exception import CrupyDSLCoreException
 #---
 
 # Allow too few public methods and too many arguments
-# pylint: disable=locally-disabled,R0903,R0913
+# pylint: disable=locally-disabled,R0903,R0913,R0917
 
 class _CrupyNamedClass():
     """ custom named class implementation

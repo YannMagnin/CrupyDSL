@@ -3,6 +3,7 @@ crupyjson._parser.container   - handle container production
 """
 __all__ = [
     'json_parser_prod_hook_container',
+    'CrupyParserNodeJsonContainer',
 ]
 
 from crupydslparser.parser import CrupyParserNodeBase

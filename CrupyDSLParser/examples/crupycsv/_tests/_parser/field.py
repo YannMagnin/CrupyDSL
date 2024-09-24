@@ -4,6 +4,7 @@ crupydsl._tests._parser.field   - test parser `field*` productions
 __all__ = [
     'csv_test_parser_field',
 ]
+from typing import Union
 
 from crupydslparser.parser import (
     CrupyParserNodeBase,
@@ -16,7 +17,10 @@ from crupydslparser.parser import (
 
 ## helper
 
-def __check_node_simple(node: CrupyParserNodeBase|None, text: str) -> None:
+def __check_node_simple(
+    node: Union[CrupyParserNodeBase,None],
+    text: str,
+) -> None:
     """ generic node check """
     try:
         assert node is not None
@@ -38,7 +42,10 @@ def __check_node_simple(node: CrupyParserNodeBase|None, text: str) -> None:
             '\033[0m'
         )
 
-def __check_node_quoted(node: CrupyParserNodeBase|None, text: str) -> None:
+def __check_node_quoted(
+    node: Union[CrupyParserNodeBase,None],
+    text: str,
+) -> None:
     """ generic node check """
     try:
         assert node is not None
@@ -62,7 +69,7 @@ def __check_node_quoted(node: CrupyParserNodeBase|None, text: str) -> None:
         )
 
 def __check_node_mixed(
-    node: CrupyParserNodeBase|None,
+    node: Union[CrupyParserNodeBase,None],
     text: str,
     kind: str,
 ) -> None:

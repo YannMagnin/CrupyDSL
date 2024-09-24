@@ -29,9 +29,17 @@ jobs:
         run: |
           poetry run pylint -d R0903,R0801 CrupyDSLParser/crupydslparser
           poetry run mypy --strict CrupyDSLParser/crupydslparser
-          poetry run pylint -d R0903,R0801 CrupyDSLParser/crupydsltester
-          poetry run mypy --strict CrupyDSLParser/crupydsltester
+          poetry run pyimportcheck CrupyDSLParser/crupydslparser
           poetry run pylint -d R0903,R0801 CrupyDSLParser/examples/crupycsv
           poetry run mypy --strict CrupyDSLParser/examples/crupycsv
+          poetry run pyimportcheck CrupyDSLParser/crupydslparser
           poetry run pylint -d R0903,R0801 CrupyDSLParser/examples/crupyjson
           poetry run mypy --strict CrupyDSLParser/examples/crupyjson
+          poetry run pyimportcheck CrupyDSLParser/crupydslparser
+          poetry run pylint -d R0903,R0801 CrupyDSLParser/tests
+          poetry run mypy --strict CrupyDSLParser/tests
+      - name: 'check unittest'
+        run: |
+          poetry run crupycsv tests
+          poetry run crupyjson tests
+          poetry run pytest --tb=no

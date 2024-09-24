@@ -3,6 +3,7 @@ crupydslparser.core._parser.csv     - `csv` production definition
 """
 __all__ = [
     'csv_parser_prod_csv_hook',
+    'CrupyParserNodeCsv',
 ]
 from typing import List
 
@@ -17,14 +18,17 @@ class CrupyParserNodeCsv(CrupyParserNodeBase):
     """ CSV general node """
     records:    List[CrupyParserNodeCsvRecord]
 
-def csv_parser_prod_csv_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+def csv_parser_prod_csv_hook(
+    node: CrupyParserNodeBase,
+) -> CrupyParserNodeBase:
     """ generate more appropriate node concerning `csv` output
 
     @note
     - production -> "cvs ::= (<record> "\n")+ :eof:"
     """
     assert node.type == 'lex_seq'
-    assert len(node.seq) == 1
+    assert len(node.seq) == 2
+    assert node.seq[1].type == 'builtin_eof'
     node = node.seq[0]
     assert node.type == 'lex_rep'
     assert len(node.rep) >= 1

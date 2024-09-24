@@ -1,31 +1,45 @@
 [tool.poetry]
-name        = "crupydslparser"
-version     = "0.0.2"
-description = "Crupy DSL parser"
-readme      = "README.md"
+name        = 'crupydslparser'
+version     = '0.0.2'
+description = 'Crupy DSL parser'
+readme      = 'README.md'
 authors     = [
-    "Yann MAGNIN <yann.magnin@protonmail.com>",
+    'Yann MAGNIN <yann.magnin@protonmail.com>',
 ]
 packages    = [
-    { include = "crupydslparser", from='CrupyDSLParser/' },
-    { include = "crupydsltester", from='CrupyDSLParser/' },
-    { include = "crupycsv",       from='CrupyDSLParser/examples/' },
-    { include = "crupyjson",      from='CrupyDSLParser/examples/' },
+    { include = 'crupydslparser', from='CrupyDSLParser/' },
+    { include = 'crupycsv',       from='CrupyDSLParser/examples/' },
+    { include = 'crupyjson',      from='CrupyDSLParser/examples/' },
 ]
 
+## custom scripts for a more friendly usable example
+## (todo) : optional scripts
 
 [tool.poetry.scripts]
-crupydsltester  = 'crupydsltester.cli:crupydsltester_cli_entry'
 crupycsv        = 'crupycsv.cli:crupycsv_cli_entry'
 crupyjson       = 'crupyjson.cli:crupyjson_cli_entry'
 
+## dependencies declaration
 
 [tool.poetry.dependencies]
-python  = ">=3.9"
-click   = "8.*"
+python  = '>=3.9'
+click   = '8.*'
 
 [tool.poetry.dev-dependencies]
-pynvim  = "*"
-pylint  = "*"
-mypy    = "*"
-pyimportcheck = "*"
+pynvim          = '*'
+pylint          = '*'
+mypy            = '*'
+pyimportcheck   = '*'
+pytest          = '*'
+
+## pytests configuration
+
+[tool.pytest.ini_options]
+log_level           = 'INFO'
+python_functions    = [
+    'test_*',
+]
+python_files        = '*.py'
+testpaths           = [
+    'CrupyDSLParser/tests',
+]

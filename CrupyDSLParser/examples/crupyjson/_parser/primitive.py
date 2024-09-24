@@ -5,6 +5,7 @@ __all__ = [
     'CrupyParserNodeJsonPrimitive',
     'json_parser_prod_hook_primitive',
 ]
+from typing import Union
 
 from crupydslparser.parser import CrupyParserNodeBase
 
@@ -16,7 +17,7 @@ class CrupyParserNodeJsonPrimitive(CrupyParserNodeBase):
     """ JSON "primitive" node
     """
     kind:   str
-    data:   str|bool|None
+    data:   Union[str, bool, None]
 
 def json_parser_prod_hook_primitive(
     node: CrupyParserNodeBase,

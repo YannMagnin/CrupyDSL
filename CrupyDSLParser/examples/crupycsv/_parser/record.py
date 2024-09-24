@@ -3,6 +3,7 @@ crupydslparser.core._parser.record  - `record` production definition
 """
 __all__ = [
     'csv_parser_prod_record_hook',
+    'CrupyParserNodeCsvRecord',
 ]
 from typing import List
 

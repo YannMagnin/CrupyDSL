@@ -3,6 +3,7 @@ crupyjson._parser.statement  - handle statement production
 """
 __all__ = [
     'json_parser_prod_hook_statement',
+    'CrupyParserNodeJsonStatement',
 ]
 
 from crupydslparser.parser import CrupyParserNodeBase

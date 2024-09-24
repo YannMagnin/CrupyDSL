@@ -18,7 +18,7 @@ def json_parser_prod_hook_json(
     """ handle `json` node
     """
     assert node.type == 'lex_seq'
-    assert len(node.seq) == 3
+    assert len(node.seq) == 2
     assert node.seq[0].type == 'json_statement'
-    assert node.seq[2].type == 'builtin_eof'
+    assert node.seq[1].type == 'builtin_eof'
     return cast(CrupyParserNodeBase, node.seq[0])
