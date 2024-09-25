@@ -119,17 +119,17 @@ def test_error_broken_group() -> None:
 def test_error_broken_any() -> None:
     """ error test
     """
-    CRUPY_DSL_PARSER_OBJ.register_stream(':yo_man')
     try:
+        CRUPY_DSL_PARSER_OBJ.register_stream(':yo_man')
         CRUPY_DSL_PARSER_OBJ.execute('alternative')
         raise AssertionError('production \'alternative\' executed')
     except CrupyParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
-            'Stream: line 1, column 4\n'
+            'Stream: line 1, column 8\n'
             ':yo_man\n'
-            '~~~^\n'
+            '~~~~~~~^\n'
             'SyntaxError: missing enclosing colon'
         )
         assert err.reason == 'missing enclosing colon'
