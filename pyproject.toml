@@ -1,6 +1,6 @@
 [tool.poetry]
 name        = 'crupydslparser'
-version     = '0.0.2'
+version     = '0.0.3'
 description = 'Crupy DSL parser'
 readme      = 'README.md'
 authors     = [
@@ -31,6 +31,7 @@ pylint          = '*'
 mypy            = '*'
 pyimportcheck   = '*'
 pytest          = '*'
+coverage        = '*'
 
 ## pytests configuration
 

@@ -67,49 +67,91 @@ class CrupyStreamContext():
     ## memory primitives
 
     def peek_char(self) -> str|None:
-        """ return the current char """
-        if curr := self._stream[self.index]:
-            return chr(curr & 0xff)
-        return None
+        """ return the current char
+
+        @note
+        - a special handling is performed for the windows CRLF which is
+            concidered as a whole character here to simplify a lot of work in
+            line handling
+        - the current index will not be modified
+        """
+        if not (curr := self._stream[self.index]):
+            return None
+        if (char := chr(curr & 0xff)) != '\r':
+            return char
+        if curr := self._stream[self.index + 1]:
+            if chr(curr & 0xff) == '\n':
+                return '\r\n'
+        return '\r'
+
 
     def read_char(self) -> str|None:
-        """ read the current char and update the cursor """
+        """ read the current char and update the cursor
+
+        @notes
+        - support LF or CRLF as a end of line
+        """
         if not (curr := self.peek_char()):
             return None
         if curr == '\n':
+            self.index  += 1
             self.lineno += 1
-            self.column  = 0
-        self.index  += 1
-        self.column += 1
+            self.column  = 1
+        elif curr == '\r\n':
+            self.index  += 2
+            self.lineno += 1
+            self.column  = 1
+        else:
+            self.index  += 1
+            self.column += 1
         return curr
 
     ## error handling
 
     def generate_error_log(self) -> str:
         """ generate error context information
+
+        @note
+        - we need to be careful with line spliting with '\n', '\r\n'
+        - we need to expand tabs for the displayed line
         """
-        error = f"Stream: line {self.lineno}, column {self.column}\n"
-        line_index_start = self.index - (self.column - 1)
-        line_index_stop = line_index_start
+        line_start_idx = self.index - (self.column - 1)
+        rawline = ''
+        i = line_start_idx
         while True:
-            if not (curr := self._stream[line_index_stop]):
+            if not (curr := self._stream[i]):
                 break
-            if (curr_char := chr(curr & 0xff)) in '\r\n':
+            if (curr_char := chr(curr & 0xff)) == '\n':
+                rawline += '\n'
                 break
-            error += curr_char
-            line_index_stop += 1
-        error += '\n'
-        workaround = 0
-        while line_index_start < self.index:
-            if not (curr := self._stream[line_index_start]):
-                break
-            padd = '~' if line_index_start >= self.index_start else ' '
-            tabword = ('a' * workaround) + chr(curr & 0xff)
-            tabword = tabword.expandtabs()
-            error += padd * (len(tabword) - workaround)
-            line_index_start += 1
-            workaround += 1
-        error += '^'
+            if curr_char == '\r':
+                if curr := self._stream[i + 1]:
+                    if chr(curr & 0xff) == '\n':
+                        rawline += '\r\n'
+                        break
+            rawline += curr_char
+            i += 1
+        line = rawline
+        line = line.expandtabs(tabsize=4)
+        line = line.replace('\r', r'\r')
+        line = line.replace('\n', r'\n')
+        ctx_start_idx = self.index_start - line_start_idx
+        ctx_end_idx = self.index - line_start_idx
+        error  = f"Stream: line {self.lineno}, column {self.column}\n"
+        error += f"{line.expandtabs()}\n"
+        if ctx_start_idx > 0:
+            magic_padding = rawline[0:ctx_start_idx]
+            magic_padding = magic_padding.expandtabs(tabsize=4)
+            magic_padding = magic_padding.replace('\r', r'\r')
+            magic_padding = magic_padding.replace('\n', r'\n')
+            error += f"{' ' * len(magic_padding)}"
+        else:
+            ctx_start_idx = 0
+        magic_padding = rawline[ctx_start_idx:ctx_end_idx]
+        magic_padding = magic_padding.expandtabs(tabsize=4)
+        magic_padding = magic_padding.replace('\r', r'\r')
+        magic_padding = magic_padding.replace('\n', r'\n')
+        error += f"{'~' * len(magic_padding)}^"
         return error
 
     ## context validate short-cut

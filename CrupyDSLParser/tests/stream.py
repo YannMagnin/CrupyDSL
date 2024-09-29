@@ -10,11 +10,15 @@ from crupydslparser.parser._stream.stream import CrupyStream
 def test_read_peek() -> None:
     """ simply check the read/peek
     """
-    stream = CrupyStream.from_any('abcd')
+    stream = CrupyStream.from_any('abcd\n\r\r\n0')
     with stream as context:
-        for ctest in 'abcd':
+        for ctest in 'abcd\n\r':
             assert context.peek_char() == ctest
             assert context.read_char() == ctest
+        assert context.peek_char() == '\r\n'
+        assert context.read_char() == '\r\n'
+        assert context.peek_char() == '0'
+        assert context.read_char() == '0'
         assert context.peek_char() is None
         assert context.read_char() is None
 
@@ -49,14 +53,14 @@ def test_error_context() -> None:
         assert context.read_char() == 'b'
         assert context.generate_error_log() == (
             'Stream: line 1, column 3\n'
-            'abcdef\n'
+            'abcdef\\n\n'
             '~~^'
         )
 
-def test_error_context_multiline() -> None:
+def test_error_context_multiline_0() -> None:
     """ check context error generation in multiline
     """
-    stream = CrupyStream.from_any('abc\noui')
+    stream = CrupyStream.from_any('abc\noui\r\nnon foo bar')
     with stream as context:
         assert context.read_char() == 'a'
         assert context.read_char() == 'b'
@@ -67,8 +71,36 @@ def test_error_context_multiline() -> None:
         assert context.read_char() == 'o'
         assert context.generate_error_log() == (
             'Stream: line 2, column 2\n'
-            'oui\n'
+            'oui\\r\\n\n'
             '~^'
+        )
+        assert context.read_char() == 'u'
+        assert context.read_char() == 'i'
+        assert context.read_char() == '\r\n'
+        assert context.generate_error_log() == (
+            'Stream: line 3, column 1\n'
+            'non foo bar\n'
+            '^'
+        )
+
+def test_error_context_multiline_1() -> None:
+    """ check context error generation in multiline
+    """
+    stream = CrupyStream.from_any('abc\noui\r\nnon foo bar')
+    with stream as context:
+        assert context.read_char() == 'a'
+        assert context.read_char() == 'b'
+        assert context.read_char() == 'c'
+        assert context.read_char() == '\n'
+        context.validate()
+    with stream as context:
+        assert context.read_char() == 'o'
+        assert context.read_char() == 'u'
+        assert context.read_char() == 'i'
+        assert context.generate_error_log() == (
+            'Stream: line 2, column 4\n'
+            'oui\\r\\n\n'
+            '~~~^'
         )
 
 def test_error_context_longline() -> None:

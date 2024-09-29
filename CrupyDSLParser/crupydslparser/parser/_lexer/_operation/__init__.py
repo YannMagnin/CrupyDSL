@@ -18,6 +18,8 @@ __all__ = [
     'CrupyLexerOpBuiltin',
     'CrupyLexerOpBuiltinException',
     'CrupyLexerOpError',
+    'CrupyLexerOpBetween',
+    'CrupyLexerOpBetweenException',
 ]
 from crupydslparser.parser._lexer._operation.base import (
     CrupyLexerOpBase,
@@ -52,4 +54,8 @@ from crupydslparser.parser._lexer._operation.rep import (
 )
 from crupydslparser.parser._lexer._operation.error import (
     CrupyLexerOpError,
+)
+from crupydslparser.parser._lexer._operation.between import (
+    CrupyLexerOpBetween,
+    CrupyLexerOpBetweenException,
 )

@@ -17,7 +17,7 @@ def test_any() -> None:
     parser = CrupyParserBase({
         'entry' : CrupyLexerOpBuiltin('any'),
     })
-    parser.register_stream('a\\"\\\\ \a')
+    parser.register_stream(r'a\"\\ ' + '\r\n')
     node0 = parser.execute('entry')
     node1 = parser.execute('entry')
     node2 = parser.execute('entry')
@@ -38,10 +38,52 @@ def test_any() -> None:
             'Lexer parsing error occured:\n'
             '\n'
             'Stream: line 1, column 7\n'
-            'a\\"\\\\ \a\n'
+           r'a\"\\ \r\n' + '\n'
             '      ^\n'
             'CrupyLexerOpBuiltinException: Unable to validate the '
             'current char as "any"'
+        )
+
+def test_any_newline() -> None:
+    """ test any builtin
+    """
+    parser = CrupyParserBase({
+        'entry' : CrupyLexerOpBuiltin('any_newline'),
+    })
+    parser.register_stream('a\\"\\\\ \n\r\nk')
+    node0 = parser.execute('entry')
+    node1 = parser.execute('entry')
+    node2 = parser.execute('entry')
+    node3 = parser.execute('entry')
+    node4 = parser.execute('entry')
+    node5 = parser.execute('entry')
+    node6 = parser.execute('entry')
+    assert node0.type == 'lex_text'
+    assert node0.text == 'a'
+    assert node1.type == 'lex_text'
+    assert node1.text == '"'
+    assert node2.type == 'lex_text'
+    assert node2.text == '\\'
+    assert node3.type == 'lex_text'
+    assert node3.text == ' '
+    assert node4.type == 'lex_text'
+    assert node4.text == '\n'
+    assert node5.type == 'lex_text'
+    assert node5.text == '\r\n'
+    assert node6.type == 'lex_text'
+    assert node6.text == 'k'
+    try:
+        parser.execute('entry')
+        raise AssertionError('No lexer exception has occured')
+    except CrupyLexerOpBuiltinException as err:
+        assert str(err) == (
+            'Lexer parsing error occured:\n'
+            '\n'
+            'Stream: line 3, column 2\n'
+            'k\n'
+            ' ^\n'
+            'CrupyLexerOpBuiltinException: Unable to validate the '
+            'current char as "any_newline"'
         )
 
 def test_alphanum() -> None:
@@ -271,6 +313,38 @@ def test_number() -> None:
             'current char as "number"'
         )
 
+def test_newline() -> None:
+    """ simple tests
+    """
+    parser = CrupyParserBase({
+        'entry' : CrupyLexerOpBuiltin('newline'),
+        'test0' : CrupyLexerOpBuiltin('any'),
+    })
+    parser.register_stream('\n\r\n\ra')
+    strop0 = parser.execute('entry')
+    strop1 = parser.execute('entry')
+    assert strop0.type == 'lex_text'
+    assert strop0.text == '\n'
+    assert strop1.type == 'lex_text'
+    assert strop1.text == '\r\n'
+    try:
+        parser.execute('entry')
+        raise AssertionError('production executed 0')
+    except CrupyLexerOpBuiltinException as err:
+        assert err.reason == (
+            'unable to validate the current char as "newline"'
+        )
+    assert parser.execute('test0').text == '\r'
+    assert parser.execute('test0').text == 'a'
+    try:
+        parser.execute('entry')
+        raise AssertionError('production executed 1')
+    except CrupyLexerOpBuiltinException as err:
+        assert err.reason == (
+            'unable to validate the current char as "newline", '
+            'no stream available'
+        )
+
 def test_symbol() -> None:
     """ simple valid cases
     """
@@ -307,8 +381,12 @@ def test_space() -> None:
         'entry' : CrupyLexerOpBuiltin('space'),
     })
     parser.register_stream(' \tabc')
-    assert parser.execute('entry') is not None
-    assert parser.execute('entry') is not None
+    node0 = parser.execute('entry')
+    node1 = parser.execute('entry')
+    assert node0.type == 'lex_text'
+    assert node0.text == ' '
+    assert node1.type == 'lex_text'
+    assert node1.text == '\t'
     with parser.stream as context:
         assert context.read_char() == 'a'
     try:
@@ -319,23 +397,32 @@ def test_space() -> None:
             'Lexer parsing error occured:\n'
             '\n'
             'Stream: line 1, column 3\n'
-            ' \tabc\n'
-            '        ^\n'
+            '    abc\n'
+            '    ^\n'
             'CrupyLexerOpBuiltinException: Unable to validate the '
             'current char as "space"'
         )
 
-def test_space_nl() -> None:
+def test_space_newline() -> None:
     """ test space
     """
     parser = CrupyParserBase({
-        'entry' : CrupyLexerOpBuiltin('space_nl'),
+        'entry' : CrupyLexerOpBuiltin('space_newline'),
         'test0' : CrupyLexerOpBuiltin('any'),
     })
-    parser.register_stream(' \t\nabc')
-    assert parser.execute('entry') is not None
-    assert parser.execute('entry') is not None
-    assert parser.execute('entry') is not None
+    parser.register_stream(' \t\n\r\nabc')
+    node0 = parser.execute('entry')
+    node1 = parser.execute('entry')
+    node2 = parser.execute('entry')
+    node3 = parser.execute('entry')
+    assert node0.type == 'lex_text'
+    assert node0.text == ' '
+    assert node1.type == 'lex_text'
+    assert node1.text == '\t'
+    assert node2.type == 'lex_text'
+    assert node2.text == '\n'
+    assert node3.type == 'lex_text'
+    assert node3.text == '\r\n'
     try:
         parser.execute('entry')
         raise AssertionError('No lexer exception has occured')
@@ -343,11 +430,62 @@ def test_space_nl() -> None:
         assert str(err) == (
             'Lexer parsing error occured:\n'
             '\n'
-            'Stream: line 2, column 1\n'
+            'Stream: line 3, column 1\n'
             'abc\n'
             '^\n'
             'CrupyLexerOpBuiltinException: Unable to validate the '
-            'current char as "space_nl"'
+            'current char as "space_newline"'
+        )
+
+def test_spaces() -> None:
+    """ test spaces
+    """
+    parser = CrupyParserBase({
+        'entry' : CrupyLexerOpBuiltin('spaces'),
+    })
+    parser.register_stream(' \tabc')
+    node0 = parser.execute('entry')
+    assert node0.type == 'lex_text'
+    assert node0.text == ' \t'
+    with parser.stream as context:
+        assert context.read_char() == 'a'
+    try:
+        parser.execute('entry')
+        raise AssertionError('No lexer exception has occured')
+    except CrupyLexerOpBuiltinException as err:
+        assert str(err) == (
+            'Lexer parsing error occured:\n'
+            '\n'
+            'Stream: line 1, column 3\n'
+            '    abc\n'
+            '    ^\n'
+            'CrupyLexerOpBuiltinException: Unable to validate the '
+            'current char as "spaces"'
+        )
+
+def test_spaces_newline() -> None:
+    """ test spaces
+    """
+    parser = CrupyParserBase({
+        'entry' : CrupyLexerOpBuiltin('spaces_newline'),
+        'test0' : CrupyLexerOpBuiltin('any'),
+    })
+    parser.register_stream(' \t\n\r\nabc')
+    node0 = parser.execute('entry')
+    assert node0.type == 'lex_text'
+    assert node0.text == ' \t\n\r\n'
+    try:
+        parser.execute('entry')
+        raise AssertionError('No lexer exception has occured')
+    except CrupyLexerOpBuiltinException as err:
+        assert str(err) == (
+            'Lexer parsing error occured:\n'
+            '\n'
+            'Stream: line 3, column 1\n'
+            'abc\n'
+            '^\n'
+            'CrupyLexerOpBuiltinException: Unable to validate the '
+            'current char as "spaces_newline"'
         )
 
 def test_eof() -> None:

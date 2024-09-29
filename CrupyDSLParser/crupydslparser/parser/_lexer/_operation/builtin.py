@@ -6,6 +6,7 @@ __all__ = [
     'CrupyLexerOpBuiltinException',
     'CrupyParserNodeBuiltinEof',
 ]
+from typing import cast
 
 from crupydslparser.parser._lexer.exception import CrupyLexerException
 from crupydslparser.parser._lexer._operation.base import CrupyLexerOpBase
@@ -36,6 +37,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         super().__init__()
         if operation not in [
             'any',
+            'any_newline',
             'alphanum',
             'alphanum_lower',
             'alphanum_upper',
@@ -44,9 +46,12 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             'alpha_lower',
             'digit',
             'number',
+            'newline',
             'symbol',
             'space',
-            'space_nl',
+            'space_newline',
+            'spaces',
+            'spaces_newline',
             'eof',
         ]:
             raise CrupyDSLCoreException(
@@ -60,6 +65,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         """
         return {
             'any'            : self._is_any,
+            'any_newline'    : self._is_any,
             'alphanum'       : self._is_alphanum,
             'alphanum_upper' : self._is_alphanum,
             'alphanum_lower' : self._is_alphanum,
@@ -68,9 +74,12 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             'alpha_upper'    : self._is_alpha,
             'digit'          : self._is_number,
             'number'         : self._is_number,
+            'newline'        : self._is_newline,
             'symbol'         : self._is_symbol,
             'space'          : self._is_space,
-            'space_nl'       : self._is_space,
+            'space_newline'  : self._is_space,
+            'spaces'         : self._is_space,
+            'spaces_newline' : self._is_space,
             'eof'            : self._is_end_of_file,
         }[self._operation](parser, self._operation)
 
@@ -81,29 +90,39 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
     def _is_any(
         self,
         parser: CrupyParserBase,
-        _: str,
+        target: str,
     ) -> CrupyParserNodeBase:
         """ check any char
+
+        @notes
+        - by default, if the current char is a backslash, ignore read the
+            next char. This is a poor support for the escape handling, but
+            can have collision with new line maybe (e.g. '\\\n')
+            (todo)
         """
         with parser.stream as context:
             if context.peek_char() == '\\':
                 context.read_char()
-            for test in (
+            for i, test in enumerate((
+                (self._is_newline, ''),
                 (self._is_alphanum, 'alphanum'),
                 (self._is_symbol, 'ascii'),
-                (self._is_space, 'space_n'),
-            ):
+                (self._is_space, 'space'),
+            )):
                 try:
+                    if i == 0 and target != 'any_newline':
+                        continue
                     node = test[0](parser, test[1])
                     return CrupyParserNodeLexText(
                         context = context.validate(),
-                        text    = node.text
+                        text    = node.text,
                     )
                 except CrupyLexerException:
                     pass
             raise CrupyLexerOpBuiltinException(
                 context = context,
-                reason  ='unable to validate the current char as "any"',
+                reason  = \
+                    f"unable to validate the current char as \"{target}\"",
             )
 
     def _is_alphanum(
@@ -204,6 +223,33 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                 text    = number,
             )
 
+    def _is_newline(
+        self,
+        parser: CrupyParserBase,
+        _: str,
+    ) -> CrupyParserNodeBase:
+        """ check if newline
+        """
+        with parser.stream as context:
+            if not (curr := context.peek_char()):
+                raise CrupyLexerOpBuiltinException(
+                    context = context,
+                    reason  = \
+                        'unable to validate the current char as '
+                        '"newline", no stream available',
+                )
+            if curr not in ('\n', '\r\n'):
+                raise CrupyLexerOpBuiltinException(
+                    context = context,
+                    reason  = \
+                        'unable to validate the current char as "newline"',
+                )
+            context.read_char()
+            return CrupyParserNodeLexText(
+                context = context.validate(),
+                text    = curr,
+            )
+
     def _is_symbol(
         self,
         parser: CrupyParserBase,
@@ -219,7 +265,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                         'unable to validate the current char as '
                         '"symbol", no stream available',
                 )
-            if not curr in "|!#$%&()*+,-./:;>=<?@[\\]^_`{}~\"'":
+            if not curr in "|!#$%&()*+,-./:;>=<?@[\\]^_`{}~\"'\r":
                 raise CrupyLexerOpBuiltinException(
                     context = context,
                     reason  = \
@@ -236,28 +282,49 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
         parser: CrupyParserBase,
         target: str,
     ) -> CrupyParserNodeBase:
-        """ check if space
+        """ check space builtin
+
+        @notes
+        - target='space' -> only if the current char is space or tab
+        - target='space_newline' -> same as 'space' but check newline too
+        - target='spaces' -> at least one space or tab and loop
+        - target='spaces_newline' -> same as 'spaces' but check newline too
         """
         with parser.stream as context:
-            if not (curr := context.peek_char()):
-                raise CrupyLexerOpBuiltinException(
-                    context = context,
-                    reason  = \
-                        'unable to validate the current char as '
-                        '"space", no stream available',
-                )
-            space_list = " \t" if target != 'space_nl' else " \t\r\n"
-            if curr not in space_list:
-                raise CrupyLexerOpBuiltinException(
-                    context = context,
-                    reason  = \
-                        'unable to validate the current char as '
-                        f"\"{target}\"",
-                )
-            context.read_char()
+            capture = ''
+            while True:
+                if not (curr := context.peek_char()):
+                    raise CrupyLexerOpBuiltinException(
+                        context = context,
+                        reason  = \
+                            'unable to validate the current char as '
+                            '"space", no stream available',
+                    )
+                if curr not in ' \t':
+                    try:
+                        found = False
+                        if target in ('space_newline', 'spaces_newline'):
+                            curr = self._is_newline(parser, '').text
+                            found = True
+                    except CrupyLexerOpBuiltinException:
+                        pass
+                    if not found:
+                        if capture:
+                            break
+                        raise CrupyLexerOpBuiltinException(
+                            context = context,
+                            reason  = \
+                                'unable to validate the current char as '
+                                f"\"{target}\"",
+                        )
+                else:
+                    context.read_char()
+                capture += cast(str, curr)
+                if target in ('space', 'space_newline'):
+                    break
             return CrupyParserNodeLexText(
                 context = context.validate(),
-                text    = curr,
+                text    = capture,
             )
 
     def _is_end_of_file(

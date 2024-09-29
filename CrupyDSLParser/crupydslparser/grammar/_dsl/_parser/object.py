@@ -52,6 +52,10 @@ from crupydslparser.grammar._dsl._parser._error import (
     dsl_error_hook,
     dsl_error_hook_error,
 )
+from crupydslparser.grammar._dsl._parser._between import (
+    dsl_between_hook,
+    dsl_between_hook_error,
+)
 
 #---
 # Public
@@ -130,6 +134,7 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
         CrupyLexerOpRep1N(
             CrupyLexerOpProductionCall('space_opt'),
             CrupyLexerOpOr(
+                CrupyLexerOpProductionCall('between'),
                 CrupyLexerOpProductionCall('production_name'),
                 CrupyLexerOpProductionCall('string'),
                 CrupyLexerOpProductionCall('builtin'),
@@ -170,6 +175,29 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
                         '"*", "+" or "?"',
                     ),
                 ),
+            ),
+        ),
+    #
+    # between production
+    # > between ::= \
+    #       (<production_name>|<string>|<buitin>|<group>) \
+    #       "..." \
+    #       (<production_name>|<string>|<buitin>|<group>)
+    #
+    'between' : \
+        CrupyLexerOpSeq(
+            CrupyLexerOpOr(
+                CrupyLexerOpProductionCall('production_name'),
+                CrupyLexerOpProductionCall('string'),
+                CrupyLexerOpProductionCall('builtin'),
+                CrupyLexerOpProductionCall('group'),
+            ),
+            CrupyLexerOpText('...'),
+            CrupyLexerOpOr(
+                CrupyLexerOpProductionCall('production_name'),
+                CrupyLexerOpProductionCall('string'),
+                CrupyLexerOpProductionCall('builtin'),
+                CrupyLexerOpProductionCall('group'),
             ),
         ),
     #
@@ -326,6 +354,7 @@ CRUPY_DSL_PARSER_OBJ.register_post_hook('error', dsl_error_hook)
 CRUPY_DSL_PARSER_OBJ.register_post_hook('crupy_dsl', dsl_dsl_hook)
 CRUPY_DSL_PARSER_OBJ.register_post_hook('statement', dsl_statement_hook)
 CRUPY_DSL_PARSER_OBJ.register_post_hook('production', dsl_production_hook)
+CRUPY_DSL_PARSER_OBJ.register_post_hook('between', dsl_between_hook)
 CRUPY_DSL_PARSER_OBJ.register_post_hook(
     'alternative',
     dsl_alternative_hook,
@@ -341,6 +370,7 @@ CRUPY_DSL_PARSER_OBJ.register_error_hook('string', dsl_string_hook_error)
 CRUPY_DSL_PARSER_OBJ.register_error_hook('builtin', dsl_builtin_hook_error)
 CRUPY_DSL_PARSER_OBJ.register_error_hook('group', dsl_group_hook_error)
 CRUPY_DSL_PARSER_OBJ.register_error_hook('error', dsl_error_hook_error)
+CRUPY_DSL_PARSER_OBJ.register_error_hook('between', dsl_between_hook_error)
 CRUPY_DSL_PARSER_OBJ.register_error_hook(
     'production',
     dsl_production_hook_error,
