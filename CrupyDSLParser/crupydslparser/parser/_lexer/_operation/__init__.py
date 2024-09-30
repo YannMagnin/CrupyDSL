@@ -21,41 +21,41 @@ __all__ = [
     'CrupyLexerOpBetween',
     'CrupyLexerOpBetweenException',
 ]
-from crupydslparser.parser._lexer._operation.base import (
+from crupydslparser.parser._lexer._operation.op_base import (
     CrupyLexerOpBase,
 )
-from crupydslparser.parser._lexer._operation.text import (
+from crupydslparser.parser._lexer._operation.op_text import (
     CrupyLexerOpText,
     CrupyLexerOpTextException,
 )
-from crupydslparser.parser._lexer._operation.seq import (
+from crupydslparser.parser._lexer._operation.op_seq import (
     CrupyLexerOpSeq,
     CrupyLexerOpSeqException,
 )
-from crupydslparser.parser._lexer._operation.choice import (
+from crupydslparser.parser._lexer._operation.op_or import (
     CrupyLexerOpOr,
     CrupyLexerOpOrException,
 )
-from crupydslparser.parser._lexer._operation.optional import (
+from crupydslparser.parser._lexer._operation.op_optional import (
     CrupyLexerOpOptional,
 )
-from crupydslparser.parser._lexer._operation.productioncall import (
+from crupydslparser.parser._lexer._operation.op_productioncall import (
     CrupyLexerOpProductionCall,
     CrupyLexerOpProductionCallException,
 )
-from crupydslparser.parser._lexer._operation.builtin import (
+from crupydslparser.parser._lexer._operation.op_builtin import (
     CrupyLexerOpBuiltin,
     CrupyLexerOpBuiltinException,
 )
-from crupydslparser.parser._lexer._operation.rep import (
+from crupydslparser.parser._lexer._operation.op_rep import (
     CrupyLexerOpRep0N,
     CrupyLexerOpRep1N,
     CrupyLexerOpRepException,
 )
-from crupydslparser.parser._lexer._operation.error import (
+from crupydslparser.parser._lexer._operation.op_error import (
     CrupyLexerOpError,
 )
-from crupydslparser.parser._lexer._operation.between import (
+from crupydslparser.parser._lexer._operation.op_between import (
     CrupyLexerOpBetween,
     CrupyLexerOpBetweenException,
 )

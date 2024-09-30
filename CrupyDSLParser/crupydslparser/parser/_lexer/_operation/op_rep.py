@@ -10,7 +10,7 @@ __all__ = [
 from typing import Union, Any
 
 from crupydslparser.parser._lexer.exception import CrupyLexerException
-from crupydslparser.parser._lexer._operation.seq import (
+from crupydslparser.parser._lexer._operation.op_seq import (
     CrupyLexerOpSeq,
     CrupyLexerOpSeqException,
 )

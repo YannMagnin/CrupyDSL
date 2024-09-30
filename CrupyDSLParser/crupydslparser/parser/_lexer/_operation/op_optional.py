@@ -9,7 +9,7 @@ from typing import Union
 
 from crupydslparser.parser.base import CrupyParserBase
 from crupydslparser.parser.node import CrupyParserNodeBase
-from crupydslparser.parser._lexer._operation.seq import (
+from crupydslparser.parser._lexer._operation.op_seq import (
     CrupyLexerOpSeq,
     CrupyLexerOpSeqException,
 )

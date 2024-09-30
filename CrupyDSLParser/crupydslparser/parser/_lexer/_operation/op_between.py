@@ -9,12 +9,12 @@ __all__ = [
 ]
 from typing import Union
 
-from crupydslparser.parser._lexer._operation.base import CrupyLexerOpBase
+from crupydslparser.parser._lexer._operation.op_base import CrupyLexerOpBase
 from crupydslparser.parser._lexer.exception import CrupyLexerException
 from crupydslparser.parser.exception import CrupyParserBaseException
 from crupydslparser.parser.node import CrupyParserNodeBase
 from crupydslparser.parser.base import CrupyParserBase
-from crupydslparser.parser._lexer._operation.builtin import (
+from crupydslparser.parser._lexer._operation.op_builtin import (
     CrupyLexerOpBuiltin,
 )
 #---

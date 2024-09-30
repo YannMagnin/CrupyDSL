@@ -7,7 +7,7 @@ __all__ = [
 ]
 
 from crupydslparser.parser._lexer.exception import CrupyLexerException
-from crupydslparser.parser._lexer._operation.base import CrupyLexerOpBase
+from crupydslparser.parser._lexer._operation.op_base import CrupyLexerOpBase
 from crupydslparser.parser.node import CrupyParserNodeBase
 from crupydslparser.parser import CrupyParserBase
 

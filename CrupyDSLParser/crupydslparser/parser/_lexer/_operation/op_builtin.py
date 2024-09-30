@@ -9,8 +9,8 @@ __all__ = [
 from typing import cast
 
 from crupydslparser.parser._lexer.exception import CrupyLexerException
-from crupydslparser.parser._lexer._operation.base import CrupyLexerOpBase
-from crupydslparser.parser._lexer._operation.text import (
+from crupydslparser.parser._lexer._operation.op_base import CrupyLexerOpBase
+from crupydslparser.parser._lexer._operation.op_text import (
     CrupyParserNodeLexText,
 )
 from crupydslparser.parser.base import CrupyParserBase

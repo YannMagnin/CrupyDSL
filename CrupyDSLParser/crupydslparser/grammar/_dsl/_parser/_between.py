@@ -24,4 +24,4 @@ def dsl_between_hook_error(
 ) -> NoReturn:
     """ string error hook
     """
-    raise AssertionError('Not implemented')
+    raise AssertionError('Error hook not implemented')
