@@ -7,7 +7,6 @@ __all__ = [
     'CrupyLexerOpBetweenException',
     'CrupyParserNodeLexBetween',
 ]
-from typing import Union
 
 from crupydslparser.parser._lexer._operation.op_base import CrupyLexerOpBase
 from crupydslparser.parser._lexer.exception import CrupyLexerException
@@ -27,7 +26,7 @@ from crupydslparser.parser._lexer._operation.op_builtin import (
 class CrupyParserNodeLexBetween(CrupyParserNodeBase):
     """ between token information """
     captured_start:     CrupyParserNodeBase
-    captured_middle:    Union[str,None]
+    captured_middle:    str
     captured_end:       CrupyParserNodeBase
 
 class CrupyLexerOpBetweenException(CrupyLexerException):

@@ -49,18 +49,10 @@ def __check_node_quoted(
     """ generic node check """
     try:
         assert node is not None
-        assert node.type == 'lex_seq'
-        assert len(node.seq) == 3
-        assert node.seq[0].type == 'lex_text'
-        assert node.seq[1].type == 'lex_rep'
-        assert node.seq[2].type == 'lex_text'
-        capture = ''
-        for rep in node.seq[1].rep:
-            assert len(rep) == 1
-            op = rep[0]
-            assert op.type == 'lex_text'
-            capture += op.text
-        assert capture == text
+        assert node.type == 'lex_between'
+        assert node.captured_start.type == 'lex_text'
+        assert node.captured_end.type == 'lex_text'
+        assert node.captured_middle == text
     except AssertionError:
         print(
             '\033[0;33m'

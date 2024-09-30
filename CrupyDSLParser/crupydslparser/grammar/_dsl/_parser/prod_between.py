@@ -2,6 +2,7 @@
 crupydslparser.grammar._dsl._parser.between     - DSL between hook
 """
 __all__ = [
+    'CrupyParserNodeDslBetween',
     'dsl_between_hook',
     'dsl_between_hook_error',
 ]
@@ -32,6 +33,7 @@ def dsl_between_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     assert node.type == 'lex_seq'
     assert len(node.seq) == 3
     assert node.seq[1].type == 'lex_text'
+    assert node.seq[1].text in ('...', '.!.')
     return CrupyParserNodeDslBetween(
         parent_node = node,
         kind    = 'no_newline' if node.seq[1].text == '...' else 'newline',

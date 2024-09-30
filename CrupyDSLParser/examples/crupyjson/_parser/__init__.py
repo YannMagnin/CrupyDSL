@@ -24,19 +24,20 @@ from crupydslparser.parser._lexer import (
     CrupyLexerOpOr,
     CrupyLexerOpProductionCall,
     CrupyLexerOpBuiltin,
+    CrupyLexerOpBetween,
     CrupyLexerAssertLookaheadNegative,
 )
 
-from crupyjson._parser.nullable import json_parser_prod_hook_nullable
-from crupyjson._parser.boolean import json_parser_prod_hook_boolean
-from crupyjson._parser.string import json_parser_prod_hook_string
-from crupyjson._parser.json import json_parser_prod_hook_json
-from crupyjson._parser.container import json_parser_prod_hook_container
-from crupyjson._parser.primitive import json_parser_prod_hook_primitive
-from crupyjson._parser.array import json_parser_prod_hook_array
-from crupyjson._parser.object import json_parser_prod_hook_object
-from crupyjson._parser.member import json_parser_prod_hook_member
-from crupyjson._parser.statement import json_parser_prod_hook_statement
+from crupyjson._parser.prod_nullable import json_parser_prod_hook_nullable
+from crupyjson._parser.prod_boolean import json_parser_prod_hook_boolean
+from crupyjson._parser.prod_string import json_parser_prod_hook_string
+from crupyjson._parser.prod_json import json_parser_prod_hook_json
+from crupyjson._parser.prod_container import json_parser_prod_hook_container
+from crupyjson._parser.prod_primitive import json_parser_prod_hook_primitive
+from crupyjson._parser.prod_array import json_parser_prod_hook_array
+from crupyjson._parser.prod_object import json_parser_prod_hook_object
+from crupyjson._parser.prod_member import json_parser_prod_hook_member
+from crupyjson._parser.prod_statement import json_parser_prod_hook_statement
 
 #---
 # Public
@@ -130,25 +131,15 @@ JSON_PARSER_OBJ = CrupyParserBase({
     #
     'string' : \
         CrupyLexerOpOr(
-            CrupyLexerOpSeq(
-                CrupyLexerOpText('"'),
-                CrupyLexerOpRep0N(
-                    CrupyLexerAssertLookaheadNegative(
-                        CrupyLexerOpText('"'),
-                    ),
-                    CrupyLexerOpBuiltin('any')
-                ),
-                CrupyLexerOpText('"'),
+            CrupyLexerOpBetween(
+                startop         = CrupyLexerOpText('"'),
+                endop           = CrupyLexerOpText('"'),
+                with_newline    = False,
             ),
-            CrupyLexerOpSeq(
-                CrupyLexerOpText('\''),
-                CrupyLexerOpRep0N(
-                    CrupyLexerAssertLookaheadNegative(
-                        CrupyLexerOpText('\''),
-                    ),
-                    CrupyLexerOpBuiltin('any')
-                ),
-                CrupyLexerOpText('\''),
+            CrupyLexerOpBetween(
+                startop         = CrupyLexerOpText('\''),
+                endop           = CrupyLexerOpText('\''),
+                with_newline    = False,
             ),
         ),
         #

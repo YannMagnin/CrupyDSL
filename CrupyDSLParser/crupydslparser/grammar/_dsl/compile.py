@@ -12,6 +12,7 @@ from crupydslparser.parser._lexer._operation import (
     CrupyLexerOpSeq,
     CrupyLexerOpProductionCall,
     CrupyLexerOpBuiltin,
+    CrupyLexerOpBetween,
     CrupyLexerOpText,
     CrupyLexerOpRep0N,
     CrupyLexerOpRep1N,
@@ -22,10 +23,10 @@ from crupydslparser.parser._lexer._assert import (
     CrupyLexerAssertLookaheadPositive,
     CrupyLexerAssertLookaheadNegative,
 )
-from crupydslparser.grammar._dsl._parser._statement import (
+from crupydslparser.grammar._dsl._parser.prod_statement import (
     CrupyParserNodeDslStatement,
 )
-from crupydslparser.grammar._dsl._parser._alternative import (
+from crupydslparser.grammar._dsl._parser.prod_alternative import (
     CrupyParserNodeDslAlternative,
 )
 from crupydslparser.grammar.exception import CrupyGrammarException
@@ -51,6 +52,12 @@ def _dsl_compil_grammar_operation(
         return CrupyLexerOpBuiltin(operation.kind)
     if operation.type == 'dsl_string':
         return CrupyLexerOpText(operation.text)
+    if operation.type == 'dsl_between':
+        return CrupyLexerOpBetween(
+            startop         = operation.opening,
+            endop           = operation.closing,
+            with_newline    = operation.kind == 'newline',
+        )
     if operation.type == 'dsl_group':
         lexerop = dsl_compil_grammar_statement(operation.statement)
         if isinstance(lexerop, CrupyLexerOpSeq):

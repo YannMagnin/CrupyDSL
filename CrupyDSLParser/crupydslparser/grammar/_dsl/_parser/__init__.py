@@ -22,40 +22,40 @@ from crupydslparser.parser._lexer import (
     CrupyLexerAssertLookaheadNegative,
     CrupyLexerAssertLookaheadPositive,
 )
-from crupydslparser.grammar._dsl._parser._dsl import dsl_dsl_hook
-from crupydslparser.grammar._dsl._parser._eol import dsl_eol_hook
-from crupydslparser.grammar._dsl._parser._space import dsl_space_hook
-from crupydslparser.grammar._dsl._parser._builtin import (
+from crupydslparser.grammar._dsl._parser.prod_dsl import dsl_dsl_hook
+from crupydslparser.grammar._dsl._parser.prod_eol import dsl_eol_hook
+from crupydslparser.grammar._dsl._parser.prod_space import dsl_space_hook
+from crupydslparser.grammar._dsl._parser.prod_builtin import (
     dsl_builtin_hook,
     dsl_builtin_hook_error,
 )
-from crupydslparser.grammar._dsl._parser._statement import (
+from crupydslparser.grammar._dsl._parser.prod_statement import (
     dsl_statement_hook,
 )
-from crupydslparser.grammar._dsl._parser._group import (
+from crupydslparser.grammar._dsl._parser.prod_group import (
     dsl_group_hook,
     dsl_group_hook_error,
 )
-from crupydslparser.grammar._dsl._parser._production import (
+from crupydslparser.grammar._dsl._parser.prod_production import (
     dsl_production_hook,
     dsl_production_hook_error,
 )
-from crupydslparser.grammar._dsl._parser._string import (
+from crupydslparser.grammar._dsl._parser.prod_string import (
     dsl_string_hook,
     dsl_string_hook_error,
 )
-from crupydslparser.grammar._dsl._parser._alternative import (
+from crupydslparser.grammar._dsl._parser.prod_alternative import (
     dsl_alternative_hook,
 )
-from crupydslparser.grammar._dsl._parser._production_name import (
+from crupydslparser.grammar._dsl._parser.prod_production_name import (
     dsl_production_name_hook,
     dsl_production_name_hook_error,
 )
-from crupydslparser.grammar._dsl._parser._error import (
+from crupydslparser.grammar._dsl._parser.prod_error import (
     dsl_error_hook,
     dsl_error_hook_error,
 )
-from crupydslparser.grammar._dsl._parser._between import (
+from crupydslparser.grammar._dsl._parser.prod_between import (
     dsl_between_hook,
     dsl_between_hook_error,
 )

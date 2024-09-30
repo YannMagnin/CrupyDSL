@@ -8,7 +8,7 @@ __all__ = [
 from typing import List
 
 from crupydslparser.parser import CrupyParserNodeBase
-from crupycsv._parser.field import CrupyParserNodeCsvField
+from crupycsv._parser.prod_field import CrupyParserNodeCsvField
 
 #---
 # Public

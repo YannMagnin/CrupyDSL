@@ -40,12 +40,10 @@ class CrupyGrammarJSON(CrupyGrammarBase):
         <object>    ::= <sp> '{' <sp> <member> ( <sp> ',' <sp> <member>)* <sp> '}' <sp>
         <member>    ::= <string> <sp> ':' <sp> <statement>
 
-        <sp>        ::= (:space_nl:)*
+        <sp>        ::= (:space_newline:)*
         <boolean>   ::= 'true' | 'false'
         <nullable>  ::= 'null'
-        <string>    ::= \
-            | '"' ((?!'"') :any:)* '"' \
-            | "'" ((?!"'") :any:)* "'"
+        <string>    ::= '"'...'"' | "'"..."'"
     """
 
     #---

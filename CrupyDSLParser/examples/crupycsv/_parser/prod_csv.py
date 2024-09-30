@@ -7,7 +7,7 @@ __all__ = [
 ]
 from typing import List
 
-from crupycsv._parser.record import CrupyParserNodeCsvRecord
+from crupycsv._parser.prod_record import CrupyParserNodeCsvRecord
 from crupydslparser.parser import CrupyParserNodeBase
 
 #---

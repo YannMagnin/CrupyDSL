@@ -14,12 +14,13 @@ from crupydslparser.parser._lexer import (
     CrupyLexerOpOr,
     CrupyLexerOpProductionCall,
     CrupyLexerOpBuiltin,
+    CrupyLexerOpBetween,
     CrupyLexerAssertLookaheadNegative,
 )
 
-from crupycsv._parser.csv import csv_parser_prod_csv_hook
-from crupycsv._parser.record import csv_parser_prod_record_hook
-from crupycsv._parser.field import csv_parser_prod_field_hook
+from crupycsv._parser.prod_csv import csv_parser_prod_csv_hook
+from crupycsv._parser.prod_record import csv_parser_prod_record_hook
+from crupycsv._parser.prod_field import csv_parser_prod_field_hook
 
 #---
 # Public
@@ -32,14 +33,14 @@ from crupycsv._parser.field import csv_parser_prod_field_hook
 CSV_PARSER_OBJ = CrupyParserBase({
     #
     # production entry
-    # > cvs ::= (<record> "\n")+ :eof:
+    # > cvs ::= (<record> :newline:)+ :eof:
     #
     'csv' : \
         CrupyLexerOpSeq(
             CrupyLexerOpRep1N(
                 CrupyLexerOpSeq(
                     CrupyLexerOpProductionCall('record'),
-                    CrupyLexerOpText('\n'),
+                    CrupyLexerOpBuiltin('newline'),
                 ),
             ),
             CrupyLexerOpBuiltin('eof'),
@@ -67,24 +68,13 @@ CSV_PARSER_OBJ = CrupyParserBase({
         ),
     #
     # CSV quoted field
-    # > quoted_field ::= \
-    #       "\"" ((?!"\"")(<letter>|<digit>|<symbol>|<space>))+ "\""
+    # > quoted_field ::= '"'...'"'
     #
     'field_quoted' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpText('"'),
-            CrupyLexerOpRep1N(
-                CrupyLexerAssertLookaheadNegative(
-                    CrupyLexerOpText('"'),
-                ),
-                CrupyLexerOpOr(
-                    CrupyLexerOpBuiltin('alpha'),
-                    CrupyLexerOpBuiltin('digit'),
-                    CrupyLexerOpBuiltin('symbol'),
-                    CrupyLexerOpBuiltin('space_nl'),
-                ),
-            ),
-            CrupyLexerOpText('"'),
+        CrupyLexerOpBetween(
+            startop         = CrupyLexerOpText('"'),
+            endop           = CrupyLexerOpText('"'),
+            with_newline    = False,
         ),
     #
     # CSV default field (capture between commad separator)
