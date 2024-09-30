@@ -28,7 +28,7 @@ from crupydslparser.parser.node import CrupyParserNodeBase
 # - use the `annotations` import to allow "not well defined class"
 # - import the missing `CrupyLexer` type
 if TYPE_CHECKING:
-    from crupydslparser.parser._lexer._operation.base import (
+    from crupydslparser.parser._lexer._operation.op_base import (
         CrupyLexerOpBase,
     )
 

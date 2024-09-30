@@ -14,8 +14,6 @@ def test_simple_success() -> None:
     CRUPY_DSL_PARSER_OBJ.register_stream(':digit::any:')
     node0 = CRUPY_DSL_PARSER_OBJ.execute('builtin')
     node1 = CRUPY_DSL_PARSER_OBJ.execute('builtin')
-    assert node1 is not None
-    assert node1 is not None
     assert node0.type == 'dsl_builtin'
     assert node0.kind == 'digit'
     assert node1.type == 'dsl_builtin'

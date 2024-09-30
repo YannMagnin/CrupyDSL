@@ -62,8 +62,8 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
                     best_choice_error_special = True
                 elif best_choice_error is None:
                     best_choice_error = err
-                else:
-                    best_choice_error = max(best_choice_error, err)
+                elif best_choice_error <= err:
+                    best_choice_error = err
         if not best_choice_error:
             with parser.stream as context:
                 raise CrupyLexerOpOrException(

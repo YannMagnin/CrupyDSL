@@ -48,6 +48,9 @@ class _CrupyParserAbstractException(CrupyDSLCoreException):
     def __gt__(self, error: _CrupyParserAbstractException) -> bool:
         return self.context > error.context
 
+    def __ge__(self, error: _CrupyParserAbstractException) -> bool:
+        return self.context >= error.context
+
     def __getattr__(self, index: str) -> Any:
         """ workaround to trick pylint
 

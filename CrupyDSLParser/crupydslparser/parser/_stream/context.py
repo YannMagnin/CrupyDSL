@@ -43,6 +43,9 @@ class CrupyStreamContext():
     def __gt__(self, context: CrupyStreamContext) -> bool:
         return self.index > context.index
 
+    def __ge__(self, context: CrupyStreamContext) -> bool:
+        return self.index >= context.index
+
     def __str__(self) -> str:
         info  = f"<{type(self).__name__}: "
         info += f"index={self.index}, "

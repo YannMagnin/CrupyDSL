@@ -335,12 +335,11 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
         ),
     #
     # end-of-line
-    # > eol ::= "\n" | "\r\n" | :eof: | @error('not an end-of-line')
+    # > eol ::= :newline: | :eof: | @error('not an end-of-line')
     #
     'eol' : \
         CrupyLexerOpOr(
-            CrupyLexerOpText('\n'),
-            CrupyLexerOpText('\r\n'),
+            CrupyLexerOpBuiltin('newline'),
             CrupyLexerOpBuiltin('eof'),
             CrupyLexerOpError('not an end-of-file'),
         ),
@@ -374,9 +373,9 @@ CRUPY_DSL_PARSER_OBJ.register_post_hook(
 
 CRUPY_DSL_PARSER_OBJ.register_error_hook('string', dsl_string_hook_error)
 CRUPY_DSL_PARSER_OBJ.register_error_hook('builtin', dsl_builtin_hook_error)
+CRUPY_DSL_PARSER_OBJ.register_error_hook('between', dsl_between_hook_error)
 CRUPY_DSL_PARSER_OBJ.register_error_hook('group', dsl_group_hook_error)
 CRUPY_DSL_PARSER_OBJ.register_error_hook('error', dsl_error_hook_error)
-CRUPY_DSL_PARSER_OBJ.register_error_hook('between', dsl_between_hook_error)
 CRUPY_DSL_PARSER_OBJ.register_error_hook(
     'production',
     dsl_production_hook_error,
