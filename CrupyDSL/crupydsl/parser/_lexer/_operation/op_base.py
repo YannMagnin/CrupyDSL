@@ -1,0 +1,48 @@
+"""
+crupydsl.parser._lexer._operation._base - Lexer operation abstraction
+"""
+__all__ = [
+    'CrupyLexerOpBase',
+]
+from abc import abstractmethod
+
+from crupydsl.parser.base import CrupyParserBase
+from crupydsl.parser.node import CrupyParserNodeBase
+from crupydsl._utils import (
+    crupyabstractclass,
+    crupynamedclass,
+)
+
+#---
+# Public
+#---
+
+# allow too few public methods
+# pylint: disable=locally-disabled,R0903
+
+@crupyabstractclass
+@crupynamedclass(
+    generate_type   = True,
+    regex           = '^(_)?CrupyLexerOp(?P<type>([0-9]*[A-Z][a-z]*)+)$',
+)
+class CrupyLexerOpBase():
+    """ Lexer capture operation
+    """
+
+    #---
+    # Magic operation
+    #---
+
+    @abstractmethod
+    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
+        """ internal core operation code
+        """
+
+    #---
+    # Public (generic) methods
+    #---
+
+    @abstractmethod
+    def show(self, indent: int = 0) -> str:
+        """ display a generic information
+        """

@@ -27,17 +27,17 @@ jobs:
         run: poetry install
       - name: 'check codebase'
         run: |
-          poetry run pylint -d R0903,R0801 CrupyDSLParser/crupydslparser
-          poetry run mypy --strict CrupyDSLParser/crupydslparser
-          poetry run pyimportcheck CrupyDSLParser/crupydslparser
-          poetry run pylint -d R0903,R0801 CrupyDSLParser/examples/crupycsv
-          poetry run mypy --strict CrupyDSLParser/examples/crupycsv
-          poetry run pyimportcheck CrupyDSLParser/crupydslparser
-          poetry run pylint -d R0903,R0801 CrupyDSLParser/examples/crupyjson
-          poetry run mypy --strict CrupyDSLParser/examples/crupyjson
-          poetry run pyimportcheck CrupyDSLParser/crupydslparser
-          poetry run pylint -d R0903,R0801 CrupyDSLParser/tests
-          poetry run mypy --strict CrupyDSLParser/tests
+          poetry run pylint -d R0903,R0801 CrupyDSL/crupydsl
+          poetry run mypy --strict CrupyDSL/crupydsl
+          poetry run pyimportcheck CrupyDSL/crupydsl
+          poetry run pylint -d R0903,R0801 CrupyDSL/examples/crupycsv
+          poetry run mypy --strict CrupyDSL/examples/crupycsv
+          poetry run pyimportcheck CrupyDSL/crupydsl
+          poetry run pylint -d R0903,R0801 CrupyDSL/examples/crupyjson
+          poetry run mypy --strict CrupyDSL/examples/crupyjson
+          poetry run pyimportcheck CrupyDSL/crupydsl
+          poetry run pylint -d R0903,R0801 CrupyDSL/tests
+          poetry run mypy --strict CrupyDSL/tests
       - name: 'check unittest'
         run: |
           poetry run crupycsv tests
