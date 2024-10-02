@@ -15,6 +15,7 @@ from crupydsl.exception import CrupyDSLCoreException
 from crupydsl.parser._stream.stream import CrupyDSLStream
 from crupydsl.parser.exception import CrupyDSLParserBaseException
 from crupydsl.parser.node import CrupyDSLParserNodeBase
+from crupydsl._utils import crupynamedclass
 
 # @note : Design mistake
 #
@@ -36,6 +37,11 @@ if TYPE_CHECKING:
 # Public
 #---
 
+@crupynamedclass(
+    generate_type   = False,
+    regex           = '^(_)*CrupyDSLParser(?P<type>([A-Z][a-z]+)+)$',
+    error           = 'malformated parser subclass',
+)
 class CrupyDSLParserBase():
     """ Crupy parser class
     """

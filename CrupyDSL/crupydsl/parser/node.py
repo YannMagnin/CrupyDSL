@@ -26,7 +26,7 @@ from crupydsl._utils import (
 @crupyabstractclass
 @crupynamedclass(
     generate_type   = True,
-    regex           = '^CrupyDSLParserNode(?P<type>([A-Z][a-z]+)+)$',
+    regex           = '^(_)*CrupyDSLParserNode(?P<type>([A-Z][a-z]+)+)$',
     error           = 'malformated parser node subclass',
 )
 class CrupyDSLParserNodeBase():

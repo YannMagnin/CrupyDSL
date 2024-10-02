@@ -6,10 +6,10 @@ jobs:
     steps:
       - name: 'checkout the codebase'
         uses: actions/checkout@v4
-      - name: 'install CPython 3.11'
+      - name: 'install CPython 3.9'
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.9'
       - name: 'install poetry'
         uses: abatilo/actions-poetry@v3
         with:

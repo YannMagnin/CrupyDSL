@@ -23,7 +23,7 @@ from crupydsl._utils import (
 @crupyabstractclass
 @crupynamedclass(
     generate_type   = True,
-    regex           = '^CrupyDSL(?P<type>([A-Z][a-z]+)+)Exception$',
+    regex           = '^(_)*CrupyDSL(?P<type>([A-Z][a-z]+)+)Exception$',
 )
 class _CrupyDSLParserAbstractException(CrupyDSLCoreException):
     """ Crupy parser exception class

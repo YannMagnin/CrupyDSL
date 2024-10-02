@@ -10,6 +10,7 @@ __all__ = [
 from typing import Optional, Any, IO
 from pathlib import Path
 
+from crupydsl._utils import crupynamedclass
 from crupydsl.grammar.exception import CrupyDSLGrammarException
 from crupydsl.grammar._dsl import (
     CRUPY_DSL_PARSER_OBJ,
@@ -24,6 +25,11 @@ from crupydsl.parser import (
 # Public
 #---
 
+@crupynamedclass(
+    generate_type   = False,
+    regex           = '^(_)*CrupyDSLGrammar(?P<type>([A-Z][a-z]+)+)$',
+    error           = 'malformated grammar subclass',
+)
 class CrupyDSLGrammarBase():
     """
     Most important class used to generate the parser using the special
