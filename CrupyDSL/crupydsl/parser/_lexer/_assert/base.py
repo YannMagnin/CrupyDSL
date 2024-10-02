@@ -2,12 +2,12 @@
 crupydsl.parser._lexer._assert._base  - Lexer assert abstraction
 """
 __all__ = [
-    'CrupyLexerAssertBase',
+    'CrupyDSLLexerAssertBase',
 ]
 from typing import Any
 from abc import abstractmethod
 
-from crupydsl.parser import CrupyParserBase
+from crupydsl.parser import CrupyDSLParserBase
 from crupydsl._utils import (
     crupyabstractclass,
     crupynamedclass,
@@ -20,9 +20,9 @@ from crupydsl._utils import (
 @crupyabstractclass
 @crupynamedclass(
     generate_type   = True,
-    regex           = '^(_)?CrupyLexerAssert(?P<type>([A-Z][a-z]+)+)$',
+    regex           = '^(_)?CrupyDSLLexerAssert(?P<type>([A-Z][a-z]+)+)$',
 )
-class CrupyLexerAssertBase():
+class CrupyDSLLexerAssertBase():
     """ Lexer assert operation
     """
 
@@ -31,7 +31,7 @@ class CrupyLexerAssertBase():
     #---
 
     @abstractmethod
-    def __call__(self, stream: CrupyParserBase) -> bool:
+    def __call__(self, stream: CrupyDSLParserBase) -> bool:
         """ internal core operation code
         """
 

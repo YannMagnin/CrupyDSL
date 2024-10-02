@@ -2,21 +2,21 @@
 crupydsl.grammar._dsl.exception   - DSL exception class
 """
 __all__ = [
-    'CrupyDslParserException',
+    'CrupyDSLParserException',
 ]
 
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 
 #---
 # Public
 #---
 
-class CrupyDslParserException(CrupyParserBaseException):
+class CrupyDSLParserException(CrupyDSLParserBaseException):
     """ generic DSL exception class
     """
     def __init__(
         self,
-        error: CrupyParserBaseException,
+        error: CrupyDSLParserBaseException,
         reason: str,
     ) -> None:
         """ generic DSL exception

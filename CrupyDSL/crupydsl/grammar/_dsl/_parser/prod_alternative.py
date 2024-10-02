@@ -2,26 +2,28 @@
 crupydsl.grammar._dsl._parser.alternative  - DSL alternative hook
 """
 __all__ = [
-    'CrupyParserNodeDslAlternative',
+    'CrupyDSLParserNodeDslAlternative',
     'dsl_alternative_hook',
 ]
 
-from crupydsl.parser import CrupyParserNodeBase
+from crupydsl.parser import CrupyDSLParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslAlternative(CrupyParserNodeBase):
+class CrupyDSLParserNodeDslAlternative(CrupyDSLParserNodeBase):
     """ alternative node """
-    seq:    list[CrupyParserNodeBase]
+    seq:    list[CrupyDSLParserNodeBase]
 
-def dsl_alternative_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+def dsl_alternative_hook(
+    node: CrupyDSLParserNodeBase,
+) -> CrupyDSLParserNodeBase:
     """ handle "alternative" node
     """
     assert node.type == 'lex_rep'
     assert len(node.rep) >= 1
-    node_seq: list[CrupyParserNodeBase] = []
+    node_seq: list[CrupyDSLParserNodeBase] = []
     for seq in node.rep:
         assert len(seq) == 2
         assert seq[0].type == 'dsl_space'
@@ -32,7 +34,7 @@ def dsl_alternative_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
             'dsl_builtin',
         ]
         node_seq.append(seq[1])
-    return CrupyParserNodeDslAlternative(
+    return CrupyDSLParserNodeDslAlternative(
         parent_node = node,
         seq         = node_seq,
     )

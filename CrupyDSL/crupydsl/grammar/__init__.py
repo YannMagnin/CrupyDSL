@@ -2,8 +2,8 @@
 crupydsl.grammar    - define grammar related information
 """
 __all__ = [
-    'CrupyGrammarBase',
-    'CrupyGrammarException',
+    'CrupyDSLGrammarBase',
+    'CrupyDSLGrammarException',
 ]
-from crupydsl.grammar.base import CrupyGrammarBase
-from crupydsl.grammar.exception import CrupyGrammarException
+from crupydsl.grammar.base import CrupyDSLGrammarBase
+from crupydsl.grammar.exception import CrupyDSLGrammarException

@@ -2,7 +2,7 @@
 tests.lexer.dsl_production_name - test `crupy_dsl_production_name` rule
 """
 from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 
 #---
 # Public
@@ -28,7 +28,7 @@ def test_error_start() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('oui_non>')
         CRUPY_DSL_PARSER_OBJ.execute('production_name')
         raise AssertionError('production \'production_name\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert err.reason == 'missing opening chevron'
 
 def test_error_content() -> None:
@@ -38,7 +38,7 @@ def test_error_content() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('<9->')
         CRUPY_DSL_PARSER_OBJ.execute('production_name')
         raise AssertionError('production \'production_name\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert err.reason == (
             'production name should only contain alphanumerical and '
             'underscore characters'
@@ -51,5 +51,5 @@ def test_error_close() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('<oui_non')
         CRUPY_DSL_PARSER_OBJ.execute('production_name')
         raise AssertionError('production \'production_name\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert err.reason == 'missing enclosing chevron'

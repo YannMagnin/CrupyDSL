@@ -3,14 +3,19 @@ crupydsl    - Crupy DSL parser
 """
 __all__ = [
     'CrupyDSLCoreException',
-
-    'CrupyParserBaseException',
-    'CrupyParserNodeBase',
-    'CrupyParserBase',
+    'CrupyDSLParserBaseException',
+    'CrupyDSLParserNodeBase',
+    'CrupyDSLParserBase',
+    'CrupyDSLGrammarBase',
+    'CrupyDSLGrammarException',
 ]
 from crupydsl.exception import CrupyDSLCoreException
 from crupydsl.parser import (
-    CrupyParserBaseException,
-    CrupyParserNodeBase,
-    CrupyParserBase,
+    CrupyDSLParserBaseException,
+    CrupyDSLParserNodeBase,
+    CrupyDSLParserBase,
+)
+from crupydsl.grammar import (
+    CrupyDSLGrammarBase,
+    CrupyDSLGrammarException,
 )

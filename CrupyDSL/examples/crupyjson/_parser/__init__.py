@@ -15,17 +15,17 @@ __all__ = [
     'json_parser_prod_hook_statement',
 ]
 
-from crupydsl.parser import CrupyParserBase
+from crupydsl.parser import CrupyDSLParserBase
 from crupydsl.parser._lexer import (
-    CrupyLexerOpSeq,
-    CrupyLexerOpText,
-    CrupyLexerOpRep1N,
-    CrupyLexerOpRep0N,
-    CrupyLexerOpOr,
-    CrupyLexerOpProductionCall,
-    CrupyLexerOpBuiltin,
-    CrupyLexerOpBetween,
-    CrupyLexerAssertLookaheadNegative,
+    CrupyDSLLexerOpSeq,
+    CrupyDSLLexerOpText,
+    CrupyDSLLexerOpRep1N,
+    CrupyDSLLexerOpRep0N,
+    CrupyDSLLexerOpOr,
+    CrupyDSLLexerOpProductionCall,
+    CrupyDSLLexerOpBuiltin,
+    CrupyDSLLexerOpBetween,
+    CrupyDSLLexerAssertLookaheadNegative,
 )
 
 from crupyjson._parser.prod_nullable import json_parser_prod_hook_nullable
@@ -43,82 +43,82 @@ from crupyjson._parser.prod_statement import json_parser_prod_hook_statement
 # Public
 #---
 
-JSON_PARSER_OBJ = CrupyParserBase({
+JSON_PARSER_OBJ = CrupyDSLParserBase({
     #
     # production entry
     # > json ::= (<primitive> | <container>) :eof:
     #
     'json' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpProductionCall('statement'),
-            CrupyLexerOpBuiltin('eof'),
+        CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpProductionCall('statement'),
+            CrupyDSLLexerOpBuiltin('eof'),
         ),
     #
     # statement production
     # > statement ::= (<primitive> | <container>)
     #
     'statement' : \
-        CrupyLexerOpOr(
-            CrupyLexerOpProductionCall('primitive'),
-            CrupyLexerOpProductionCall('container'),
+        CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpProductionCall('primitive'),
+            CrupyDSLLexerOpProductionCall('container'),
         ),
     #
     # primitive production
     # > primitive ::= :digit: | <string> | <boolean> | <nullable>
     #
     'primitive' : \
-        CrupyLexerOpOr(
-            CrupyLexerOpBuiltin('digit'),
-            CrupyLexerOpProductionCall('string'),
-            CrupyLexerOpProductionCall('boolean'),
-            CrupyLexerOpProductionCall('nullable'),
+        CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpBuiltin('digit'),
+            CrupyDSLLexerOpProductionCall('string'),
+            CrupyDSLLexerOpProductionCall('boolean'),
+            CrupyDSLLexerOpProductionCall('nullable'),
         ),
     #
     # container production
     # > container ::= <object> | <array>
     #
     'container' : \
-        CrupyLexerOpOr(
-            CrupyLexerOpProductionCall('object'),
-            CrupyLexerOpProductionCall('array'),
+        CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpProductionCall('object'),
+            CrupyDSLLexerOpProductionCall('array'),
         ),
     #
     # array production
     # > array ::= "[" <statement> ("," <statement>)*  "]"
     #
     'array' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpText('['),
-            CrupyLexerOpProductionCall('statement'),
-            CrupyLexerOpRep0N(
-                CrupyLexerOpText(','),
-                CrupyLexerOpProductionCall('statement'),
+        CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpText('['),
+            CrupyDSLLexerOpProductionCall('statement'),
+            CrupyDSLLexerOpRep0N(
+                CrupyDSLLexerOpText(','),
+                CrupyDSLLexerOpProductionCall('statement'),
             ),
-            CrupyLexerOpText(']'),
+            CrupyDSLLexerOpText(']'),
         ),
     #
     # object production
     # > object ::= "{" <member> ("," <member>)*  "}"
     #
     'object' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpText('{'),
-            CrupyLexerOpProductionCall('member'),
-            CrupyLexerOpRep0N(
-                CrupyLexerOpText(','),
-                CrupyLexerOpProductionCall('member'),
+        CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpText('{'),
+            CrupyDSLLexerOpProductionCall('member'),
+            CrupyDSLLexerOpRep0N(
+                CrupyDSLLexerOpText(','),
+                CrupyDSLLexerOpProductionCall('member'),
             ),
-            CrupyLexerOpText('}'),
+            CrupyDSLLexerOpText('}'),
         ),
     #
     # member production
     # > member ::= <string> ":" <statement>
     #
     'member' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpProductionCall('string'),
-            CrupyLexerOpText(':'),
-            CrupyLexerOpProductionCall('statement'),
+        CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpProductionCall('string'),
+            CrupyDSLLexerOpText(':'),
+            CrupyDSLLexerOpProductionCall('statement'),
         ),
 
     ## low-level
@@ -130,15 +130,15 @@ JSON_PARSER_OBJ = CrupyParserBase({
     #       | "'" ((?!"'") :any:)* "'"
     #
     'string' : \
-        CrupyLexerOpOr(
-            CrupyLexerOpBetween(
-                startop         = CrupyLexerOpText('"'),
-                endop           = CrupyLexerOpText('"'),
+        CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpBetween(
+                startop         = CrupyDSLLexerOpText('"'),
+                endop           = CrupyDSLLexerOpText('"'),
                 with_newline    = False,
             ),
-            CrupyLexerOpBetween(
-                startop         = CrupyLexerOpText('\''),
-                endop           = CrupyLexerOpText('\''),
+            CrupyDSLLexerOpBetween(
+                startop         = CrupyDSLLexerOpText('\''),
+                endop           = CrupyDSLLexerOpText('\''),
                 with_newline    = False,
             ),
         ),
@@ -147,16 +147,16 @@ JSON_PARSER_OBJ = CrupyParserBase({
         # > boolean ::= "true" | "false"
         #
         'boolean' : \
-            CrupyLexerOpOr(
-                CrupyLexerOpText('true'),
-                CrupyLexerOpText('false'),
+            CrupyDSLLexerOpOr(
+                CrupyDSLLexerOpText('true'),
+                CrupyDSLLexerOpText('false'),
             ),
         #
         # nullable production
         # > nullable ::= "null"
         #
         'nullable' : \
-            CrupyLexerOpText('null'),
+            CrupyDSLLexerOpText('null'),
 })
 
 ## register all hooks

@@ -2,7 +2,7 @@
 tests.dsl.production - test production productions
 """
 from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 
 #---
 # Public
@@ -57,7 +57,7 @@ def test_error_prodname() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('<entry ::= "allo?"')
         CRUPY_DSL_PARSER_OBJ.execute('production')
         raise AssertionError('production \'production\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
@@ -75,7 +75,7 @@ def test_error_space0() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('<entry>::= "allo?"')
         CRUPY_DSL_PARSER_OBJ.execute('production')
         raise AssertionError('production \'production\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
@@ -96,7 +96,7 @@ def test_error_space1() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('<entry> ::="allo?"')
         CRUPY_DSL_PARSER_OBJ.execute('production')
         raise AssertionError('production \'production\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
@@ -116,7 +116,7 @@ def test_error_statement() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('<entry> ::= "allo?')
         CRUPY_DSL_PARSER_OBJ.execute('production')
         raise AssertionError('production \'production\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
@@ -134,7 +134,7 @@ def test_error_eol() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('<entry> ::= "allo?" ::=')
         CRUPY_DSL_PARSER_OBJ.execute('production')
         raise AssertionError('production \'production\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'

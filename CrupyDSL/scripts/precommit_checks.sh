@@ -24,9 +24,15 @@ checkcmd() {
 # @notes
 # We cannot use the `checkcmd` function because we use a pipe to grep special
 # information
-echo 'check windows CRLF'
+echo 'check windows CRLF and too long line'
 echo '-- find . -not -type d -exec file "{}" ";"'
 if (find . -not -type d -exec file "{}" ";" | grep CRLF)
+then
+  echo 'failed command, abord'
+  kill -s TERM $TOP_PID
+fi
+echo '-- grep  -l ".\{80,\}" -R CrupyDSL/crupydsl/ --include="*.py"'
+if (grep  -l '.\{80,\}' -R CrupyDSL/crupydsl/ --include='*.py')
 then
   echo 'failed command, abord'
   kill -s TERM $TOP_PID

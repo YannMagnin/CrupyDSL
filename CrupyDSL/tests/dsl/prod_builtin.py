@@ -2,7 +2,7 @@
 tests.dsl.builtin - test builtin production
 """
 from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 
 #---
 # Public
@@ -25,7 +25,7 @@ def test_error_start() -> None:
     try:
         CRUPY_DSL_PARSER_OBJ.register_stream('digit:')
         CRUPY_DSL_PARSER_OBJ.execute('builtin')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert err.reason == 'missing starting colon'
 
 def test_error_context() -> None:
@@ -34,7 +34,7 @@ def test_error_context() -> None:
     try:
         CRUPY_DSL_PARSER_OBJ.register_stream('::')
         CRUPY_DSL_PARSER_OBJ.execute('builtin')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert err.reason == 'missing builtin name'
 
 def test_error_end() -> None:
@@ -43,5 +43,5 @@ def test_error_end() -> None:
     try:
         CRUPY_DSL_PARSER_OBJ.register_stream(':builtin')
         CRUPY_DSL_PARSER_OBJ.execute('builtin')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert err.reason == 'missing enclosing colon'

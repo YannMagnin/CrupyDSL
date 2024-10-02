@@ -2,14 +2,14 @@
 crupydsl.parser._lexer._operation.productioncall - lexer prod op
 """
 __all__ = [
-    'CrupyLexerOpProductionCall',
-    'CrupyLexerOpProductionCallException',
+    'CrupyDSLLexerOpProductionCall',
+    'CrupyDSLLexerOpProductionCallException',
 ]
 
-from crupydsl.parser._lexer._operation.op_base import CrupyLexerOpBase
-from crupydsl.parser.base import CrupyParserBase
-from crupydsl.parser.node import CrupyParserNodeBase
-from crupydsl.parser._lexer.exception import CrupyLexerException
+from crupydsl.parser._lexer._operation.op_base import CrupyDSLLexerOpBase
+from crupydsl.parser.base import CrupyDSLParserBase
+from crupydsl.parser.node import CrupyDSLParserNodeBase
+from crupydsl.parser._lexer.exception import CrupyDSLLexerException
 
 #---
 # Public
@@ -18,11 +18,11 @@ from crupydsl.parser._lexer.exception import CrupyLexerException
 # allow to few methods and unused private methods
 # pylint: disable=locally-disabled,R0903,W0238
 
-class CrupyLexerOpProductionCallException(CrupyLexerException):
+class CrupyDSLLexerOpProductionCallException(CrupyDSLLexerException):
     """ exception class """
     production: str
 
-class CrupyLexerOpProductionCall(CrupyLexerOpBase):
+class CrupyDSLLexerOpProductionCall(CrupyDSLLexerOpBase):
     """ Rule invocation operation
     """
     def __init__(self, production_name: str) -> None:
@@ -30,12 +30,12 @@ class CrupyLexerOpProductionCall(CrupyLexerOpBase):
         self._production_name = production_name
 
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
+    def __call__(self, parser: CrupyDSLParserBase) -> CrupyDSLParserNodeBase:
         """ invoke another production rule
         """
         with parser.stream as context:
             if self._production_name not in parser.production_book:
-                raise CrupyLexerOpProductionCallException(
+                raise CrupyDSLLexerOpProductionCallException(
                     context     = context,
                     production  = self._production_name,
                     reason      = \

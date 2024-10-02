@@ -1,10 +1,10 @@
 """
-tests.lexer.op_text     - test the CrupyLexerOpText
+tests.lexer.op_text     - test the CrupyDSLLexerOpText
 """
-from crupydsl.parser import CrupyParserBase
+from crupydsl.parser import CrupyDSLParserBase
 from crupydsl.parser._lexer import (
-    CrupyLexerOpText,
-    CrupyLexerOpTextException,
+    CrupyDSLLexerOpText,
+    CrupyDSLLexerOpTextException,
 )
 
 #---
@@ -14,10 +14,10 @@ from crupydsl.parser._lexer import (
 def test_simple_success() -> None:
     """ simple valid cases
     """
-    parser = CrupyParserBase({
-        'entry0' : CrupyLexerOpText('abcdef'),
-        'entry1' : CrupyLexerOpText('i'),
-        'entry3' : CrupyLexerOpText('jkl'),
+    parser = CrupyDSLParserBase({
+        'entry0' : CrupyDSLLexerOpText('abcdef'),
+        'entry1' : CrupyDSLLexerOpText('i'),
+        'entry3' : CrupyDSLLexerOpText('jkl'),
     })
     parser.register_stream('abcdefijkl')
     strop0 = parser.execute('entry0')
@@ -30,23 +30,23 @@ def test_simple_success() -> None:
 def test_simple_error() -> None:
     """ simple error case
     """
-    parser = CrupyParserBase({
-        'entry0' : CrupyLexerOpText('abcdef'),
-        'entry1' : CrupyLexerOpText('jkl'),
+    parser = CrupyDSLParserBase({
+        'entry0' : CrupyDSLLexerOpText('abcdef'),
+        'entry1' : CrupyDSLLexerOpText('jkl'),
     })
     parser.register_stream('abcdefijkl')
     assert parser.execute('entry0') is not None
     try:
         parser.execute('entry1')
         raise AssertionError('production entry1 has been executed')
-    except CrupyLexerOpTextException as err:
+    except CrupyDSLLexerOpTextException as err:
         assert str(err) == (
             'Lexer parsing error occured:\n'
             '\n'
             'Stream: line 1, column 7\n'
             'abcdefijkl\n'
             '      ^\n'
-            'CrupyLexerOpTextException: Unable to match the text '
+            'CrupyDSLLexerOpTextException: Unable to match the text '
             '\'jkl\''
         )
         assert err.read == 0
@@ -56,21 +56,21 @@ def test_simple_error() -> None:
 def test_eof_error() -> None:
     """ test EOF handling
     """
-    parser = CrupyParserBase({
-        'entry0' : CrupyLexerOpText('abcdef'),
-        'entry1' : CrupyLexerOpText('ijklm'),
+    parser = CrupyDSLParserBase({
+        'entry0' : CrupyDSLLexerOpText('abcdef'),
+        'entry1' : CrupyDSLLexerOpText('ijklm'),
     })
     parser.register_stream('abcdefijkl')
     assert parser.execute('entry0') is not None
     try:
         parser.execute('entry1')
         raise AssertionError('production entry1 has been executed')
-    except CrupyLexerOpTextException as err:
+    except CrupyDSLLexerOpTextException as err:
         assert str(err) == (
             'Lexer parsing error occured:\n'
             '\n'
             'Stream: line 1, column 11\n'
             'abcdefijkl\n'
             '      ~~~~^\n'
-            'CrupyLexerOpTextException: Reached end-of-file'
+            'CrupyDSLLexerOpTextException: Reached end-of-file'
         )

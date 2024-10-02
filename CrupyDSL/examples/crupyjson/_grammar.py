@@ -2,11 +2,11 @@
 example.crupyjson._grammar  - high-level JSON grammar definition
 """
 __all__ = [
-    'CrupyGrammarJSON',
+    'CrupyDSLGrammarJSON',
 ]
 
-from crupydsl.parser import CrupyParserNodeBase
-from crupydsl.grammar import CrupyGrammarBase
+from crupydsl.parser import CrupyDSLParserNodeBase
+from crupydsl.grammar import CrupyDSLGrammarBase
 
 from crupyjson._parser import (
     json_parser_prod_hook_nullable,
@@ -25,7 +25,7 @@ from crupyjson._parser import (
 # Public
 #---
 
-class CrupyGrammarJSON(CrupyGrammarBase):
+class CrupyDSLGrammarJSON(CrupyDSLGrammarBase):
     """ define JSON grammar using Crupy DSL
     """
     production_entry    = 'json'
@@ -50,42 +50,42 @@ class CrupyGrammarJSON(CrupyGrammarBase):
     # Production hook
     #---
 
-    def _json(self, node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+    def _json(self, node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
         """ handle the `json` production """
         return json_parser_prod_hook_json(node)
 
-    def _statement(self, node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+    def _statement(self, node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
         """ handle the `statement` production """
         return json_parser_prod_hook_statement(node)
 
-    def _primitive(self, node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+    def _primitive(self, node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
         """ handle the `primitive` production """
         return json_parser_prod_hook_primitive(node)
 
-    def _string(self, node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+    def _string(self, node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
         """ handle the `string` production """
         return json_parser_prod_hook_string(node)
 
-    def _boolean(self, node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+    def _boolean(self, node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
         """ handle the `boolean` production """
         return json_parser_prod_hook_boolean(node)
 
-    def _nullable(self, node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+    def _nullable(self, node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
         """ handle the `nullable` production """
         return json_parser_prod_hook_nullable(node)
 
-    def _container(self, node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+    def _container(self, node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
         """ handle the `contenainer` production """
         return json_parser_prod_hook_container(node)
 
-    def _array(self, node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+    def _array(self, node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
         """ handle the `array` production """
         return json_parser_prod_hook_array(node)
 
-    def _object(self, node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+    def _object(self, node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
         """ handle the `object` production """
         return json_parser_prod_hook_object(node)
 
-    def _member(self, node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+    def _member(self, node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
         """ handle the `member` production """
         return json_parser_prod_hook_member(node)

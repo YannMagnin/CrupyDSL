@@ -1,18 +1,18 @@
 """
 crupydsl.parser._lexer.exception  - lexer exception class
 """
-# allow returning `CrupyLexerException` in class methods prototype since
+# allow returning `CrupyDSLLexerException` in class methods prototype since
 # the type, as the time where CPython analyse the class, do not "really"
 # exists
 from __future__ import annotations
 
 __all__ = [
-    'CrupyLexerException',
+    'CrupyDSLLexerException',
 ]
 from typing import Optional, Any
 
-from crupydsl.parser.exception import CrupyParserBaseException
-from crupydsl.parser._stream.context import CrupyStreamContext
+from crupydsl.parser.exception import CrupyDSLParserBaseException
+from crupydsl.parser._stream.context import CrupyDSLStreamContext
 from crupydsl._utils import (
     crupyabstractclass,
     crupydataclass,
@@ -26,13 +26,13 @@ from crupydsl._utils import (
 @crupydataclass(
     enable_repr = False,
 )
-class CrupyLexerException(CrupyParserBaseException):
+class CrupyDSLLexerException(CrupyDSLParserBaseException):
     """ Crupy lexer exception class
     """
     def __init__(
         self,
         reason: str,
-        context: CrupyStreamContext,
+        context: CrupyDSLStreamContext,
         *_: Any,
         message: Optional[str] = None,
         **__: Any,

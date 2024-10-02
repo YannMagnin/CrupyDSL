@@ -2,25 +2,25 @@
 crupydsl.grammar._dsl._parser  - manual DSL parser
 """
 __all__ = [
-    'CrupyDslParserException',
+    'CrupyDSLParserException',
     'CRUPY_DSL_PARSER_OBJ',
 ]
 from crupydsl.grammar._dsl._parser.exception import (
-    CrupyDslParserException,
+    CrupyDSLParserException,
 )
-from crupydsl.parser.base import CrupyParserBase
+from crupydsl.parser.base import CrupyDSLParserBase
 from crupydsl.parser._lexer import (
-    CrupyLexerOpSeq,
-    CrupyLexerOpText,
-    CrupyLexerOpProductionCall,
-    CrupyLexerOpRep0N,
-    CrupyLexerOpRep1N,
-    CrupyLexerOpOr,
-    CrupyLexerOpBuiltin,
-    CrupyLexerOpOptional,
-    CrupyLexerOpError,
-    CrupyLexerAssertLookaheadNegative,
-    CrupyLexerAssertLookaheadPositive,
+    CrupyDSLLexerOpSeq,
+    CrupyDSLLexerOpText,
+    CrupyDSLLexerOpProductionCall,
+    CrupyDSLLexerOpRep0N,
+    CrupyDSLLexerOpRep1N,
+    CrupyDSLLexerOpOr,
+    CrupyDSLLexerOpBuiltin,
+    CrupyDSLLexerOpOptional,
+    CrupyDSLLexerOpError,
+    CrupyDSLLexerAssertLookaheadNegative,
+    CrupyDSLLexerAssertLookaheadPositive,
 )
 from crupydsl.grammar._dsl._parser.prod_dsl import dsl_dsl_hook
 from crupydsl.grammar._dsl._parser.prod_eol import dsl_eol_hook
@@ -66,20 +66,20 @@ from crupydsl.grammar._dsl._parser.prod_between import (
 
 ## productions description
 
-CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
+CRUPY_DSL_PARSER_OBJ = CrupyDSLParserBase({
     #
     # Production entry
     # > <crupy_dsl> ::= (<crupy_dsl_production>)+ :eof:
     #
     'crupy_dsl' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpRep1N(
-                CrupyLexerOpProductionCall('production'),
+        CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpRep1N(
+                CrupyDSLLexerOpProductionCall('production'),
             ),
-            CrupyLexerOpOptional(
-                CrupyLexerOpProductionCall('space_any'),
+            CrupyDSLLexerOpOptional(
+                CrupyDSLLexerOpProductionCall('space_any'),
             ),
-            CrupyLexerOpBuiltin('eof'),
+            CrupyDSLLexerOpBuiltin('eof'),
         ),
     #
     # Production (rule) declaration
@@ -94,16 +94,16 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     # (error will be hooked)
     #
     'production' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpOptional(
-                CrupyLexerOpProductionCall('space_any'),
+        CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpOptional(
+                CrupyDSLLexerOpProductionCall('space_any'),
             ),
-            CrupyLexerOpProductionCall('production_name'),
-            CrupyLexerOpProductionCall('space'),
-            CrupyLexerOpText("::="),
-            CrupyLexerOpProductionCall('space'),
-            CrupyLexerOpProductionCall('statement'),
-            CrupyLexerOpProductionCall('eol'),
+            CrupyDSLLexerOpProductionCall('production_name'),
+            CrupyDSLLexerOpProductionCall('space'),
+            CrupyDSLLexerOpText("::="),
+            CrupyDSLLexerOpProductionCall('space'),
+            CrupyDSLLexerOpProductionCall('statement'),
+            CrupyDSLLexerOpProductionCall('eol'),
         ),
     #
     # Production' statement declaration (right part of a production)
@@ -114,18 +114,18 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     #       <eol>
     #
     'statement' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpProductionCall('space_opt'),
-            CrupyLexerOpOptional(
-                CrupyLexerOpText('|'),
-                CrupyLexerOpProductionCall('space_opt'),
+        CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpProductionCall('space_opt'),
+            CrupyDSLLexerOpOptional(
+                CrupyDSLLexerOpText('|'),
+                CrupyDSLLexerOpProductionCall('space_opt'),
             ),
-            CrupyLexerOpProductionCall('alternative'),
-            CrupyLexerOpRep0N(
-                CrupyLexerOpProductionCall('space_opt'),
-                CrupyLexerOpText('|'),
-                CrupyLexerOpProductionCall('space_opt'),
-                CrupyLexerOpProductionCall('alternative'),
+            CrupyDSLLexerOpProductionCall('alternative'),
+            CrupyDSLLexerOpRep0N(
+                CrupyDSLLexerOpProductionCall('space_opt'),
+                CrupyDSLLexerOpText('|'),
+                CrupyDSLLexerOpProductionCall('space_opt'),
+                CrupyDSLLexerOpProductionCall('alternative'),
             ),
         ),
     #
@@ -134,15 +134,15 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     # > alternative ::= (<production_name> | <group> | <string>)+
     #
     'alternative' : \
-        CrupyLexerOpRep1N(
-            CrupyLexerOpProductionCall('space_opt'),
-            CrupyLexerOpOr(
-                CrupyLexerOpProductionCall('between'),
-                CrupyLexerOpProductionCall('production_name'),
-                CrupyLexerOpProductionCall('string'),
-                CrupyLexerOpProductionCall('builtin'),
-                CrupyLexerOpProductionCall('group'),
-                CrupyLexerOpProductionCall('error')
+        CrupyDSLLexerOpRep1N(
+            CrupyDSLLexerOpProductionCall('space_opt'),
+            CrupyDSLLexerOpOr(
+                CrupyDSLLexerOpProductionCall('between'),
+                CrupyDSLLexerOpProductionCall('production_name'),
+                CrupyDSLLexerOpProductionCall('string'),
+                CrupyDSLLexerOpProductionCall('builtin'),
+                CrupyDSLLexerOpProductionCall('group'),
+                CrupyDSLLexerOpProductionCall('error')
             ),
         ),
     #
@@ -151,29 +151,29 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     # (error will be hooked)
     #
     'group' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpText('('),
-            CrupyLexerOpOptional(
-                CrupyLexerOpText("?"),
-                CrupyLexerOpOr(
-                    CrupyLexerOpText('!'),
-                    CrupyLexerOpText('='),
-                    CrupyLexerOpError(
+        CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpText('('),
+            CrupyDSLLexerOpOptional(
+                CrupyDSLLexerOpText("?"),
+                CrupyDSLLexerOpOr(
+                    CrupyDSLLexerOpText('!'),
+                    CrupyDSLLexerOpText('='),
+                    CrupyDSLLexerOpError(
                         'broken assertion request that can only be '
                         '"?!" or "?="',
                     ),
                 ),
             ),
-            CrupyLexerOpProductionCall('space_opt'),
-            CrupyLexerOpProductionCall('statement'),
-            CrupyLexerOpProductionCall('space_opt'),
-            CrupyLexerOpText(')'),
-            CrupyLexerOpOptional(
-                CrupyLexerOpOr(
-                    CrupyLexerOpText('*'),
-                    CrupyLexerOpText('+'),
-                    CrupyLexerOpText('?'),
-                    CrupyLexerOpError(
+            CrupyDSLLexerOpProductionCall('space_opt'),
+            CrupyDSLLexerOpProductionCall('statement'),
+            CrupyDSLLexerOpProductionCall('space_opt'),
+            CrupyDSLLexerOpText(')'),
+            CrupyDSLLexerOpOptional(
+                CrupyDSLLexerOpOr(
+                    CrupyDSLLexerOpText('*'),
+                    CrupyDSLLexerOpText('+'),
+                    CrupyDSLLexerOpText('?'),
+                    CrupyDSLLexerOpError(
                         'broken group operation request that can only be '
                         '"*", "+" or "?"',
                     ),
@@ -188,22 +188,22 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     #       (<production_name>|<string>|<buitin>|<group>)
     #
     'between' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpOr(
-                CrupyLexerOpProductionCall('production_name'),
-                CrupyLexerOpProductionCall('string'),
-                CrupyLexerOpProductionCall('builtin'),
-                CrupyLexerOpProductionCall('group'),
+        CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpOr(
+                CrupyDSLLexerOpProductionCall('production_name'),
+                CrupyDSLLexerOpProductionCall('string'),
+                CrupyDSLLexerOpProductionCall('builtin'),
+                CrupyDSLLexerOpProductionCall('group'),
             ),
-            CrupyLexerOpOr(
-                CrupyLexerOpText('...'),
-                CrupyLexerOpText('.!.'),
+            CrupyDSLLexerOpOr(
+                CrupyDSLLexerOpText('...'),
+                CrupyDSLLexerOpText('.!.'),
             ),
-            CrupyLexerOpOr(
-                CrupyLexerOpProductionCall('production_name'),
-                CrupyLexerOpProductionCall('string'),
-                CrupyLexerOpProductionCall('builtin'),
-                CrupyLexerOpProductionCall('group'),
+            CrupyDSLLexerOpOr(
+                CrupyDSLLexerOpProductionCall('production_name'),
+                CrupyDSLLexerOpProductionCall('string'),
+                CrupyDSLLexerOpProductionCall('builtin'),
+                CrupyDSLLexerOpProductionCall('group'),
             ),
         ),
     #
@@ -214,26 +214,26 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     # (error will be hooked)
     #
     'string' :  \
-        CrupyLexerOpOr(
-            CrupyLexerOpSeq(
-                CrupyLexerOpText('"'),
-                CrupyLexerOpRep0N(
-                    CrupyLexerAssertLookaheadNegative(
-                        CrupyLexerOpText('"'),
+        CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpSeq(
+                CrupyDSLLexerOpText('"'),
+                CrupyDSLLexerOpRep0N(
+                    CrupyDSLLexerAssertLookaheadNegative(
+                        CrupyDSLLexerOpText('"'),
                     ),
-                    CrupyLexerOpBuiltin('any')
+                    CrupyDSLLexerOpBuiltin('any')
                 ),
-                CrupyLexerOpText('"'),
+                CrupyDSLLexerOpText('"'),
             ),
-            CrupyLexerOpSeq(
-                CrupyLexerOpText('\''),
-                CrupyLexerOpRep0N(
-                    CrupyLexerAssertLookaheadNegative(
-                        CrupyLexerOpText('\''),
+            CrupyDSLLexerOpSeq(
+                CrupyDSLLexerOpText('\''),
+                CrupyDSLLexerOpRep0N(
+                    CrupyDSLLexerAssertLookaheadNegative(
+                        CrupyDSLLexerOpText('\''),
                     ),
-                    CrupyLexerOpBuiltin('any')
+                    CrupyDSLLexerOpBuiltin('any')
                 ),
-                CrupyLexerOpText('\''),
+                CrupyDSLLexerOpText('\''),
             ),
         ),
     #
@@ -242,15 +242,15 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     # (error will be hooked)
     #
     'production_name' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpText('<'),
-            CrupyLexerOpRep1N(
-                CrupyLexerOpOr(
-                    CrupyLexerOpBuiltin('alpha_lower'),
-                    CrupyLexerOpText('_')
+        CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpText('<'),
+            CrupyDSLLexerOpRep1N(
+                CrupyDSLLexerOpOr(
+                    CrupyDSLLexerOpBuiltin('alpha_lower'),
+                    CrupyDSLLexerOpText('_')
                 ),
             ),
-            CrupyLexerOpText('>'),
+            CrupyDSLLexerOpText('>'),
         ),
     #
     # Builtin name
@@ -258,15 +258,15 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     # (error will be hooked)
     #
     'builtin' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpText(':'),
-            CrupyLexerOpRep1N(
-                CrupyLexerOpOr(
-                    CrupyLexerOpBuiltin('alphanum_lower'),
-                    CrupyLexerOpText('_')
+        CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpText(':'),
+            CrupyDSLLexerOpRep1N(
+                CrupyDSLLexerOpOr(
+                    CrupyDSLLexerOpBuiltin('alphanum_lower'),
+                    CrupyDSLLexerOpText('_')
                 )
             ),
-            CrupyLexerOpText(':'),
+            CrupyDSLLexerOpText(':'),
         ),
     #
     # manual error
@@ -274,15 +274,15 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     # (error will be hooked)
     #
     'error' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpText('@'),
-            CrupyLexerOpOr(
-                CrupyLexerOpText('error_hook'),
-                CrupyLexerOpText('error'),
+        CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpText('@'),
+            CrupyDSLLexerOpOr(
+                CrupyDSLLexerOpText('error_hook'),
+                CrupyDSLLexerOpText('error'),
             ),
-            CrupyLexerOpText('('),
-            CrupyLexerOpProductionCall('string'),
-            CrupyLexerOpText(')')
+            CrupyDSLLexerOpText('('),
+            CrupyDSLLexerOpProductionCall('string'),
+            CrupyDSLLexerOpText(')')
         ),
 
     #
@@ -290,11 +290,11 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     # space_any ::= (:space: | "\n" | "\r\n")*
     #
     'space_any' : \
-        CrupyLexerOpRep0N(
-            CrupyLexerOpOr(
-                CrupyLexerOpBuiltin('space'),
-                CrupyLexerOpText('\n'),
-                CrupyLexerOpText('\r\n'),
+        CrupyDSLLexerOpRep0N(
+            CrupyDSLLexerOpOr(
+                CrupyDSLLexerOpBuiltin('space'),
+                CrupyDSLLexerOpText('\n'),
+                CrupyDSLLexerOpText('\r\n'),
             ),
         ),
     #
@@ -302,46 +302,46 @@ CRUPY_DSL_PARSER_OBJ = CrupyParserBase({
     # space_opt ::= (<__space>)*
     #
     'space_opt' : \
-        CrupyLexerOpRep0N(
-            CrupyLexerOpProductionCall('__space'),
+        CrupyDSLLexerOpRep0N(
+            CrupyDSLLexerOpProductionCall('__space'),
         ),
     #
     # space
     # > space ::= (<__space>)+
     #
     'space' : \
-        CrupyLexerOpOr(
-            CrupyLexerOpRep1N(
-                CrupyLexerOpProductionCall('__space'),
+        CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpRep1N(
+                CrupyDSLLexerOpProductionCall('__space'),
             ),
-            CrupyLexerOpError('missing at least one space'),
+            CrupyDSLLexerOpError('missing at least one space'),
         ),
     #
     # __space
     # > __space ::= :space: | ((?="\") <eol>) | @error('not a space')
     #
     '__space' : \
-        CrupyLexerOpOr(
-            CrupyLexerOpBuiltin('space'),
-            CrupyLexerOpSeq(
-                CrupyLexerAssertLookaheadPositive(
-                    CrupyLexerOpText('\\'),
-                    CrupyLexerOpProductionCall('eol'),
+        CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpBuiltin('space'),
+            CrupyDSLLexerOpSeq(
+                CrupyDSLLexerAssertLookaheadPositive(
+                    CrupyDSLLexerOpText('\\'),
+                    CrupyDSLLexerOpProductionCall('eol'),
                 ),
-                CrupyLexerOpText('\\'),
-                CrupyLexerOpProductionCall('eol'),
+                CrupyDSLLexerOpText('\\'),
+                CrupyDSLLexerOpProductionCall('eol'),
             ),
-            CrupyLexerOpError('not a space'),
+            CrupyDSLLexerOpError('not a space'),
         ),
     #
     # end-of-line
     # > eol ::= :newline: | :eof: | @error('not an end-of-line')
     #
     'eol' : \
-        CrupyLexerOpOr(
-            CrupyLexerOpBuiltin('newline'),
-            CrupyLexerOpBuiltin('eof'),
-            CrupyLexerOpError('not an end-of-file'),
+        CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpBuiltin('newline'),
+            CrupyDSLLexerOpBuiltin('eof'),
+            CrupyDSLLexerOpError('not an end-of-file'),
         ),
 })
 

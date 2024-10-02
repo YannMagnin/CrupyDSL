@@ -7,30 +7,30 @@ crupydsl.parser._stream.stream    - crupy stream abstraction
 from __future__ import annotations
 
 __all__ = [
-    'CrupyStream',
+    'CrupyDSLStream',
 ]
 from typing import Any, IO
 from mmap import mmap, ACCESS_READ, ACCESS_WRITE
 from dataclasses import dataclass
 
-from crupydsl.parser._stream.context import CrupyStreamContext
-from crupydsl.parser._stream.exception import CrupyStreamException
+from crupydsl.parser._stream.context import CrupyDSLStreamContext
+from crupydsl.parser._stream.exception import CrupyDSLStreamException
 
 #---
 # Internals
 #---
 
 @dataclass
-class _CrupyStreamContextState():
+class _CrupyDSLStreamContextState():
     """ crupy stream context state """
     validated:  bool
-    context:    CrupyStreamContext
+    context:    CrupyDSLStreamContext
 
 #---
 # Public
 #---
 
-class CrupyStream():
+class CrupyDSLStream():
     """ crupy input stream abstraction
     """
 
@@ -39,8 +39,8 @@ class CrupyStream():
     #---
 
     @classmethod
-    def from_string(cls, text: str) -> CrupyStream:
-        """ create a CrupyStream for an string input """
+    def from_string(cls, text: str) -> CrupyDSLStream:
+        """ create a CrupyDSLStream for an string input """
         memory_area = mmap(
             fileno  = -1,
             length  = len(text),
@@ -48,12 +48,12 @@ class CrupyStream():
         )
         memory_area.seek(0)
         memory_area.write(bytes(text, encoding='utf8'))
-        return CrupyStream(memory_area)
+        return CrupyDSLStream(memory_area)
 
     @classmethod
-    def from_file(cls, file: IO[str]) -> CrupyStream:
-        """ create a CrupyStream for a file """
-        return CrupyStream(
+    def from_file(cls, file: IO[str]) -> CrupyDSLStream:
+        """ create a CrupyDSLStream for a file """
+        return CrupyDSLStream(
             mmap(
                 fileno  = file.fileno(),
                 length  = 0,
@@ -62,7 +62,7 @@ class CrupyStream():
         )
 
     @classmethod
-    def from_any(cls, stream: IO[str]|str) -> CrupyStream:
+    def from_any(cls, stream: IO[str]|str) -> CrupyDSLStream:
         """ nexus for file or string """
         if isinstance(stream, str):
             return cls.from_string(stream)
@@ -76,8 +76,8 @@ class CrupyStream():
         """ initialise our attribute
         """
         self._context_stack = [
-            _CrupyStreamContextState(
-                context = CrupyStreamContext(
+            _CrupyDSLStreamContextState(
+                context = CrupyDSLStreamContext(
                     stream  = self,
                     index   = 0,
                     lineno  = 1,
@@ -90,7 +90,7 @@ class CrupyStream():
         self._memory_area.seek(0)
         self._memory_area_size = len(memory_area)
         if self._memory_area_size < 1:
-            raise CrupyStreamException('Given memory area is too small')
+            raise CrupyDSLStreamException('Given memory area is too small')
 
     def __del__(self) -> None:
         """ do not forget the close the memory area
@@ -108,7 +108,7 @@ class CrupyStream():
     # Magic context handling using `with` keyword
     #---
 
-    def __enter__(self) -> CrupyStreamContext:
+    def __enter__(self) -> CrupyDSLStreamContext:
         """ pop the current cursor context
         """
         return self.context_push()
@@ -131,18 +131,18 @@ class CrupyStream():
     # Public methods
     #---
 
-    def context_push(self) -> CrupyStreamContext:
+    def context_push(self) -> CrupyDSLStreamContext:
         """ push the current context to the stack
         """
         context_cur = self._context_stack[-1].context
-        context_new = CrupyStreamContext(
+        context_new = CrupyDSLStreamContext(
             stream  = self,
             index   = context_cur.index,
             lineno  = context_cur.lineno,
             column  = context_cur.column,
         )
         self._context_stack.append(
-            _CrupyStreamContextState(
+            _CrupyDSLStreamContextState(
                 context     = context_new,
                 validated   = False,
             )
@@ -153,7 +153,7 @@ class CrupyStream():
         """ restore the saved context
         """
         if len(self._context_stack) < 1:
-            raise CrupyStreamException(
+            raise CrupyDSLStreamException(
                 'context_restore(): trying to removing the primary context'
             )
         context_status = self._context_stack.pop()
@@ -165,14 +165,14 @@ class CrupyStream():
 
     def context_validate(
         self,
-        context: CrupyStreamContext,
-    ) -> CrupyStreamContext:
+        context: CrupyDSLStreamContext,
+    ) -> CrupyDSLStreamContext:
         """ validate the current context
         """
         if not self._context_stack:
-            raise CrupyStreamException('context_validate(): empty stack')
+            raise CrupyDSLStreamException('context_validate(): empty stack')
         if self._context_stack[-1].context != context:
-            raise CrupyStreamException(
+            raise CrupyDSLStreamException(
                 'context_validate(): mismatch context'
             )
         self._context_stack[-1].validated = True

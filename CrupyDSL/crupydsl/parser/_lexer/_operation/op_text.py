@@ -2,15 +2,15 @@
 crupydsl.parser._lexer._operation.text  - Lexer text tool
 """
 __all__ = [
-    'CrupyParserNodeLexText',
-    'CrupyLexerOpText',
-    'CrupyLexerOpTextException',
+    'CrupyDSLParserNodeLexText',
+    'CrupyDSLLexerOpText',
+    'CrupyDSLLexerOpTextException',
 ]
 
-from crupydsl.parser._lexer._operation.op_base import CrupyLexerOpBase
-from crupydsl.parser._lexer.exception import CrupyLexerException
-from crupydsl.parser.base import CrupyParserBase
-from crupydsl.parser.node import CrupyParserNodeBase
+from crupydsl.parser._lexer._operation.op_base import CrupyDSLLexerOpBase
+from crupydsl.parser._lexer.exception import CrupyDSLLexerException
+from crupydsl.parser.base import CrupyDSLParserBase
+from crupydsl.parser.node import CrupyDSLParserNodeBase
 
 #---
 # Public
@@ -19,37 +19,37 @@ from crupydsl.parser.node import CrupyParserNodeBase
 # allow to few methods
 # pylint: disable=locally-disabled,R0903
 
-class CrupyParserNodeLexText(CrupyParserNodeBase):
+class CrupyDSLParserNodeLexText(CrupyDSLParserNodeBase):
     """ string token information """
     text: str
 
-class CrupyLexerOpTextException(CrupyLexerException):
+class CrupyDSLLexerOpTextException(CrupyDSLLexerException):
     """ custom exception handling """
     read: int
     match: str
 
-class CrupyLexerOpText(CrupyLexerOpBase):
+class CrupyDSLLexerOpText(CrupyDSLLexerOpBase):
     """ strict string matcher
     """
     def __init__(self, text: str) -> None:
         super().__init__()
         self._text = text
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
+    def __call__(self, parser: CrupyDSLParserBase) -> CrupyDSLParserNodeBase:
         """ try to strictly match the text
         """
         with parser.stream as context:
             has_read = 0
             for char in self._text:
                 if not (curr := context.peek_char()):
-                    raise CrupyLexerOpTextException(
+                    raise CrupyDSLLexerOpTextException(
                         context = context,
                         reason  = 'reached end-of-file',
                         read    = has_read,
                         match   = self._text,
                     )
                 if curr != char:
-                    raise CrupyLexerOpTextException(
+                    raise CrupyDSLLexerOpTextException(
                         context = context,
                         read    = has_read,
                         match   = self._text,
@@ -58,7 +58,7 @@ class CrupyLexerOpText(CrupyLexerOpBase):
                     )
                 context.read_char()
                 has_read += 1
-            return CrupyParserNodeLexText(
+            return CrupyDSLParserNodeLexText(
                 context = context.validate(),
                 text    = self._text,
             )

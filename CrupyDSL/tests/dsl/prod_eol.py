@@ -2,7 +2,7 @@
 tests.dsl.end_of_line   - test productions
 """
 from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 
 #---
 # Public
@@ -29,5 +29,5 @@ def test_error() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('prout')
         CRUPY_DSL_PARSER_OBJ.execute('eol')
         raise AssertionError('production eol has been executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert err.reason == 'not an end-of-file'

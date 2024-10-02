@@ -2,7 +2,7 @@
 tests.dsl.error - test error productions
 """
 from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 
 #---
 # Public
@@ -37,7 +37,7 @@ def test_broken_start() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('error("salut a tous")')
         CRUPY_DSL_PARSER_OBJ.execute('error')
         raise AssertionError('production \'error\' execute')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
@@ -55,7 +55,7 @@ def test_broken_kind() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('@aaerror_foo("salut a tous")')
         CRUPY_DSL_PARSER_OBJ.execute('error')
         raise AssertionError('production \'error\' execute')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
@@ -76,7 +76,7 @@ def test_broken_openp() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('@error"salut a tous")')
         CRUPY_DSL_PARSER_OBJ.execute('error')
         raise AssertionError('production \'error\' execute')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
@@ -94,7 +94,7 @@ def test_broken_closep() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('@error("salut a tous"')
         CRUPY_DSL_PARSER_OBJ.execute('error')
         raise AssertionError('production \'error\' execute')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'

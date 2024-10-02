@@ -2,21 +2,21 @@
 crupydsl.grammar._dsl._parser.statement  - DSL statement hook
 """
 __all__ = [
-    'CrupyParserNodeDslStatement',
+    'CrupyDSLParserNodeDslStatement',
     'dsl_statement_hook',
 ]
 
-from crupydsl.parser import CrupyParserNodeBase
+from crupydsl.parser import CrupyDSLParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslStatement(CrupyParserNodeBase):
+class CrupyDSLParserNodeDslStatement(CrupyDSLParserNodeBase):
     """ statement node """
-    alternatives:    list[CrupyParserNodeBase]
+    alternatives:    list[CrupyDSLParserNodeBase]
 
-def dsl_statement_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+def dsl_statement_hook(node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
     """ handle "statement" node
     """
     assert node.type == 'lex_seq'
@@ -34,7 +34,7 @@ def dsl_statement_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
         assert rep[2].type == 'dsl_space'
         assert rep[3].type == 'dsl_alternative'
         alternatives.append(rep[3])
-    return CrupyParserNodeDslStatement(
+    return CrupyDSLParserNodeDslStatement(
         parent_node     = node,
         alternatives    = alternatives,
     )

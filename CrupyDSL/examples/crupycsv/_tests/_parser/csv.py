@@ -6,15 +6,15 @@ __all__ = [
 ]
 
 from crupydsl.parser import (
-    CrupyParserBase,
-    CrupyParserNodeBase,
+    CrupyDSLParserBase,
+    CrupyDSLParserNodeBase,
 )
 
 #---
 # Internals
 #---
 
-def __check_record0(record: CrupyParserNodeBase) -> None:
+def __check_record0(record: CrupyDSLParserNodeBase) -> None:
     """ check the first line
     """
     assert len(record.fields) == 5
@@ -37,7 +37,7 @@ def __check_record0(record: CrupyParserNodeBase) -> None:
             assert field.text == 'qwerty'
 
 
-def __check_record1(record: CrupyParserNodeBase) -> None:
+def __check_record1(record: CrupyDSLParserNodeBase) -> None:
     """ check the second line
     """
     assert len(record.fields) == 2
@@ -48,7 +48,7 @@ def __check_record1(record: CrupyParserNodeBase) -> None:
     assert record.fields[1].kind == 'simple'
     assert record.fields[1].text == 'oui'
 
-def __check_record2(record: CrupyParserNodeBase) -> None:
+def __check_record2(record: CrupyDSLParserNodeBase) -> None:
     """ check the third line
     """
     assert len(record.fields) == 1
@@ -60,7 +60,7 @@ def __check_record2(record: CrupyParserNodeBase) -> None:
 # Public
 #---
 
-def csv_test_parser_csv(parser: CrupyParserBase) -> None:
+def csv_test_parser_csv(parser: CrupyDSLParserBase) -> None:
     """ test `csv` production
     """
     print('-= production `csv` tests =-')

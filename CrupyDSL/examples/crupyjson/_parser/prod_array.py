@@ -3,37 +3,37 @@ crupyjson._parser.array   - handle array production
 """
 __all__ = [
     'json_parser_prod_hook_array',
-    'CrupyParserNodeJsonArray',
+    'CrupyDSLParserNodeJsonArray',
 ]
 from typing import cast
 
-from crupydsl.parser import CrupyParserNodeBase
+from crupydsl.parser import CrupyDSLParserNodeBase
 
 #---
 # Internals
 #---
 
-def _resolve_node(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+def _resolve_node(node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
     """ resolve node to a more appropriate node
     """
     assert node.type == 'json_statement'
     if node.node.type == 'json_primitive':
-        return cast(CrupyParserNodeBase, node.node)
+        return cast(CrupyDSLParserNodeBase, node.node)
     if node.node.node.type == 'json_container':
-        return cast(CrupyParserNodeBase, node.node.node)
+        return cast(CrupyDSLParserNodeBase, node.node.node)
     return node
 
 #---
 # Public
 #---
 
-class CrupyParserNodeJsonArray(CrupyParserNodeBase):
+class CrupyDSLParserNodeJsonArray(CrupyDSLParserNodeBase):
     """ `array` production node """
-    node_list:  list[CrupyParserNodeBase]
+    node_list:  list[CrupyDSLParserNodeBase]
 
 def json_parser_prod_hook_array(
-    node: CrupyParserNodeBase,
-) -> CrupyParserNodeBase:
+    node: CrupyDSLParserNodeBase,
+) -> CrupyDSLParserNodeBase:
     """ handle `array` node
     """
     assert node.type == 'lex_seq'
@@ -51,7 +51,7 @@ def json_parser_prod_hook_array(
         assert stmt_info[0].text == ','
         assert stmt_info[1].type == 'json_statement'
         node_list.append(_resolve_node(stmt_info[1]))
-    return CrupyParserNodeJsonArray(
+    return CrupyDSLParserNodeJsonArray(
         parent_node = node,
         node_list   = node_list,
     )

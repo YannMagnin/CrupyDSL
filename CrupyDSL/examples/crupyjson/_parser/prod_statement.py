@@ -3,31 +3,31 @@ crupyjson._parser.statement  - handle statement production
 """
 __all__ = [
     'json_parser_prod_hook_statement',
-    'CrupyParserNodeJsonStatement',
+    'CrupyDSLParserNodeJsonStatement',
 ]
 
-from crupydsl.parser import CrupyParserNodeBase
+from crupydsl.parser import CrupyDSLParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeJsonStatement(CrupyParserNodeBase):
+class CrupyDSLParserNodeJsonStatement(CrupyDSLParserNodeBase):
     """ JSON "statement" node
 
     @note
     we only need to have the node name to statement, because we do not need
     to capture anything
     """
-    node: CrupyParserNodeBase
+    node: CrupyDSLParserNodeBase
 
 def json_parser_prod_hook_statement(
-    node: CrupyParserNodeBase,
-) -> CrupyParserNodeBase:
+    node: CrupyDSLParserNodeBase,
+) -> CrupyDSLParserNodeBase:
     """ handle `statement` node
     """
     assert node.type in ['json_primitive', 'json_container']
-    return CrupyParserNodeJsonStatement(
+    return CrupyDSLParserNodeJsonStatement(
         parent_node = node,
         node        = node,
     )

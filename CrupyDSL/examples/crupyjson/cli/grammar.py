@@ -10,7 +10,7 @@ import sys
 
 import click
 
-from crupyjson._grammar import CrupyGrammarJSON
+from crupyjson._grammar import CrupyDSLGrammarJSON
 
 #---
 # Public
@@ -40,7 +40,7 @@ def crupyjson_cli_grammar_entry(
 ) -> NoReturn:
     """ grammar check
     """
-    test = CrupyGrammarJSON()
+    test = CrupyDSLGrammarJSON()
     if not jsonfile or verbose:
         print(test.show())
     if jsonfile:

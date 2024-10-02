@@ -3,24 +3,24 @@ crupydsl.core._parser.record  - `record` production definition
 """
 __all__ = [
     'csv_parser_prod_record_hook',
-    'CrupyParserNodeCsvRecord',
+    'CrupyDSLParserNodeCsvRecord',
 ]
 from typing import List
 
-from crupydsl.parser import CrupyParserNodeBase
-from crupycsv._parser.prod_field import CrupyParserNodeCsvField
+from crupydsl.parser import CrupyDSLParserNodeBase
+from crupycsv._parser.prod_field import CrupyDSLParserNodeCsvField
 
 #---
 # Public
 #---
 
-class CrupyParserNodeCsvRecord(CrupyParserNodeBase):
+class CrupyDSLParserNodeCsvRecord(CrupyDSLParserNodeBase):
     """ record information """
-    fields: List[CrupyParserNodeCsvField]
+    fields: List[CrupyDSLParserNodeCsvField]
 
 def csv_parser_prod_record_hook(
-    node: CrupyParserNodeBase,
-) -> CrupyParserNodeBase:
+    node: CrupyDSLParserNodeBase,
+) -> CrupyDSLParserNodeBase:
     """ generate more appropriate node concerning `record` output
 
     @note
@@ -37,7 +37,7 @@ def csv_parser_prod_record_hook(
         assert field[0].text == ','
         assert field[1].type == 'csv_field'
         field_list.append(field[1])
-    return CrupyParserNodeCsvRecord(
+    return CrupyDSLParserNodeCsvRecord(
         parent_node = node,
         fields      = field_list,
     )

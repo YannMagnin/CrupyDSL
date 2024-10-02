@@ -2,17 +2,17 @@
 crupyjson._parser.nullable  - handle nullable production
 """
 __all__ = [
-    'CrupyParserNodeJsonNullable',
+    'CrupyDSLParserNodeJsonNullable',
     'json_parser_prod_hook_nullable',
 ]
 
-from crupydsl.parser import CrupyParserNodeBase
+from crupydsl.parser import CrupyDSLParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeJsonNullable(CrupyParserNodeBase):
+class CrupyDSLParserNodeJsonNullable(CrupyDSLParserNodeBase):
     """ JSON "nullable" node
 
     @note
@@ -21,12 +21,12 @@ class CrupyParserNodeJsonNullable(CrupyParserNodeBase):
     """
 
 def json_parser_prod_hook_nullable(
-    node: CrupyParserNodeBase,
-) -> CrupyParserNodeBase:
+    node: CrupyDSLParserNodeBase,
+) -> CrupyDSLParserNodeBase:
     """ handle `nullable` node
     """
     assert node.type == 'lex_text'
     assert node.text == 'null'
-    return CrupyParserNodeJsonNullable(
+    return CrupyDSLParserNodeJsonNullable(
         parent_node = node,
     )

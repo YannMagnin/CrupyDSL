@@ -8,28 +8,28 @@ crupydsl.parser._stream.context   - stream context information
 from __future__ import annotations
 
 __all__ = [
-    'CrupyStreamContext',
+    'CrupyDSLStreamContext',
 ]
 from typing import TYPE_CHECKING
 
 # @note : Design mistake
 #
-# We cannot import the `CrupyStream` class since we use the
-# `CrupyStreamContext` class in the `CrupyStream`. So, we are in a circular
-# dependencies problem.
+# We cannot import the `CrupyDSLStream` class since we use the
+# `CrupyDSLStreamContext` class in the `CrupyDSLStream`. So, we are in a
+# circular dependencies problem.
 if TYPE_CHECKING:
-    from crupydsl.parser._stream.stream import CrupyStream
+    from crupydsl.parser._stream.stream import CrupyDSLStream
 
 #---
 # Public
 #---
 
-class CrupyStreamContext():
+class CrupyDSLStreamContext():
     """ stream context
     """
     def __init__(
         self,
-        stream: CrupyStream,
+        stream: CrupyDSLStream,
         index: int,
         lineno: int,
         column: int,
@@ -40,10 +40,10 @@ class CrupyStreamContext():
         self.column = column
         self.index_start = index
 
-    def __gt__(self, context: CrupyStreamContext) -> bool:
+    def __gt__(self, context: CrupyDSLStreamContext) -> bool:
         return self.index > context.index
 
-    def __ge__(self, context: CrupyStreamContext) -> bool:
+    def __ge__(self, context: CrupyDSLStreamContext) -> bool:
         return self.index >= context.index
 
     def __str__(self) -> str:
@@ -159,7 +159,7 @@ class CrupyStreamContext():
 
     ## context validate short-cut
 
-    def validate(self) -> CrupyStreamContext:
+    def validate(self) -> CrupyDSLStreamContext:
         """ validate the current context
         """
         return self._stream.context_validate(self)

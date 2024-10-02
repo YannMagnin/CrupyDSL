@@ -2,19 +2,19 @@
 crupydsl.parser._lexer._operation.builtin   - builtin operations
 """
 __all__ = [
-    'CrupyLexerOpBuiltin',
-    'CrupyLexerOpBuiltinException',
-    'CrupyParserNodeBuiltinEof',
+    'CrupyDSLLexerOpBuiltin',
+    'CrupyDSLLexerOpBuiltinException',
+    'CrupyDSLParserNodeBuiltinEof',
 ]
 from typing import cast
 
-from crupydsl.parser._lexer.exception import CrupyLexerException
-from crupydsl.parser._lexer._operation.op_base import CrupyLexerOpBase
+from crupydsl.parser._lexer.exception import CrupyDSLLexerException
+from crupydsl.parser._lexer._operation.op_base import CrupyDSLLexerOpBase
 from crupydsl.parser._lexer._operation.op_text import (
-    CrupyParserNodeLexText,
+    CrupyDSLParserNodeLexText,
 )
-from crupydsl.parser.base import CrupyParserBase
-from crupydsl.parser.node import CrupyParserNodeBase
+from crupydsl.parser.base import CrupyDSLParserBase
+from crupydsl.parser.node import CrupyDSLParserNodeBase
 from crupydsl.exception import CrupyDSLCoreException
 
 #---
@@ -24,13 +24,13 @@ from crupydsl.exception import CrupyDSLCoreException
 # allow to few methods and unused private methods
 # pylint: disable=locally-disabled,R0903,W0238
 
-class CrupyLexerOpBuiltinException(CrupyLexerException):
+class CrupyDSLLexerOpBuiltinException(CrupyDSLLexerException):
     """ exception class """
 
-class CrupyParserNodeBuiltinEof(CrupyParserNodeBase):
+class CrupyDSLParserNodeBuiltinEof(CrupyDSLParserNodeBase):
     """ special end-of-file node """
 
-class CrupyLexerOpBuiltin(CrupyLexerOpBase):
+class CrupyDSLLexerOpBuiltin(CrupyDSLLexerOpBase):
     """ builtin operations
     """
     def __init__(self, operation: str) -> None:
@@ -55,12 +55,12 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             'eof',
         ]:
             raise CrupyDSLCoreException(
-                'Unable to configure the CrupyLexerOpBuiltin: '
+                'Unable to configure the CrupyDSLLexerOpBuiltin: '
                 f"unrecognized operation '{operation}'"
             )
         self._operation = operation
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
+    def __call__(self, parser: CrupyDSLParserBase) -> CrupyDSLParserNodeBase:
         """ handle builtin
         """
         return {
@@ -89,9 +89,9 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
 
     def _is_any(
         self,
-        parser: CrupyParserBase,
+        parser: CrupyDSLParserBase,
         target: str,
-    ) -> CrupyParserNodeBase:
+    ) -> CrupyDSLParserNodeBase:
         """ check any char
 
         @notes
@@ -113,13 +113,13 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                     if i == 0 and target != 'any_newline':
                         continue
                     node = test[0](parser, test[1])
-                    return CrupyParserNodeLexText(
+                    return CrupyDSLParserNodeLexText(
                         context = context.validate(),
                         text    = node.text,
                     )
-                except CrupyLexerException:
+                except CrupyDSLLexerException:
                     pass
-            raise CrupyLexerOpBuiltinException(
+            raise CrupyDSLLexerOpBuiltinException(
                 context = context,
                 reason  = \
                     f"unable to validate the current char as \"{target}\"",
@@ -127,27 +127,27 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
 
     def _is_alphanum(
         self,
-        parser: CrupyParserBase,
+        parser: CrupyDSLParserBase,
         target: str,
-    ) -> CrupyParserNodeBase:
+    ) -> CrupyDSLParserNodeBase:
         """ check alphanum char
         """
         try:
             return self._is_number(parser, 'digit')
-        except CrupyLexerException:
+        except CrupyDSLLexerException:
             pass
         if target in ['alphanum', 'alphanum_upper']:
             try:
                 return self._is_alpha(parser, 'alpha_upper')
-            except CrupyLexerException:
+            except CrupyDSLLexerException:
                 pass
         if target != 'alphanum_upper':
             try:
                 return self._is_alpha(parser, 'alpha_lower')
-            except CrupyLexerException:
+            except CrupyDSLLexerException:
                 pass
         with parser.stream as context:
-            raise CrupyLexerOpBuiltinException(
+            raise CrupyDSLLexerOpBuiltinException(
                 context = context,
                 reason  = \
                     f'unable to validate the current char as "{target}"'
@@ -155,14 +155,14 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
 
     def _is_alpha(
         self,
-        parser: CrupyParserBase,
+        parser: CrupyDSLParserBase,
         target: str,
-    ) -> CrupyParserNodeBase:
+    ) -> CrupyDSLParserNodeBase:
         """ check if alphabet
         """
         with parser.stream as context:
             if not (curr := context.peek_char()):
-                raise CrupyLexerOpBuiltinException(
+                raise CrupyDSLLexerOpBuiltinException(
                     context = context,
                     reason  = \
                         'unable to validate current char as "alpha", no '
@@ -174,23 +174,23 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             if target in ['alpha', 'alpha_upper']:
                 valid += bool('A' <= curr <= 'Z')
             if valid == 0:
-                raise CrupyLexerOpBuiltinException(
+                raise CrupyDSLLexerOpBuiltinException(
                     context = context,
                     reason  = \
                         'unable to validate the current char as '
                         f"\"{target}\"",
                 )
             context.read_char()
-            return CrupyParserNodeLexText(
+            return CrupyDSLParserNodeLexText(
                 context = context.validate(),
                 text    = curr,
             )
 
     def _is_number(
         self,
-        parser: CrupyParserBase,
+        parser: CrupyDSLParserBase,
         target: str,
-    ) -> CrupyParserNodeBase:
+    ) -> CrupyDSLParserNodeBase:
         """ check if number or digit
         """
         with parser.stream as context:
@@ -199,7 +199,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                 if not (curr := context.peek_char()):
                     if number:
                         break
-                    raise CrupyLexerOpBuiltinException(
+                    raise CrupyDSLLexerOpBuiltinException(
                         context = context,
                         reason  = \
                             'unable to validate the current char as '
@@ -212,76 +212,76 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                 if target == 'digit':
                     break
             if not number:
-                raise CrupyLexerOpBuiltinException(
+                raise CrupyDSLLexerOpBuiltinException(
                     context = context,
                     reason  = \
                         'unable to validate the current char as '
                         f"\"{target}\"",
                 )
-            return CrupyParserNodeLexText(
+            return CrupyDSLParserNodeLexText(
                 context = context.validate(),
                 text    = number,
             )
 
     def _is_newline(
         self,
-        parser: CrupyParserBase,
+        parser: CrupyDSLParserBase,
         _: str,
-    ) -> CrupyParserNodeBase:
+    ) -> CrupyDSLParserNodeBase:
         """ check if newline
         """
         with parser.stream as context:
             if not (curr := context.peek_char()):
-                raise CrupyLexerOpBuiltinException(
+                raise CrupyDSLLexerOpBuiltinException(
                     context = context,
                     reason  = \
                         'unable to validate the current char as '
                         '"newline", no stream available',
                 )
             if curr not in ('\n', '\r\n'):
-                raise CrupyLexerOpBuiltinException(
+                raise CrupyDSLLexerOpBuiltinException(
                     context = context,
                     reason  = \
                         'unable to validate the current char as "newline"',
                 )
             context.read_char()
-            return CrupyParserNodeLexText(
+            return CrupyDSLParserNodeLexText(
                 context = context.validate(),
                 text    = curr,
             )
 
     def _is_symbol(
         self,
-        parser: CrupyParserBase,
+        parser: CrupyDSLParserBase,
         _: str,
-    ) -> CrupyParserNodeBase:
+    ) -> CrupyDSLParserNodeBase:
         """ check if symbol
         """
         with parser.stream as context:
             if not (curr := context.peek_char()):
-                raise CrupyLexerOpBuiltinException(
+                raise CrupyDSLLexerOpBuiltinException(
                     context = context,
                     reason  = \
                         'unable to validate the current char as '
                         '"symbol", no stream available',
                 )
             if not curr in "|!#$%&()*+,-./:;>=<?@[\\]^_`{}~\"'\r":
-                raise CrupyLexerOpBuiltinException(
+                raise CrupyDSLLexerOpBuiltinException(
                     context = context,
                     reason  = \
                         'unable to validate the current char as "symbol"',
                 )
             context.read_char()
-            return CrupyParserNodeLexText(
+            return CrupyDSLParserNodeLexText(
                 context = context.validate(),
                 text    = curr,
             )
 
     def _is_space(
         self,
-        parser: CrupyParserBase,
+        parser: CrupyDSLParserBase,
         target: str,
-    ) -> CrupyParserNodeBase:
+    ) -> CrupyDSLParserNodeBase:
         """ check space builtin
 
         @notes
@@ -294,7 +294,7 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
             capture = ''
             while True:
                 if not (curr := context.peek_char()):
-                    raise CrupyLexerOpBuiltinException(
+                    raise CrupyDSLLexerOpBuiltinException(
                         context = context,
                         reason  = \
                             'unable to validate the current char as '
@@ -306,12 +306,12 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                         if target in ('space_newline', 'spaces_newline'):
                             curr = self._is_newline(parser, '').text
                             found = True
-                    except CrupyLexerOpBuiltinException:
+                    except CrupyDSLLexerOpBuiltinException:
                         pass
                     if not found:
                         if capture:
                             break
-                        raise CrupyLexerOpBuiltinException(
+                        raise CrupyDSLLexerOpBuiltinException(
                             context = context,
                             reason  = \
                                 'unable to validate the current char as '
@@ -322,27 +322,27 @@ class CrupyLexerOpBuiltin(CrupyLexerOpBase):
                 capture += cast(str, curr)
                 if target in ('space', 'space_newline'):
                     break
-            return CrupyParserNodeLexText(
+            return CrupyDSLParserNodeLexText(
                 context = context.validate(),
                 text    = capture,
             )
 
     def _is_end_of_file(
         self,
-        parser: CrupyParserBase,
+        parser: CrupyDSLParserBase,
         _: str,
-    ) -> CrupyParserNodeBase:
+    ) -> CrupyDSLParserNodeBase:
         """ check if space
         """
         with parser.stream as context:
             if context.peek_char():
-                raise CrupyLexerOpBuiltinException(
+                raise CrupyDSLLexerOpBuiltinException(
                     context = context,
                     reason  = \
                         'unable to validate the current char as "EOF", '
                         'stream available',
                 )
-            return CrupyParserNodeBuiltinEof(
+            return CrupyDSLParserNodeBuiltinEof(
                 context = context.validate(),
             )
 

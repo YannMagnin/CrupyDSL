@@ -3,12 +3,12 @@ crupydsl.parser.node  - parser node base class
 """
 from __future__ import annotations
 __all__ = [
-    'CrupyParserNodeBase',
+    'CrupyDSLParserNodeBase',
 ]
 from typing import Any
 
 from crupydsl.exception import CrupyDSLCoreException
-from crupydsl.parser._stream.context import CrupyStreamContext
+from crupydsl.parser._stream.context import CrupyDSLStreamContext
 from crupydsl._utils import (
     crupydataclass,
     crupyabstractclass,
@@ -26,10 +26,10 @@ from crupydsl._utils import (
 @crupyabstractclass
 @crupynamedclass(
     generate_type   = True,
-    regex           = '^CrupyParserNode(?P<type>([A-Z][a-z]+)+)$',
+    regex           = '^CrupyDSLParserNode(?P<type>([A-Z][a-z]+)+)$',
     error           = 'malformated parser node subclass',
 )
-class CrupyParserNodeBase():
+class CrupyDSLParserNodeBase():
     """ Crupy parser node abstraction
 
     This class is a bit exotic because we want a lazy attribute description
@@ -45,12 +45,12 @@ class CrupyParserNodeBase():
 
     We also need that the `name` attribute should not be able to be
     modified "on-the-fly" (no assignment possible) and thus, the
-    `context` should be of type `CrupyStreamContext` and it's required
+    `context` should be of type `CrupyDSLStreamContext` and it's required
     for the creation of the object
     """
     type: str
-    parent_node: CrupyParserNodeBase|None
-    context: CrupyStreamContext
+    parent_node: CrupyDSLParserNodeBase|None
+    context: CrupyDSLStreamContext
 
     def __init__(self, /, **_: Any) -> None:
         """ special initialisation routine
@@ -60,7 +60,7 @@ class CrupyParserNodeBase():
 
         First, a check has been performed on the class name to ensure that
         subclass have the same name and to deduce the "class" type
-        attribute (e.g. `CrupyParserNodeBaseLexerSeq` -> type=`lexer_seq`)
+        attribute (e.g. `CrupyDSLParserNodeBaseLexerSeq` -> type=`lexer_seq`)
         (this magical behaviour is provided by `crupynamedclass` decorator)
 
         After that, a check is performed to ensur that the current class is

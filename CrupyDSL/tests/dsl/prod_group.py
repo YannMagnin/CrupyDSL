@@ -3,7 +3,7 @@ tests.dsl.group - test group productions
 """
 from crupydsl.grammar._dsl._parser import (
     CRUPY_DSL_PARSER_OBJ,
-    CrupyDslParserException,
+    CrupyDSLParserException,
 )
 
 #---
@@ -97,7 +97,7 @@ def test_error_start() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('oui_non)')
         CRUPY_DSL_PARSER_OBJ.execute('group')
         raise AssertionError('production \'group\' executed')
-    except CrupyDslParserException as err:
+    except CrupyDSLParserException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
@@ -115,7 +115,7 @@ def test_error_close() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('(:space:')
         CRUPY_DSL_PARSER_OBJ.execute('group')
         raise AssertionError('production \'group\' executed')
-    except CrupyDslParserException as err:
+    except CrupyDSLParserException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
@@ -127,8 +127,8 @@ def test_error_close() -> None:
         assert err.reason == 'missing enclosing parenthesis'
 
 # @note
-# > Since we use the CrupyLexerOpOptional() to fetch group operation,
-#   we cannot catch the CrupyLexerOpError() because it will be ignored
+# > Since we use the CrupyDSLLexerOpOptional() to fetch group operation,
+#   we cannot catch the CrupyDSLLexerOpError() because it will be ignored
 #   by the optional behaviour
 #
 #def test_error_broken_operation(self) -> None:
@@ -137,7 +137,7 @@ def test_error_close() -> None:
 #        CRUPY_DSL_PARSER_OBJ.register_stream('(:space:)&')
 #        CRUPY_DSL_PARSER_OBJ.execute('group')
 #        self.assertAlways('production group has been executed')
-#    except CrupyParserBaseException as err:
+#    except CrupyDSLParserBaseException as err:
 #        assert
 #            err.reason,
 #            'broken group operation request that can only be '
@@ -150,7 +150,7 @@ def test_error_close() -> None:
 #        CRUPY_DSL_PARSER_OBJ.register_stream('(?*')
 #        CRUPY_DSL_PARSER_OBJ.execute('group')
 #        self.assertAlways('production group has been executed')
-#    except CrupyParserBaseException as err:
+#    except CrupyDSLParserBaseException as err:
 #        assert
 #            err.reason,
 #            'broken assertion request that can only be "?!" or "?="',

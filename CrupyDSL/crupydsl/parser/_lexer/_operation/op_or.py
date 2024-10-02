@@ -2,16 +2,16 @@
 crupydsl.parser._lexer._operation.choice    - lexer or operation
 """
 __all__ = [
-    'CrupyLexerOpOr',
-    'CrupyLexerOpOrException',
+    'CrupyDSLLexerOpOr',
+    'CrupyDSLLexerOpOrException',
 ]
 from typing import Union, Any
 
-from crupydsl.parser._lexer._operation.op_base import CrupyLexerOpBase
-from crupydsl.parser._lexer.exception import CrupyLexerException
-from crupydsl.parser.base import CrupyParserBase
-from crupydsl.parser.node import CrupyParserNodeBase
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser._lexer._operation.op_base import CrupyDSLLexerOpBase
+from crupydsl.parser._lexer.exception import CrupyDSLLexerException
+from crupydsl.parser.base import CrupyDSLParserBase
+from crupydsl.parser.node import CrupyDSLParserNodeBase
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 from crupydsl.exception import CrupyDSLCoreException
 
 #---
@@ -21,22 +21,22 @@ from crupydsl.exception import CrupyDSLCoreException
 # allow to few methods and unused private methods
 # pylint: disable=locally-disabled,R0903,W0238
 
-class CrupyLexerOpOrException(CrupyLexerException):
+class CrupyDSLLexerOpOrException(CrupyDSLLexerException):
     """ exception class """
-    deepest_error: CrupyLexerException
+    deepest_error: CrupyDSLLexerException
 
-class CrupyLexerOpOr(CrupyLexerOpBase):
+class CrupyDSLLexerOpOr(CrupyDSLLexerOpBase):
     """ OR lexer operation
     """
     def __init__(self, *args: Any) -> None:
         super().__init__()
-        self._seq: list[CrupyLexerOpBase] = []
+        self._seq: list[CrupyDSLLexerOpBase] = []
         for i, arg in enumerate(args):
-            if CrupyLexerOpBase not in type(arg).mro():
+            if CrupyDSLLexerOpBase not in type(arg).mro():
                 raise CrupyDSLCoreException(
                     f"Unable to initialise the {type(arg).__name__} "
                     f"because the argument {i} is not of type "
-                    f"CrupyLexerOpBase ({type(arg).__name__})"
+                    f"CrupyDSLLexerOpBase ({type(arg).__name__})"
                 )
             self._seq.append(arg)
         if not self._seq:
@@ -45,16 +45,16 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
                 "because not sequence has been presented"
             )
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
+    def __call__(self, parser: CrupyDSLParserBase) -> CrupyDSLParserNodeBase:
         """ try to match at least one of the two lexer operation
         """
         best_choice_error_special = False
-        best_choice_error: Union[CrupyParserBaseException,None] = None
+        best_choice_error: Union[CrupyDSLParserBaseException,None] = None
         for lexer in self._seq:
             try:
                 return lexer(parser)
-            except CrupyParserBaseException as err:
-                if type(err).__name__ == 'CrupyLexerErrorException':
+            except CrupyDSLParserBaseException as err:
+                if type(err).__name__ == 'CrupyDSLLexerErrorException':
                     if best_choice_error and best_choice_error_special:
                         best_choice_error = max(best_choice_error, err)
                     else:
@@ -66,13 +66,13 @@ class CrupyLexerOpOr(CrupyLexerOpBase):
                     best_choice_error = err
         if not best_choice_error:
             with parser.stream as context:
-                raise CrupyLexerOpOrException(
+                raise CrupyDSLLexerOpOrException(
                     context         = context,
                     deepest_error   = None,
                     reason          = \
                         'unable to validate the sequense, empty sequense',
                 )
-        raise CrupyLexerOpOrException(
+        raise CrupyDSLLexerOpOrException(
             context         = best_choice_error.context,
             deepest_error   = best_choice_error,
             reason          = best_choice_error.reason,

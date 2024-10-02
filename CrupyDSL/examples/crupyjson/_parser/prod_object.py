@@ -3,22 +3,22 @@ crupyjson._parser.object   - handle object production
 """
 __all__ = [
     'json_parser_prod_hook_object',
-    'CrupyParserNodeJsonObject',
+    'CrupyDSLParserNodeJsonObject',
 ]
 
-from crupydsl.parser import CrupyParserNodeBase
+from crupydsl.parser import CrupyDSLParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeJsonObject(CrupyParserNodeBase):
+class CrupyDSLParserNodeJsonObject(CrupyDSLParserNodeBase):
     """ `array` production node """
-    members:  list[CrupyParserNodeBase]
+    members:  list[CrupyDSLParserNodeBase]
 
 def json_parser_prod_hook_object(
-    node: CrupyParserNodeBase,
-) -> CrupyParserNodeBase:
+    node: CrupyDSLParserNodeBase,
+) -> CrupyDSLParserNodeBase:
     """ handle `array` node
     """
     assert node.type == 'lex_seq'
@@ -36,7 +36,7 @@ def json_parser_prod_hook_object(
         assert stmt_info[0].text == ','
         assert stmt_info[1].type == 'json_member'
         node_list.append(stmt_info[1])
-    return CrupyParserNodeJsonObject(
+    return CrupyDSLParserNodeJsonObject(
         parent_node = node,
         members     = node_list,
     )

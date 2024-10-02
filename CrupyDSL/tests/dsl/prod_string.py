@@ -2,7 +2,7 @@
 tests.dsl.string_fix - test string productions
 """
 from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 
 #---
 # Public
@@ -47,7 +47,7 @@ def test_error_enclose() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('"allo?')
         CRUPY_DSL_PARSER_OBJ.execute('string')
         raise AssertionError('production \'string\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
@@ -64,7 +64,7 @@ def test_error_open() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('allo?"')
         CRUPY_DSL_PARSER_OBJ.execute('string')
         raise AssertionError('production \'string\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'

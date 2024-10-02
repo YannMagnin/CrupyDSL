@@ -5,13 +5,13 @@ __all__ = [
     'csv_test_parser_record',
 ]
 
-from crupydsl.parser import CrupyParserBase
+from crupydsl.parser import CrupyDSLParserBase
 
 #---
 # Public
 #---
 
-def csv_test_parser_record(parser: CrupyParserBase) -> None:
+def csv_test_parser_record(parser: CrupyDSLParserBase) -> None:
     """ test `record` production
     """
     print('-= check mixed field =-')

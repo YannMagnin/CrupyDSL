@@ -2,27 +2,27 @@
 crupydsl._dsl._parser.string  - handle string production
 """
 __all__ = [
-    'CrupyParserNodeDslString',
+    'CrupyDSLParserNodeDslString',
     'dsl_string_hook',
     'dsl_string_hook_error'
 ]
 from typing import NoReturn
 
-from crupydsl.parser.node import CrupyParserNodeBase
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser.node import CrupyDSLParserNodeBase
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 from crupydsl.grammar._dsl._parser.exception import (
-    CrupyDslParserException,
+    CrupyDSLParserException,
 )
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslString(CrupyParserNodeBase):
+class CrupyDSLParserNodeDslString(CrupyDSLParserNodeBase):
     """ DSL "string" node """
     text:   str
 
-def dsl_string_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+def dsl_string_hook(node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
     """ handle `string` node
     """
     assert node.type == 'lex_seq'
@@ -38,27 +38,27 @@ def dsl_string_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
         assert len(seq) == 1
         assert seq[0].type == 'lex_text'
         text += seq[0].text
-    return CrupyParserNodeDslString(
+    return CrupyDSLParserNodeDslString(
         parent_node = node,
         text        = text,
     )
 
-def dsl_string_hook_error(err: CrupyParserBaseException) -> NoReturn:
+def dsl_string_hook_error(err: CrupyDSLParserBaseException) -> NoReturn:
     """ string error hook
     """
     assert err.type == 'lexer_op_or'
     err = err.deepest_error
     assert err.type == 'lexer_op_seq'
     if err.validated_operation == 0:
-        raise CrupyDslParserException(err, 'missing starting quote')
+        raise CrupyDSLParserException(err, 'missing starting quote')
     if err.validated_operation == 1:
-        raise CrupyDslParserException(
+        raise CrupyDSLParserException(
             err,
             'unable to capture string content',
         )
     if err.validated_operation == 2:
-        raise CrupyDslParserException(err, 'missing enclosing quote')
-    raise CrupyDslParserException(
+        raise CrupyDSLParserException(err, 'missing enclosing quote')
+    raise CrupyDSLParserException(
         err,
         '[internal error] unsupported sequence, too many validated '
         f"operation ({err.validated_operation} > 2)"

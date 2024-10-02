@@ -1,12 +1,12 @@
 """
-tests.lexer.op_between      - test the CrupyLexerOpBetween
+tests.lexer.op_between      - test the CrupyDSLLexerOpBetween
 """
-from crupydsl.parser import CrupyParserBase
+from crupydsl.parser import CrupyDSLParserBase
 from crupydsl.parser._lexer import (
-    CrupyLexerOpText,
-    CrupyLexerOpSeq,
-    CrupyLexerOpBetween,
-    CrupyLexerOpBetweenException,
+    CrupyDSLLexerOpText,
+    CrupyDSLLexerOpSeq,
+    CrupyDSLLexerOpBetween,
+    CrupyDSLLexerOpBetweenException,
 )
 
 #---
@@ -17,11 +17,11 @@ from crupydsl.parser._lexer import (
 
 def test_nonl_success_0() -> None:
     """ valid test """
-    parser = CrupyParserBase({
+    parser = CrupyDSLParserBase({
         'entry' : \
-            CrupyLexerOpBetween(
-                startop         = CrupyLexerOpText('"'),
-                endop           = CrupyLexerOpText('"'),
+            CrupyDSLLexerOpBetween(
+                startop         = CrupyDSLLexerOpText('"'),
+                endop           = CrupyDSLLexerOpText('"'),
                 with_newline    = False,
             ),
     })
@@ -36,14 +36,14 @@ def test_nonl_success_0() -> None:
 
 def test_nonl_success_1() -> None:
     """ valid test """
-    parser = CrupyParserBase({
+    parser = CrupyDSLParserBase({
         'entry' : \
-            CrupyLexerOpBetween(
-                startop         = CrupyLexerOpText('"'),
+            CrupyDSLLexerOpBetween(
+                startop         = CrupyDSLLexerOpText('"'),
                 endop           = \
-                    CrupyLexerOpSeq(
-                        CrupyLexerOpText('a'),
-                        CrupyLexerOpText('b'),
+                    CrupyDSLLexerOpSeq(
+                        CrupyDSLLexerOpText('a'),
+                        CrupyDSLLexerOpText('b'),
                     ),
                 with_newline    = False,
             ),
@@ -63,15 +63,15 @@ def test_nonl_success_1() -> None:
 
 def test_nonl_success_2() -> None:
     """ valid test """
-    parser = CrupyParserBase({
+    parser = CrupyDSLParserBase({
         'entry' : \
-            CrupyLexerOpBetween(
+            CrupyDSLLexerOpBetween(
                 startop         = \
-                    CrupyLexerOpSeq(
-                        CrupyLexerOpText('a'),
-                        CrupyLexerOpText('b'),
+                    CrupyDSLLexerOpSeq(
+                        CrupyDSLLexerOpText('a'),
+                        CrupyDSLLexerOpText('b'),
                     ),
-                endop           = CrupyLexerOpText('"'),
+                endop           = CrupyDSLLexerOpText('"'),
                 with_newline    = False,
             ),
     })
@@ -92,11 +92,11 @@ def test_nonl_success_2() -> None:
 
 def test_nl_success_0() -> None:
     """ valid test """
-    parser = CrupyParserBase({
+    parser = CrupyDSLParserBase({
         'entry' : \
-            CrupyLexerOpBetween(
-                startop         = CrupyLexerOpText('"'),
-                endop           = CrupyLexerOpText('"'),
+            CrupyDSLLexerOpBetween(
+                startop         = CrupyDSLLexerOpText('"'),
+                endop           = CrupyDSLLexerOpText('"'),
                 with_newline    = True,
             ),
     })
@@ -111,14 +111,14 @@ def test_nl_success_0() -> None:
 
 def test_nl_success_1() -> None:
     """ valid test """
-    parser = CrupyParserBase({
+    parser = CrupyDSLParserBase({
         'entry' : \
-            CrupyLexerOpBetween(
-                startop         = CrupyLexerOpText('"'),
+            CrupyDSLLexerOpBetween(
+                startop         = CrupyDSLLexerOpText('"'),
                 endop           = \
-                    CrupyLexerOpSeq(
-                        CrupyLexerOpText('a'),
-                        CrupyLexerOpText('b'),
+                    CrupyDSLLexerOpSeq(
+                        CrupyDSLLexerOpText('a'),
+                        CrupyDSLLexerOpText('b'),
                     ),
                 with_newline    = True,
             ),
@@ -138,15 +138,15 @@ def test_nl_success_1() -> None:
 
 def test_nl_success_2() -> None:
     """ valid test """
-    parser = CrupyParserBase({
+    parser = CrupyDSLParserBase({
         'entry' : \
-            CrupyLexerOpBetween(
+            CrupyDSLLexerOpBetween(
                 startop         = \
-                    CrupyLexerOpSeq(
-                        CrupyLexerOpText('a'),
-                        CrupyLexerOpText('b'),
+                    CrupyDSLLexerOpSeq(
+                        CrupyDSLLexerOpText('a'),
+                        CrupyDSLLexerOpText('b'),
                     ),
-                endop           = CrupyLexerOpText('"'),
+                endop           = CrupyDSLLexerOpText('"'),
                 with_newline    = True,
             ),
     })
@@ -167,11 +167,11 @@ def test_nl_success_2() -> None:
 
 def test_nonl_fail_0() -> None:
     """ fail test """
-    parser = CrupyParserBase({
+    parser = CrupyDSLParserBase({
         'entry' : \
-            CrupyLexerOpBetween(
-                startop         = CrupyLexerOpText('"'),
-                endop           = CrupyLexerOpText('"'),
+            CrupyDSLLexerOpBetween(
+                startop         = CrupyDSLLexerOpText('"'),
+                endop           = CrupyDSLLexerOpText('"'),
                 with_newline    = True,
             ),
     })
@@ -179,7 +179,7 @@ def test_nonl_fail_0() -> None:
     try:
         parser.execute('entry')
         raise AssertionError('production executed')
-    except CrupyLexerOpBetweenException as err:
+    except CrupyDSLLexerOpBetweenException as err:
         assert err.reason == (
             'unable to validate the opening request: '
             'unable to match the text \'"\''
@@ -190,17 +190,17 @@ def test_nonl_fail_0() -> None:
             'Stream: line 1, column 1\n'
             'zthis is a test yes no"\n'
             '^\n'
-            'CrupyLexerOpBetweenException: Unable to validate the '
+            'CrupyDSLLexerOpBetweenException: Unable to validate the '
             'opening request: unable to match the text \'"\''
         )
 
 def test_nonl_fail_1() -> None:
     """ fail test """
-    parser = CrupyParserBase({
+    parser = CrupyDSLParserBase({
         'entry' : \
-            CrupyLexerOpBetween(
-                startop         = CrupyLexerOpText('"'),
-                endop           = CrupyLexerOpText('"'),
+            CrupyDSLLexerOpBetween(
+                startop         = CrupyDSLLexerOpText('"'),
+                endop           = CrupyDSLLexerOpText('"'),
                 with_newline    = False,
             ),
     })
@@ -208,7 +208,7 @@ def test_nonl_fail_1() -> None:
     try:
         parser.execute('entry')
         raise AssertionError('production executed')
-    except CrupyLexerOpBetweenException as err:
+    except CrupyDSLLexerOpBetweenException as err:
         assert err.reason == (
             'unable to validate the middle request: '
             'unable to validate the current char as "any"'
@@ -219,17 +219,17 @@ def test_nonl_fail_1() -> None:
             'Stream: line 1, column 12\n'
             '"this is a \\r\\n\n'
             '~~~~~~~~~~~^\n'
-            'CrupyLexerOpBetweenException: Unable to validate the '
+            'CrupyDSLLexerOpBetweenException: Unable to validate the '
             'middle request: unable to validate the current char as "any"'
         )
 
 def test_nonl_fail_2() -> None:
     """ fail test """
-    parser = CrupyParserBase({
+    parser = CrupyDSLParserBase({
         'entry' : \
-            CrupyLexerOpBetween(
-                startop         = CrupyLexerOpText('"'),
-                endop           = CrupyLexerOpText('"'),
+            CrupyDSLLexerOpBetween(
+                startop         = CrupyDSLLexerOpText('"'),
+                endop           = CrupyDSLLexerOpText('"'),
                 with_newline    = True,
             ),
     })
@@ -237,7 +237,7 @@ def test_nonl_fail_2() -> None:
     try:
         parser.execute('entry')
         raise AssertionError('production executed')
-    except CrupyLexerOpBetweenException as err:
+    except CrupyDSLLexerOpBetweenException as err:
         assert err.reason == (
             'unable to validate the enclosing request: reached end-of-file'
         )
@@ -247,6 +247,6 @@ def test_nonl_fail_2() -> None:
             'Stream: line 2, column 14\n'
             'test yes nooo\n'
             '~~~~~~~~~~~~~^\n'
-            'CrupyLexerOpBetweenException: Unable to validate the '
+            'CrupyDSLLexerOpBetweenException: Unable to validate the '
             'enclosing request: reached end-of-file'
         )

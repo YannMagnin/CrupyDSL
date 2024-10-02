@@ -2,7 +2,7 @@
 tests.dsl.alternative - test alternative productions
 """
 from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 
 #---
 # Public
@@ -69,7 +69,7 @@ def test_error_broken_string() -> None:
     try:
         CRUPY_DSL_PARSER_OBJ.execute('alternative')
         raise AssertionError('production \'alternative\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
@@ -87,7 +87,7 @@ def test_error_broken_prodname() -> None:
     try:
         CRUPY_DSL_PARSER_OBJ.execute('alternative')
         raise AssertionError('production \'alternative\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
@@ -105,7 +105,7 @@ def test_error_broken_group() -> None:
     try:
         CRUPY_DSL_PARSER_OBJ.execute('alternative')
         raise AssertionError('production \'alternative\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
@@ -123,7 +123,7 @@ def test_error_broken_any() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream(':yo_man')
         CRUPY_DSL_PARSER_OBJ.execute('alternative')
         raise AssertionError('production \'alternative\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'

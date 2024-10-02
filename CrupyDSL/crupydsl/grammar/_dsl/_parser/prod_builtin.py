@@ -2,28 +2,28 @@
 crupydsl.grammar._dsl._parser.builtin  - DSL builtin hook
 """
 __all__ = [
-    'CrupyParserNodeDslBuiltin',
+    'CrupyDSLParserNodeDslBuiltin',
     'dsl_builtin_hook',
     'dsl_builtin_hook_error',
 ]
 from typing import NoReturn
 
-from crupydsl.parser import CrupyParserNodeBase
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser import CrupyDSLParserNodeBase
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 from crupydsl.grammar._dsl._parser.exception import (
-    CrupyDslParserException,
+    CrupyDSLParserException,
 )
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslBuiltin(CrupyParserNodeBase):
+class CrupyDSLParserNodeDslBuiltin(CrupyDSLParserNodeBase):
     """ builtin node
     """
     kind:   str
 
-def dsl_builtin_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+def dsl_builtin_hook(node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
     """ handle "builtin" node
     """
     assert node.type == 'lex_seq'
@@ -38,22 +38,22 @@ def dsl_builtin_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
         assert len(text) == 1
         assert text[0].type == 'lex_text'
         kind += text[0].text
-    return CrupyParserNodeDslBuiltin(
+    return CrupyDSLParserNodeDslBuiltin(
         parent_node = node,
         kind        = kind,
     )
 
-def dsl_builtin_hook_error(err: CrupyParserBaseException) -> NoReturn:
+def dsl_builtin_hook_error(err: CrupyDSLParserBaseException) -> NoReturn:
     """ builtin error hook
     """
     assert err.type == 'lexer_op_seq'
     if err.validated_operation == 0:
-        raise CrupyDslParserException(err, 'missing starting colon')
+        raise CrupyDSLParserException(err, 'missing starting colon')
     if err.validated_operation == 1:
-        raise CrupyDslParserException(err, 'missing builtin name')
+        raise CrupyDSLParserException(err, 'missing builtin name')
     if err.validated_operation == 2:
-        raise CrupyDslParserException(err, 'missing enclosing colon')
-    raise CrupyDslParserException(
+        raise CrupyDSLParserException(err, 'missing enclosing colon')
+    raise CrupyDSLParserException(
         err,
         '[internal error] unsupported sequence, too many validated '
         f"operation ({err.validated_operation} > 2)"

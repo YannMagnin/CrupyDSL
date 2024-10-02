@@ -7,8 +7,8 @@ __all__ = [
 from typing import Union
 
 from crupydsl.parser import (
-    CrupyParserNodeBase,
-    CrupyParserBase,
+    CrupyDSLParserNodeBase,
+    CrupyDSLParserBase,
 )
 
 #---
@@ -18,7 +18,7 @@ from crupydsl.parser import (
 ## helper
 
 def __check_node_simple(
-    node: Union[CrupyParserNodeBase,None],
+    node: Union[CrupyDSLParserNodeBase,None],
     text: str,
 ) -> None:
     """ generic node check """
@@ -43,7 +43,7 @@ def __check_node_simple(
         )
 
 def __check_node_quoted(
-    node: Union[CrupyParserNodeBase,None],
+    node: Union[CrupyDSLParserNodeBase,None],
     text: str,
 ) -> None:
     """ generic node check """
@@ -61,7 +61,7 @@ def __check_node_quoted(
         )
 
 def __check_node_mixed(
-    node: Union[CrupyParserNodeBase,None],
+    node: Union[CrupyDSLParserNodeBase,None],
     text: str,
     kind: str,
 ) -> None:
@@ -82,7 +82,7 @@ def __check_node_mixed(
 
 ## tests
 
-def _csv_test_parser_field_simple(parser: CrupyParserBase) -> None:
+def _csv_test_parser_field_simple(parser: CrupyDSLParserBase) -> None:
     """ test the `field_simple` production
     """
     print('- check field simple...')
@@ -98,7 +98,7 @@ def _csv_test_parser_field_simple(parser: CrupyParserBase) -> None:
     __check_node_simple(parser.execute('field_simple'), 'ekip667')
 
 
-def _csv_test_parser_field_quoted(parser: CrupyParserBase) -> None:
+def _csv_test_parser_field_quoted(parser: CrupyDSLParserBase) -> None:
     """ test the `field_simple` production
     """
     print('- check field quoted...')
@@ -116,7 +116,7 @@ def _csv_test_parser_field_quoted(parser: CrupyParserBase) -> None:
         ',, \t oui non',
     )
 
-def _csv_test_parser_field_mixed(parser: CrupyParserBase) -> None:
+def _csv_test_parser_field_mixed(parser: CrupyDSLParserBase) -> None:
     """ test the `field` production
     """
     print('- mixed node...')
@@ -147,7 +147,7 @@ def _csv_test_parser_field_mixed(parser: CrupyParserBase) -> None:
 # Public
 #---
 
-def csv_test_parser_field(parser: CrupyParserBase) -> None:
+def csv_test_parser_field(parser: CrupyDSLParserBase) -> None:
     """ test `field*` productions
     """
     print('-= production `field` tests =-')

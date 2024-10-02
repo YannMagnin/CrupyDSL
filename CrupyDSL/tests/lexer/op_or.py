@@ -1,16 +1,16 @@
 """
-tests.lexer.op_or   - test the CrupyLexerOpOr
+tests.lexer.op_or   - test the CrupyDSLLexerOpOr
 """
 from crupydsl.parser import (
-    CrupyParserBase,
-    CrupyParserBaseException,
+    CrupyDSLParserBase,
+    CrupyDSLParserBaseException,
 )
 from crupydsl.parser._lexer import (
-    CrupyLexerOpOr,
-    CrupyLexerOpOrException,
-    CrupyLexerOpText,
-    CrupyLexerOpError,
-    CrupyLexerOpSeq,
+    CrupyDSLLexerOpOr,
+    CrupyDSLLexerOpOrException,
+    CrupyDSLLexerOpText,
+    CrupyDSLLexerOpError,
+    CrupyDSLLexerOpSeq,
 )
 
 #---
@@ -20,10 +20,10 @@ from crupydsl.parser._lexer import (
 def test_simple_success0() -> None:
     """ simple valid case
     """
-    parser = CrupyParserBase({
-        'entry' : CrupyLexerOpOr(
-            CrupyLexerOpText('abc'),
-            CrupyLexerOpText('abcdef'),
+    parser = CrupyDSLParserBase({
+        'entry' : CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpText('abc'),
+            CrupyDSLLexerOpText('abcdef'),
         ),
     })
     parser.register_stream('abcdefijkl')
@@ -36,13 +36,13 @@ def test_simple_success0() -> None:
 def test_simple_success1() -> None:
     """ simple valid case
     """
-    parser = CrupyParserBase({
-        'entry' : CrupyLexerOpOr(
-            CrupyLexerOpText('zzz'),
-            CrupyLexerOpText('zzz'),
-            CrupyLexerOpText('zzz'),
-            CrupyLexerOpText('zzz'),
-            CrupyLexerOpText('abcdef'),
+    parser = CrupyDSLParserBase({
+        'entry' : CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpText('zzz'),
+            CrupyDSLLexerOpText('zzz'),
+            CrupyDSLLexerOpText('zzz'),
+            CrupyDSLLexerOpText('zzz'),
+            CrupyDSLLexerOpText('abcdef'),
         ),
     })
     parser.register_stream('abcdefijkl')
@@ -55,27 +55,27 @@ def test_simple_success1() -> None:
 def test_error() -> None:
     """ depth error handling test
     """
-    parser = CrupyParserBase({
-        'entry' : CrupyLexerOpOr(
-            CrupyLexerOpText('ax'),
-            CrupyLexerOpText('abcdef'),
-            CrupyLexerOpText('abcx'),
-            CrupyLexerOpText('xx'),
-            CrupyLexerOpText('ekip'),
+    parser = CrupyDSLParserBase({
+        'entry' : CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpText('ax'),
+            CrupyDSLLexerOpText('abcdef'),
+            CrupyDSLLexerOpText('abcx'),
+            CrupyDSLLexerOpText('xx'),
+            CrupyDSLLexerOpText('ekip'),
         ),
     })
     parser.register_stream('abcdexxx')
     try:
         parser.execute('entry')
         raise AssertionError('production entry has been executed')
-    except CrupyLexerOpOrException as err:
+    except CrupyDSLLexerOpOrException as err:
         assert str(err) == (
             'Lexer parsing error occured:\n'
             '\n'
             'Stream: line 1, column 6\n'
             'abcdexxx\n'
             '~~~~~^\n'
-            'CrupyLexerOpTextException: Unable to match the '
+            'CrupyDSLLexerOpTextException: Unable to match the '
             'text \'abcdef\''
         )
         assert err.deepest_error is not None
@@ -84,17 +84,17 @@ def test_error() -> None:
 def test_error_and_success() -> None:
     """ handle error operation
     """
-    parser = CrupyParserBase({
-        'entry' : CrupyLexerOpOr(
-            CrupyLexerOpError('test'),
-            CrupyLexerOpError('test'),
-            CrupyLexerOpError('test'),
-            CrupyLexerOpError('test'),
-            CrupyLexerOpText('ax'),
-            CrupyLexerOpText('abcdef'),
-            CrupyLexerOpText('abcx'),
-            CrupyLexerOpText('xx'),
-            CrupyLexerOpText('ekip'),
+    parser = CrupyDSLParserBase({
+        'entry' : CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpError('test'),
+            CrupyDSLLexerOpError('test'),
+            CrupyDSLLexerOpError('test'),
+            CrupyDSLLexerOpError('test'),
+            CrupyDSLLexerOpText('ax'),
+            CrupyDSLLexerOpText('abcdef'),
+            CrupyDSLLexerOpText('abcx'),
+            CrupyDSLLexerOpText('xx'),
+            CrupyDSLLexerOpText('ekip'),
         ),
     })
     parser.register_stream('ekip')
@@ -103,19 +103,19 @@ def test_error_and_success() -> None:
 def test_multiple_error() -> None:
     """ handle error operation
     """
-    parser = CrupyParserBase({
-        'entry' : CrupyLexerOpOr(
-            CrupyLexerOpSeq(
-                CrupyLexerOpText('e'),
-                CrupyLexerOpError('fail1'),
+    parser = CrupyDSLParserBase({
+        'entry' : CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpSeq(
+                CrupyDSLLexerOpText('e'),
+                CrupyDSLLexerOpError('fail1'),
             ),
-            CrupyLexerOpSeq(
-                CrupyLexerOpText('ekip'),
-                CrupyLexerOpError('success'),
+            CrupyDSLLexerOpSeq(
+                CrupyDSLLexerOpText('ekip'),
+                CrupyDSLLexerOpError('success'),
             ),
-            CrupyLexerOpSeq(
-                CrupyLexerOpText('eki'),
-                CrupyLexerOpError('fail2'),
+            CrupyDSLLexerOpSeq(
+                CrupyDSLLexerOpText('eki'),
+                CrupyDSLLexerOpError('fail2'),
             ),
         ),
     })
@@ -123,20 +123,20 @@ def test_multiple_error() -> None:
         parser.register_stream('ekip')
         parser.execute('entry')
         raise AssertionError('entry has been executed')
-    except CrupyParserBaseException:
+    except CrupyDSLParserBaseException:
         pass
 
 def test_manual_error() -> None:
     """ test
     """
-    parser = CrupyParserBase({
-        'entry' : CrupyLexerOpOr(
-            CrupyLexerOpError('salut a tous'),
+    parser = CrupyDSLParserBase({
+        'entry' : CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpError('salut a tous'),
         ),
     })
     try:
         parser.register_stream('gang')
         parser.execute('entry')
         raise AssertionError('entry has been executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert err.reason == 'salut a tous'

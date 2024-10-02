@@ -2,7 +2,7 @@
 tests.dsl.dsl - test dsl productions
 """
 from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
-from crupydsl.parser import CrupyParserBaseException
+from crupydsl.parser import CrupyDSLParserBaseException
 
 #---
 # Public
@@ -56,7 +56,7 @@ def test_error_broken_production() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('aaaaaa')
         CRUPY_DSL_PARSER_OBJ.execute('crupy_dsl')
         raise AssertionError('production \'crupy_dsl\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'

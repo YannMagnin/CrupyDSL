@@ -2,9 +2,9 @@
 #crupycsv._grammar   - CSV grammar definition
 #"""
 #__all__ = [
-#    'CrupyGrammarCSV',
+#    'CrupyDSLGrammarCSV',
 #]
-#from crupydsl.grammar import CrupyGrammarBase
+#from crupydsl.grammar import CrupyDSLGrammarBase
 
 #---
 # Internals
@@ -12,7 +12,7 @@
 
 ## high-level grammar definition
 
-#class CrupyGrammarCSV(CrupyGrammarBase):
+#class CrupyDSLGrammarCSV(CrupyDSLGrammarBase):
 #    """ define CSV (ascii) grammar using Crupy DSL
 #    """
 #    production_entry    = 'csv'

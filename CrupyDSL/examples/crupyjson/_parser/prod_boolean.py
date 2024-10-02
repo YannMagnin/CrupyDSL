@@ -2,28 +2,28 @@
 crupyjson._parser.boolean   - handle boolean production
 """
 __all__ = [
-    'CrupyParserNodeJsonBoolean',
+    'CrupyDSLParserNodeJsonBoolean',
     'json_parser_prod_hook_boolean',
 ]
 
-from crupydsl.parser import CrupyParserNodeBase
+from crupydsl.parser import CrupyDSLParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeJsonBoolean(CrupyParserNodeBase):
+class CrupyDSLParserNodeJsonBoolean(CrupyDSLParserNodeBase):
     """ JSON "boolean" node """
     state:  bool
 
 def json_parser_prod_hook_boolean(
-    node: CrupyParserNodeBase,
-) -> CrupyParserNodeBase:
+    node: CrupyDSLParserNodeBase,
+) -> CrupyDSLParserNodeBase:
     """ handle `boolean` node
     """
     assert node.type == 'lex_text'
     assert node.text in ['true', 'false']
-    return CrupyParserNodeJsonBoolean(
+    return CrupyDSLParserNodeJsonBoolean(
         parent_node = node,
         state       = node.text == 'true',
     )

@@ -2,17 +2,17 @@
 crupydsl.grammar._dsl._parser.space  - DSL space hook
 """
 __all__ = [
-    'CrupyParserNodeDslSpace',
+    'CrupyDSLParserNodeDslSpace',
     'dsl_space_hook',
 ]
 
-from crupydsl.parser import CrupyParserNodeBase
+from crupydsl.parser import CrupyDSLParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslSpace(CrupyParserNodeBase):
+class CrupyDSLParserNodeDslSpace(CrupyDSLParserNodeBase):
     """ space node
 
     @note
@@ -20,9 +20,9 @@ class CrupyParserNodeDslSpace(CrupyParserNodeBase):
     to capture anything
     """
 
-def dsl_space_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+def dsl_space_hook(node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
     """ handle "space" node
     """
-    return CrupyParserNodeDslSpace(
+    return CrupyDSLParserNodeDslSpace(
         parent_node = node,
     )

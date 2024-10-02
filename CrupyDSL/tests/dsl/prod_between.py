@@ -2,7 +2,7 @@
 tests.dsl.between - test between production
 """
 from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 
 #---
 # Public
@@ -39,7 +39,7 @@ def test_simple_fail_0() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('digit:..."\'"')
         CRUPY_DSL_PARSER_OBJ.execute('between')
         raise AssertionError('production executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert err.reason == 'unable to validate the opening request'
 
 def test_simple_fail_1() -> None:
@@ -49,7 +49,7 @@ def test_simple_fail_1() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('(:digit:|<test>)*.."\'"')
         CRUPY_DSL_PARSER_OBJ.execute('between')
         raise AssertionError('production executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert err.reason == (
             'unable to validate the type of between operation '
             'requested'
@@ -62,5 +62,5 @@ def test_simple_fail_2() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('(:digit:|<test>)*.!."\'')
         CRUPY_DSL_PARSER_OBJ.execute('between')
         raise AssertionError('production executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert err.reason == 'unable to validate the enclosing request'

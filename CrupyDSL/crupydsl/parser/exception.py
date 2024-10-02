@@ -5,12 +5,12 @@ crupydsl.parser.exception - parser exception class
 from __future__ import annotations
 
 __all__ = [
-    'CrupyParserBaseException',
+    'CrupyDSLParserBaseException',
 ]
 from typing import Any, Optional
 
 from crupydsl.exception import CrupyDSLCoreException
-from crupydsl.parser._stream.context import CrupyStreamContext
+from crupydsl.parser._stream.context import CrupyDSLStreamContext
 from crupydsl._utils import (
     crupynamedclass,
     crupyabstractclass,
@@ -23,15 +23,15 @@ from crupydsl._utils import (
 @crupyabstractclass
 @crupynamedclass(
     generate_type   = True,
-    regex           = '^Crupy(?P<type>([A-Z][a-z]+)+)Exception$',
+    regex           = '^CrupyDSL(?P<type>([A-Z][a-z]+)+)Exception$',
 )
-class _CrupyParserAbstractException(CrupyDSLCoreException):
+class _CrupyDSLParserAbstractException(CrupyDSLCoreException):
     """ Crupy parser exception class
     """
     def __init__(
         self,
         reason: str,
-        context: CrupyStreamContext,
+        context: CrupyDSLStreamContext,
         *args: Any,
         message: Optional[str] = None,
         **kwargs: Any,
@@ -45,10 +45,10 @@ class _CrupyParserAbstractException(CrupyDSLCoreException):
         self._reason  = reason
         self._message = message
 
-    def __gt__(self, error: _CrupyParserAbstractException) -> bool:
+    def __gt__(self, error: _CrupyDSLParserAbstractException) -> bool:
         return self.context > error.context
 
-    def __ge__(self, error: _CrupyParserAbstractException) -> bool:
+    def __ge__(self, error: _CrupyDSLParserAbstractException) -> bool:
         return self.context >= error.context
 
     def __getattr__(self, index: str) -> Any:
@@ -65,7 +65,7 @@ class _CrupyParserAbstractException(CrupyDSLCoreException):
     #---
 
     @property
-    def context(self) -> CrupyStreamContext:
+    def context(self) -> CrupyDSLStreamContext:
         """ retrurn the stream context
         """
         return self._context
@@ -86,5 +86,5 @@ class _CrupyParserAbstractException(CrupyDSLCoreException):
 # Public
 #---
 
-class CrupyParserBaseException(_CrupyParserAbstractException):
+class CrupyDSLParserBaseException(_CrupyDSLParserAbstractException):
     """ crupy parser exception base class """

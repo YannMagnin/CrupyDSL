@@ -1,12 +1,12 @@
 """
-tests.lexer.assert_lookahead  - test for the CrupyLexerAssertLookahead*
+tests.lexer.assert_lookahead  - test for the CrupyDSLLexerAssertLookahead*
 """
-from crupydsl.parser.base import CrupyParserBase
+from crupydsl.parser.base import CrupyDSLParserBase
 from crupydsl.parser._lexer import (
-    CrupyLexerOpSeq,
-    CrupyLexerOpText,
-    CrupyLexerAssertLookaheadNegative,
-    CrupyLexerAssertLookaheadPositive,
+    CrupyDSLLexerOpSeq,
+    CrupyDSLLexerOpText,
+    CrupyDSLLexerAssertLookaheadNegative,
+    CrupyDSLLexerAssertLookaheadPositive,
 )
 
 #---
@@ -18,13 +18,13 @@ from crupydsl.parser._lexer import (
 def test_neg_simple_success() -> None:
     """ simple valid case
     """
-    parser = CrupyParserBase({
-        'entry' : CrupyLexerOpSeq(
-            CrupyLexerOpText('abc'),
-            CrupyLexerAssertLookaheadNegative(
-                CrupyLexerOpText('d'),
-                CrupyLexerOpText('r'),
-                CrupyLexerOpText('x'),
+    parser = CrupyDSLParserBase({
+        'entry' : CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpText('abc'),
+            CrupyDSLLexerAssertLookaheadNegative(
+                CrupyDSLLexerOpText('d'),
+                CrupyDSLLexerOpText('r'),
+                CrupyDSLLexerOpText('x'),
             ),
         ),
     })
@@ -42,12 +42,12 @@ def test_neg_simple_success() -> None:
 def test_pos_simple_success() -> None:
     """ simple valid case
     """
-    parser = CrupyParserBase({
-        'entry' : CrupyLexerOpSeq(
-            CrupyLexerOpText('abc'),
-            CrupyLexerAssertLookaheadPositive(
-                CrupyLexerOpText('d'),
-                CrupyLexerOpText('e'),
+    parser = CrupyDSLParserBase({
+        'entry' : CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpText('abc'),
+            CrupyDSLLexerAssertLookaheadPositive(
+                CrupyDSLLexerOpText('d'),
+                CrupyDSLLexerOpText('e'),
             ),
         ),
     })

@@ -1,11 +1,11 @@
 """
-tests.lexer.op_production   - test the CrupyLexerOpProduction
+tests.lexer.op_production   - test the CrupyDSLLexerOpProduction
 """
-from crupydsl.parser import CrupyParserBase
+from crupydsl.parser import CrupyDSLParserBase
 from crupydsl.parser._lexer import (
-    CrupyLexerOpProductionCall,
-    CrupyLexerOpText,
-    CrupyLexerOpProductionCallException,
+    CrupyDSLLexerOpProductionCall,
+    CrupyDSLLexerOpText,
+    CrupyDSLLexerOpProductionCallException,
 )
 
 #---
@@ -15,9 +15,9 @@ from crupydsl.parser._lexer import (
 def test_simple_success() -> None:
     """ simple success test
     """
-    parser = CrupyParserBase({
-        'entry'  : CrupyLexerOpProductionCall('entry2'),
-        'entry2' : CrupyLexerOpText('abcdef')
+    parser = CrupyDSLParserBase({
+        'entry'  : CrupyDSLLexerOpProductionCall('entry2'),
+        'entry2' : CrupyDSLLexerOpText('abcdef')
     })
     parser.register_stream('abcdefijkl')
     test = parser.execute('entry')
@@ -29,14 +29,14 @@ def test_simple_success() -> None:
 def test_raise_error() -> None:
     """ force production calling that not exists
     """
-    parser = CrupyParserBase({
-        'entry'  : CrupyLexerOpProductionCall('entry2'),
+    parser = CrupyDSLParserBase({
+        'entry'  : CrupyDSLLexerOpProductionCall('entry2'),
     })
     parser.register_stream('abcdefijkl')
     try:
         parser.execute('entry')
         raise AssertionError('production entry has been executed')
-    except CrupyLexerOpProductionCallException as err:
+    except CrupyDSLLexerOpProductionCallException as err:
         assert err.production == 'entry2'
         assert err.reason == (
             'unable to find the production named \'entry2\''
@@ -47,6 +47,6 @@ def test_raise_error() -> None:
             'Stream: line 1, column 1\n'
             'abcdefijkl\n'
             '^\n'
-            'CrupyLexerOpProductionCallException: Unable to find the '
+            'CrupyDSLLexerOpProductionCallException: Unable to find the '
             'production named \'entry2\''
         )

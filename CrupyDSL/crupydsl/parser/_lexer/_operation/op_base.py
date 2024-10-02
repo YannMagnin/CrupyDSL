@@ -2,12 +2,12 @@
 crupydsl.parser._lexer._operation._base - Lexer operation abstraction
 """
 __all__ = [
-    'CrupyLexerOpBase',
+    'CrupyDSLLexerOpBase',
 ]
 from abc import abstractmethod
 
-from crupydsl.parser.base import CrupyParserBase
-from crupydsl.parser.node import CrupyParserNodeBase
+from crupydsl.parser.base import CrupyDSLParserBase
+from crupydsl.parser.node import CrupyDSLParserNodeBase
 from crupydsl._utils import (
     crupyabstractclass,
     crupynamedclass,
@@ -23,9 +23,9 @@ from crupydsl._utils import (
 @crupyabstractclass
 @crupynamedclass(
     generate_type   = True,
-    regex           = '^(_)?CrupyLexerOp(?P<type>([0-9]*[A-Z][a-z]*)+)$',
+    regex           = '^(_)?CrupyDSLLexerOp(?P<type>([0-9]*[A-Z][a-z]*)+)$',
 )
-class CrupyLexerOpBase():
+class CrupyDSLLexerOpBase():
     """ Lexer capture operation
     """
 
@@ -34,7 +34,7 @@ class CrupyLexerOpBase():
     #---
 
     @abstractmethod
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
+    def __call__(self, parser: CrupyDSLParserBase) -> CrupyDSLParserNodeBase:
         """ internal core operation code
         """
 

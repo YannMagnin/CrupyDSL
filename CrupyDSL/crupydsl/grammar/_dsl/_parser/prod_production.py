@@ -2,28 +2,30 @@
 crupydsl.grammar._dsl._parser.production  - DSL production hook
 """
 __all__ = [
-    'CrupyParserNodeDslProduction',
+    'CrupyDSLParserNodeDslProduction',
     'dsl_production_hook',
     'dsl_production_hook_error',
 ]
 from typing import NoReturn
 
-from crupydsl.parser import CrupyParserNodeBase
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser import CrupyDSLParserNodeBase
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 from crupydsl.grammar._dsl._parser.exception import (
-    CrupyDslParserException,
+    CrupyDSLParserException,
 )
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslProduction(CrupyParserNodeBase):
+class CrupyDSLParserNodeDslProduction(CrupyDSLParserNodeBase):
     """ production node """
     production_name:    str
-    statement:          CrupyParserNodeBase
+    statement:          CrupyDSLParserNodeBase
 
-def dsl_production_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+def dsl_production_hook(
+    node: CrupyDSLParserNodeBase,
+) -> CrupyDSLParserNodeBase:
     """ handle "production" node
     """
     assert node.type == 'lex_seq'
@@ -36,39 +38,39 @@ def dsl_production_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
     assert node.seq[4].type == 'dsl_space'
     assert node.seq[5].type == 'dsl_statement'
     assert node.seq[6].type == 'dsl_eol'
-    return CrupyParserNodeDslProduction(
+    return CrupyDSLParserNodeDslProduction(
         parent_node     = node,
         production_name = node.seq[1].production_name,
         statement       = node.seq[5],
     )
 
-def dsl_production_hook_error(err: CrupyParserBaseException) -> NoReturn:
+def dsl_production_hook_error(err: CrupyDSLParserBaseException) -> NoReturn:
     """ string error hook
     """
     assert err.type == 'lexer_op_seq'
     if err.validated_operation == 1:
         raise err
     if err.validated_operation == 2:
-        raise CrupyDslParserException(
+        raise CrupyDSLParserException(
             err,
             'missing space between production name and equal sign',
         )
     if err.validated_operation == 3:
-        raise CrupyDslParserException(err, 'missing enclosing quote')
+        raise CrupyDSLParserException(err, 'missing enclosing quote')
     if err.validated_operation == 4:
-        raise CrupyDslParserException(
+        raise CrupyDSLParserException(
             err,
             'missing space between equal sign and statement',
         )
     if err.validated_operation == 5:
         raise err
     if err.validated_operation == 6:
-        raise CrupyDslParserException(
+        raise CrupyDSLParserException(
             err,
             'missing an end-of-line or and end-of-file to validate '
             'the production',
         )
-    raise CrupyDslParserException(
+    raise CrupyDSLParserException(
         err,
         '[internal error] unsupported sequence, too many validated '
         f"operation ({err.validated_operation})"

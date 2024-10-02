@@ -1,7 +1,7 @@
 """
 tests.stream.stream     - stream object unittest
 """
-from crupydsl.parser._stream.stream import CrupyStream
+from crupydsl.parser._stream.stream import CrupyDSLStream
 
 #---
 # Public
@@ -10,7 +10,7 @@ from crupydsl.parser._stream.stream import CrupyStream
 def test_read_peek() -> None:
     """ simply check the read/peek
     """
-    stream = CrupyStream.from_any('abcd\n\r\r\n0')
+    stream = CrupyDSLStream.from_any('abcd\n\r\r\n0')
     with stream as context:
         for ctest in 'abcd\n\r':
             assert context.peek_char() == ctest
@@ -25,7 +25,7 @@ def test_read_peek() -> None:
 def test_context() -> None:
     """ check context handling
     """
-    stream = CrupyStream.from_any('abcdef')
+    stream = CrupyDSLStream.from_any('abcdef')
     with stream as context:
         assert context.read_char() == 'a'
         assert context.read_char() == 'b'
@@ -47,7 +47,7 @@ def test_context() -> None:
 def test_error_context() -> None:
     """ check context error generation
     """
-    stream = CrupyStream.from_any('abcdef\noui')
+    stream = CrupyDSLStream.from_any('abcdef\noui')
     with stream as context:
         assert context.read_char() == 'a'
         assert context.read_char() == 'b'
@@ -60,7 +60,7 @@ def test_error_context() -> None:
 def test_error_context_multiline_0() -> None:
     """ check context error generation in multiline
     """
-    stream = CrupyStream.from_any('abc\noui\r\nnon foo bar')
+    stream = CrupyDSLStream.from_any('abc\noui\r\nnon foo bar')
     with stream as context:
         assert context.read_char() == 'a'
         assert context.read_char() == 'b'
@@ -86,7 +86,7 @@ def test_error_context_multiline_0() -> None:
 def test_error_context_multiline_1() -> None:
     """ check context error generation in multiline
     """
-    stream = CrupyStream.from_any('abc\noui\r\nnon foo bar')
+    stream = CrupyDSLStream.from_any('abc\noui\r\nnon foo bar')
     with stream as context:
         assert context.read_char() == 'a'
         assert context.read_char() == 'b'
@@ -106,7 +106,7 @@ def test_error_context_multiline_1() -> None:
 def test_error_context_longline() -> None:
     """ check context error generation in longline
     """
-    stream = CrupyStream.from_any('abc oui')
+    stream = CrupyDSLStream.from_any('abc oui')
     with stream as context:
         assert context.read_char() == 'a'
         assert context.read_char() == 'b'

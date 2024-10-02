@@ -2,7 +2,7 @@
 tests.dsl.space - test space productions
 """
 from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
-from crupydsl.parser import CrupyParserBaseException
+from crupydsl.parser import CrupyDSLParserBaseException
 
 #---
 # Public
@@ -30,7 +30,7 @@ def test_space_lowlevel_error() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('q\t \\\na')
         CRUPY_DSL_PARSER_OBJ.execute('__space')
         raise AssertionError('production __space has been executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert err.reason == 'not a space'
 
 ## space
@@ -50,7 +50,7 @@ def test_space_error() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('q\t \\\na')
         CRUPY_DSL_PARSER_OBJ.execute('space')
         raise AssertionError('production space has been executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert err.reason == 'missing at least one space'
 
 ## space_opt

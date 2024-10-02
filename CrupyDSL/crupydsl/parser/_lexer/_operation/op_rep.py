@@ -2,20 +2,20 @@
 crupydsl.parser._lexer._operation.rep  - zero or more lexer operation
 """
 __all__ = [
-    'CrupyParserNodeLexRep',
-    'CrupyLexerOpRep0N',
-    'CrupyLexerOpRep1N',
-    'CrupyLexerOpRepException',
+    'CrupyDSLParserNodeLexRep',
+    'CrupyDSLLexerOpRep0N',
+    'CrupyDSLLexerOpRep1N',
+    'CrupyDSLLexerOpRepException',
 ]
 from typing import Union, Any
 
-from crupydsl.parser._lexer.exception import CrupyLexerException
+from crupydsl.parser._lexer.exception import CrupyDSLLexerException
 from crupydsl.parser._lexer._operation.op_seq import (
-    CrupyLexerOpSeq,
-    CrupyLexerOpSeqException,
+    CrupyDSLLexerOpSeq,
+    CrupyDSLLexerOpSeqException,
 )
-from crupydsl.parser.base import CrupyParserBase
-from crupydsl.parser.node import CrupyParserNodeBase
+from crupydsl.parser.base import CrupyDSLParserBase
+from crupydsl.parser.node import CrupyDSLParserNodeBase
 
 #---
 # Internals
@@ -24,12 +24,12 @@ from crupydsl.parser.node import CrupyParserNodeBase
 # allow to few methods and unused private methods
 # pylint: disable=locally-disabled,R0903,W0238
 
-class _CrupyLexerOpRepxN(CrupyLexerOpSeq):
+class _CrupyDSLLexerOpRepxN(CrupyDSLLexerOpSeq):
     """ execute sequence of lexer operation
     """
     def __init__(self, *args: Any) -> None:
         super().__init__(*args)
-        self._error: Union[CrupyLexerOpSeqException,None] = None
+        self._error: Union[CrupyDSLLexerOpSeqException,None] = None
 
     #---
     # Internals
@@ -37,17 +37,17 @@ class _CrupyLexerOpRepxN(CrupyLexerOpSeq):
 
     def _core_rep(
         self,
-        parser: CrupyParserBase,
-    ) -> list[list[CrupyParserNodeBase]]:
+        parser: CrupyDSLParserBase,
+    ) -> list[list[CrupyDSLParserNodeBase]]:
         """ execute all lexer operation
         """
-        rep: list[list[CrupyParserNodeBase]] = []
+        rep: list[list[CrupyDSLParserNodeBase]] = []
         while True:
             with parser.stream as context:
                 try:
                     rep.append(super().__call__(parser).seq)
                     context.validate()
-                except CrupyLexerOpSeqException as err:
+                except CrupyDSLLexerOpSeqException as err:
                     self._error = err
                     break
         return rep
@@ -58,48 +58,48 @@ class _CrupyLexerOpRepxN(CrupyLexerOpSeq):
 
 ## nodes
 
-class CrupyParserNodeLexRep(CrupyParserNodeBase):
+class CrupyDSLParserNodeLexRep(CrupyDSLParserNodeBase):
     """ sequence token information """
-    rep: list[list[CrupyParserNodeBase]]
+    rep: list[list[CrupyDSLParserNodeBase]]
 
-class CrupyLexerOpRepException(CrupyLexerException):
+class CrupyDSLLexerOpRepException(CrupyDSLLexerException):
     """ exception class """
     validated_step: int
 
 ## operations
 
-class CrupyLexerOpRep0N(_CrupyLexerOpRepxN):
+class CrupyDSLLexerOpRep0N(_CrupyDSLLexerOpRepxN):
     """ required at least one repetition
     """
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
+    def __call__(self, parser: CrupyDSLParserBase) -> CrupyDSLParserNodeBase:
         """ execute lexer operation and require at least one sequence
         """
         with parser.stream as context:
-            return CrupyParserNodeLexRep(
+            return CrupyDSLParserNodeLexRep(
                 context = context.validate(),
                 rep     = self._core_rep(parser),
             )
 
-class CrupyLexerOpRep1N(_CrupyLexerOpRepxN):
+class CrupyDSLLexerOpRep1N(_CrupyDSLLexerOpRepxN):
     """ required at least one repetition
     """
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
+    def __call__(self, parser: CrupyDSLParserBase) -> CrupyDSLParserNodeBase:
         """ execute lexer operation and require at least one sequence
         """
         with parser.stream as context:
             if len(req := self._core_rep(parser)) >= 1:
-                return CrupyParserNodeLexRep(
+                return CrupyDSLParserNodeLexRep(
                     context = context.validate(),
                     rep     = req,
                 )
             if self._error:
-                raise CrupyLexerOpRepException(
+                raise CrupyDSLLexerOpRepException(
                     context         = self._error.context,
                     validated_step  = self._error.validated_operation,
                     reason          = self._error.reason,
                     message         = self._error.message,
                 )
-            raise CrupyLexerOpRepException(
+            raise CrupyDSLLexerOpRepException(
                 context         = context,
                 validated_step  = 0,
                 reason          = 'missing critical error information',

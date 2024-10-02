@@ -2,32 +2,32 @@
 crupydsl.parser._lexer._assert.lookahead    - lookehader assert
 """
 __all__ = [
-    'CrupyLexerAssertLookaheadNegative',
-    'CrupyLexerAssertLookaheadPositive',
+    'CrupyDSLLexerAssertLookaheadNegative',
+    'CrupyDSLLexerAssertLookaheadPositive',
 ]
 from typing import Any
 
-from crupydsl.parser._lexer._assert.base import CrupyLexerAssertBase
-from crupydsl.parser._lexer._operation.op_base import CrupyLexerOpBase
-from crupydsl.parser.base import CrupyParserBase
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser._lexer._assert.base import CrupyDSLLexerAssertBase
+from crupydsl.parser._lexer._operation.op_base import CrupyDSLLexerOpBase
+from crupydsl.parser.base import CrupyDSLParserBase
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 from crupydsl.exception import CrupyDSLCoreException
 
 #---
 # Public
 #---
 
-class CrupyLexerAssertLookaheadNegative(CrupyLexerAssertBase):
+class CrupyDSLLexerAssertLookaheadNegative(CrupyDSLLexerAssertBase):
     """ lexer lookahead negative operation
     """
     def __init__(self, *args: Any) -> None:
         super().__init__()
-        self._seq: list[CrupyLexerOpBase] = []
+        self._seq: list[CrupyDSLLexerOpBase] = []
         for i, arg in enumerate(args):
-            if CrupyLexerOpBase not in type(arg).mro():
+            if CrupyDSLLexerOpBase not in type(arg).mro():
                 raise CrupyDSLCoreException(
                     f"Unable to initialise the {type(self).__name__} "
-                    f"because the argument {i} is not of type CrupyLexer "
+                    f"because the argument {i} is not of type CrupyDSLLexer "
                     f"({type(arg)})"
                 )
             self._seq.append(arg)
@@ -37,14 +37,14 @@ class CrupyLexerAssertLookaheadNegative(CrupyLexerAssertBase):
                 'not sequence has been presented'
             )
 
-    def __call__(self, parser: CrupyParserBase) -> bool:
+    def __call__(self, parser: CrupyDSLParserBase) -> bool:
         """ return True of the lexer operation not match
         """
         with parser.stream as _:
             for lexer in self._seq:
                 try:
                     lexer(parser)
-                except CrupyParserBaseException:
+                except CrupyDSLParserBaseException:
                     return True
             return False
 
@@ -63,10 +63,12 @@ class CrupyLexerAssertLookaheadNegative(CrupyLexerAssertBase):
         return content
 
 
-class CrupyLexerAssertLookaheadPositive(CrupyLexerAssertLookaheadNegative):
+class CrupyDSLLexerAssertLookaheadPositive(
+    CrupyDSLLexerAssertLookaheadNegative
+):
     """ lexer lookahead negative operation
     """
-    def __call__(self, parser: CrupyParserBase) -> bool:
+    def __call__(self, parser: CrupyDSLParserBase) -> bool:
         """ return True of the lexer operation not match
         """
         return not super().__call__(parser)

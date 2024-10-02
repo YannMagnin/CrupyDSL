@@ -3,28 +3,28 @@ crupyjson._parser.container   - handle container production
 """
 __all__ = [
     'json_parser_prod_hook_container',
-    'CrupyParserNodeJsonContainer',
+    'CrupyDSLParserNodeJsonContainer',
 ]
 
-from crupydsl.parser import CrupyParserNodeBase
+from crupydsl.parser import CrupyDSLParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeJsonContainer(CrupyParserNodeBase):
+class CrupyDSLParserNodeJsonContainer(CrupyDSLParserNodeBase):
     """ JSON "container" node
     """
     kind: str
-    node: CrupyParserNodeBase
+    node: CrupyDSLParserNodeBase
 
 def json_parser_prod_hook_container(
-    node: CrupyParserNodeBase,
-) -> CrupyParserNodeBase:
+    node: CrupyDSLParserNodeBase,
+) -> CrupyDSLParserNodeBase:
     """ handle `container` node
     """
     assert node.type in ['json_array', 'json_object']
-    return CrupyParserNodeJsonContainer(
+    return CrupyDSLParserNodeJsonContainer(
         parent_node = node,
         kind        = node.type,
         node        = node,

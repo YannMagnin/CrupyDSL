@@ -1,12 +1,12 @@
 """
-tests.lexer.op_rep  - tes for the CrupyLexerOpRep0N, and CrupyLexerOpRep1N
+tests.lexer.op_rep  - tes for the CrupyDSLLexerOpRep0N, and CrupyDSLLexerOpRep1N
 """
-from crupydsl.parser import CrupyParserBase
+from crupydsl.parser import CrupyDSLParserBase
 from crupydsl.parser._lexer import (
-    CrupyLexerOpText,
-    CrupyLexerOpRep0N,
-    CrupyLexerOpRep1N,
-    CrupyLexerException,
+    CrupyDSLLexerOpText,
+    CrupyDSLLexerOpRep0N,
+    CrupyDSLLexerOpRep1N,
+    CrupyDSLLexerException,
 )
 
 #---
@@ -18,11 +18,11 @@ from crupydsl.parser._lexer import (
 def test_rep0n_simple_success() -> None:
     """ simple valid case
     """
-    parser = CrupyParserBase({
-        'entry' : CrupyLexerOpRep0N(
-            CrupyLexerOpText('abc'),
-            CrupyLexerOpText('def'),
-            CrupyLexerOpText('ij'),
+    parser = CrupyDSLParserBase({
+        'entry' : CrupyDSLLexerOpRep0N(
+            CrupyDSLLexerOpText('abc'),
+            CrupyDSLLexerOpText('def'),
+            CrupyDSLLexerOpText('ij'),
         ),
     })
     parser.register_stream('abcdefijabcdefijklnm')
@@ -40,11 +40,11 @@ def test_rep0n_simple_success() -> None:
 def test_rep0n_empty() -> None:
     """ simple empty
     """
-    parser = CrupyParserBase({
-        'entry' : CrupyLexerOpRep0N(
-            CrupyLexerOpText('zzz'),
-            CrupyLexerOpText('def'),
-            CrupyLexerOpText('ijk'),
+    parser = CrupyDSLParserBase({
+        'entry' : CrupyDSLLexerOpRep0N(
+            CrupyDSLLexerOpText('zzz'),
+            CrupyDSLLexerOpText('def'),
+            CrupyDSLLexerOpText('ijk'),
         ),
     })
     parser.register_stream('abcdefijabcdefijklnm')
@@ -57,11 +57,11 @@ def test_rep0n_empty() -> None:
 def test_rep1n_simple_success() -> None:
     """ simple valid case
     """
-    parser = CrupyParserBase({
-        'entry' : CrupyLexerOpRep1N(
-            CrupyLexerOpText('abc'),
-            CrupyLexerOpText('def'),
-            CrupyLexerOpText('ij'),
+    parser = CrupyDSLParserBase({
+        'entry' : CrupyDSLLexerOpRep1N(
+            CrupyDSLLexerOpText('abc'),
+            CrupyDSLLexerOpText('def'),
+            CrupyDSLLexerOpText('ij'),
         ),
     })
     parser.register_stream('abcdefij')
@@ -76,24 +76,24 @@ def test_rep1n_simple_success() -> None:
 def test_rep1n_empty() -> None:
     """ simple empty
     """
-    parser = CrupyParserBase({
-        'entry' : CrupyLexerOpRep1N(
-            CrupyLexerOpText('abc'),
-            CrupyLexerOpText('def'),
-            CrupyLexerOpText('ijk'),
+    parser = CrupyDSLParserBase({
+        'entry' : CrupyDSLLexerOpRep1N(
+            CrupyDSLLexerOpText('abc'),
+            CrupyDSLLexerOpText('def'),
+            CrupyDSLLexerOpText('ijk'),
         ),
     })
     try:
         parser.register_stream('abcdefijabcdefijklnm')
         parser.execute('entry')
         raise AssertionError('rule entry executed')
-    except CrupyLexerException as err:
+    except CrupyDSLLexerException as err:
         assert str(err) == (
             'Lexer parsing error occured:\n'
             '\n'
             'Stream: line 1, column 9\n'
             'abcdefijabcdefijklnm\n'
             '      ~~^\n'
-            'CrupyLexerOpTextException: Unable to match the text \'ijk\''
+            'CrupyDSLLexerOpTextException: Unable to match the text \'ijk\''
         )
         assert err.reason == 'unable to match the text \'ijk\''

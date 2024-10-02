@@ -2,58 +2,58 @@
 crupydsl.parser.base  - parser base class
 """
 # @note
-# Used as a workaround for the cyclic-import with the `CrupyLexer` class
+# Used as a workaround for the cyclic-import with the `CrupyDSLLexer` class
 from __future__ import annotations
 
 __all__ = [
-    'CrupyParserBase',
+    'CrupyDSLParserBase',
 ]
 from typing import Optional, IO, Any, NoReturn, TYPE_CHECKING, cast
 from collections.abc import Callable
 
 from crupydsl.exception import CrupyDSLCoreException
-from crupydsl.parser._stream.stream import CrupyStream
-from crupydsl.parser.exception import CrupyParserBaseException
-from crupydsl.parser.node import CrupyParserNodeBase
+from crupydsl.parser._stream.stream import CrupyDSLStream
+from crupydsl.parser.exception import CrupyDSLParserBaseException
+from crupydsl.parser.node import CrupyDSLParserNodeBase
 
 # @note : Design mistake
 #
-# We cannot import the `CrupyLexer` class since the magical `__call__()`
-# method take a `CrupyParserBase` class as a its first argument (which is
+# We cannot import the `CrupyDSLLexer` class since the magical `__call__()`
+# method take a `CrupyDSLParserBase` class as a its first argument (which is
 # defined here. So, we are in a circular dependencies problem.
 #
 # For now, I use a combination of workarounds to by-pass this bad design
 # limitation:
 # - use the `TYPE_CHECKING` indicator to know if we are in checking mode
 # - use the `annotations` import to allow "not well defined class"
-# - import the missing `CrupyLexer` type
+# - import the missing `CrupyDSLLexer` type
 if TYPE_CHECKING:
     from crupydsl.parser._lexer._operation.op_base import (
-        CrupyLexerOpBase,
+        CrupyDSLLexerOpBase,
     )
 
 #---
 # Public
 #---
 
-class CrupyParserBase():
+class CrupyDSLParserBase():
     """ Crupy parser class
     """
     def __init__(
         self,
-        production_book: Optional[dict[str,CrupyLexerOpBase]] = None,
+        production_book: Optional[dict[str,CrupyDSLLexerOpBase]] = None,
     ) -> None:
-        self._stream: CrupyStream|None = None
-        self._production_book: dict[str,CrupyLexerOpBase] = {}
+        self._stream: CrupyDSLStream|None = None
+        self._production_book: dict[str,CrupyDSLLexerOpBase] = {}
         if production_book:
             self._production_book = production_book
         self._hook_postprocess_book: dict[
             str,
-            list[Callable[[CrupyParserNodeBase], CrupyParserNodeBase]],
+            list[Callable[[CrupyDSLParserNodeBase], CrupyDSLParserNodeBase]],
         ]= {}
         self._hook_error_book: dict[
             str,
-            list[Callable[[CrupyParserBaseException], NoReturn]],
+            list[Callable[[CrupyDSLParserBaseException], NoReturn]],
         ]= {}
 
 
@@ -62,14 +62,14 @@ class CrupyParserBase():
     #---
 
     @property
-    def stream(self) -> CrupyStream:
+    def stream(self) -> CrupyDSLStream:
         """ return the current stream if any """
         if self._stream:
             return self._stream
         raise CrupyDSLCoreException('No stream registered')
 
     @property
-    def production_book(self) -> dict[str,CrupyLexerOpBase]:
+    def production_book(self) -> dict[str,CrupyDSLLexerOpBase]:
         """ return the current registered rules """
         return self._production_book
 
@@ -82,20 +82,20 @@ class CrupyParserBase():
         target: str,
         production_name: str,
         *args: Any,
-    ) -> CrupyParserNodeBase:
+    ) -> CrupyDSLParserNodeBase:
         """ execute a hook if available
         """
         hook_book = getattr(self, f"_hook_{target}_book")
         if production_name not in hook_book:
             if target == 'postprocess':
-                return cast(CrupyParserNodeBase, args[0])
+                return cast(CrupyDSLParserNodeBase, args[0])
             raise args[0]
         try:
             node = None
             for hook in hook_book[production_name]:
-                node = cast(CrupyParserNodeBase, hook(*args))
+                node = cast(CrupyDSLParserNodeBase, hook(*args))
             if node is None:
-                raise CrupyParserBaseException(
+                raise CrupyDSLParserBaseException(
                     context = args[0].context,
                     reason  = \
                     f"{args[0].context.generate_error_log()}\n"
@@ -107,7 +107,7 @@ class CrupyParserBase():
         except Exception as err:
             if target == 'error':
                 raise err
-            raise CrupyParserBaseException(
+            raise CrupyDSLParserBaseException(
                 context = args[0].context,
                 reason  = \
                     f"{args[0].context.generate_error_log()}\n"
@@ -140,7 +140,7 @@ class CrupyParserBase():
             content += '\n'
         return content[:-2]
 
-    def execute(self, production_name: str) -> CrupyParserNodeBase:
+    def execute(self, production_name: str) -> CrupyDSLParserNodeBase:
         """ execute a particular production name
         """
         if production_name not in self._production_book:
@@ -151,24 +151,24 @@ class CrupyParserBase():
         try:
             node = self._production_book[production_name](self)
             return self._execute_hook('postprocess', production_name, node)
-        except CrupyParserBaseException as err:
+        except CrupyDSLParserBaseException as err:
             self._execute_hook('error', production_name, err)
             raise CrupyDSLCoreException(
                 f"Error during {production_name} production handling"
             ) from err
 
-    def register_stream(self, stream: CrupyStream|IO[str]|str) -> None:
+    def register_stream(self, stream: CrupyDSLStream|IO[str]|str) -> None:
         """ register a stream
         """
-        if isinstance(stream, CrupyStream):
+        if isinstance(stream, CrupyDSLStream):
             self._stream = stream
         else:
-            self._stream = CrupyStream.from_any(stream)
+            self._stream = CrupyDSLStream.from_any(stream)
 
     def register_post_hook(
         self,
         production_name: str,
-        hook: Callable[[CrupyParserNodeBase],CrupyParserNodeBase],
+        hook: Callable[[CrupyDSLParserNodeBase],CrupyDSLParserNodeBase],
     ) -> None:
         """ register a new hook for a production
         """
@@ -184,7 +184,7 @@ class CrupyParserBase():
     def register_error_hook(
         self,
         production_name: str,
-        hook: Callable[[CrupyParserBaseException],NoReturn],
+        hook: Callable[[CrupyDSLParserBaseException],NoReturn],
     ) -> None:
         """ register a new hook for a production in case of error
         """

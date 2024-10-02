@@ -1,19 +1,19 @@
 """
-tests.lexer.op_optional     - test the CrupyLexerOpOptional
+tests.lexer.op_optional     - test the CrupyDSLLexerOpOptional
 """
-from crupydsl.parser.base import CrupyParserBase
-from crupydsl.parser.node import CrupyParserNodeBase
+from crupydsl.parser.base import CrupyDSLParserBase
+from crupydsl.parser.node import CrupyDSLParserNodeBase
 from crupydsl.parser._lexer import (
-    CrupyLexerOpText,
-    CrupyLexerOpOptional,
-    CrupyLexerOpSeq,
+    CrupyDSLLexerOpText,
+    CrupyDSLLexerOpOptional,
+    CrupyDSLLexerOpSeq,
 )
 
 #---
 # Internals
 #---
 
-def __check_node(node: CrupyParserNodeBase, text: str) -> None:
+def __check_node(node: CrupyDSLParserNodeBase, text: str) -> None:
     """ check and return captured information
     """
     content = ''
@@ -37,14 +37,14 @@ def __check_node(node: CrupyParserNodeBase, text: str) -> None:
 def test_simple_success() -> None:
     """ simple valid cases
     """
-    parser = CrupyParserBase({
+    parser = CrupyDSLParserBase({
         'entry' : \
-            CrupyLexerOpSeq(
-                CrupyLexerOpText('http'),
-                CrupyLexerOpOptional(
-                    CrupyLexerOpText('s'),
+            CrupyDSLLexerOpSeq(
+                CrupyDSLLexerOpText('http'),
+                CrupyDSLLexerOpOptional(
+                    CrupyDSLLexerOpText('s'),
                 ),
-                CrupyLexerOpText('://'),
+                CrupyDSLLexerOpText('://'),
             ),
     })
     parser.register_stream('http://')

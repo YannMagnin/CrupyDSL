@@ -2,7 +2,7 @@
 tests.dsl.statement - test statement productions
 """
 from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 
 #---
 # Public
@@ -66,7 +66,7 @@ def test_error_broken_alternative() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('"yes no maybe')
         CRUPY_DSL_PARSER_OBJ.execute('statement')
         raise AssertionError('production \'statement\' executed')
-    except CrupyParserBaseException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'

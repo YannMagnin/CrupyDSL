@@ -7,8 +7,8 @@ __all__ = [
 from typing import Any
 
 from crupydsl.parser import (
-    CrupyParserBase,
-    CrupyParserNodeBase,
+    CrupyDSLParserBase,
+    CrupyDSLParserNodeBase,
 )
 
 #---
@@ -16,7 +16,7 @@ from crupydsl.parser import (
 #---
 
 def __check_primitive_node(
-    node: CrupyParserNodeBase,
+    node: CrupyDSLParserNodeBase,
     kind: str,
     data: Any,
 ) -> None:
@@ -30,7 +30,7 @@ def __check_primitive_node(
 # Public
 #---
 
-def json_test_parser_array(parser: CrupyParserBase) -> None:
+def json_test_parser_array(parser: CrupyDSLParserBase) -> None:
     """ test `array` production
     """
     print('-= check array =-')

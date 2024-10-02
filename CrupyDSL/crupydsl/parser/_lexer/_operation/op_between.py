@@ -3,18 +3,18 @@
 crupydsl.parser._lexer._operation.between - between operation
 """
 __all__ = [
-    'CrupyLexerOpBetween',
-    'CrupyLexerOpBetweenException',
-    'CrupyParserNodeLexBetween',
+    'CrupyDSLLexerOpBetween',
+    'CrupyDSLLexerOpBetweenException',
+    'CrupyDSLParserNodeLexBetween',
 ]
 
-from crupydsl.parser._lexer._operation.op_base import CrupyLexerOpBase
-from crupydsl.parser._lexer.exception import CrupyLexerException
-from crupydsl.parser.exception import CrupyParserBaseException
-from crupydsl.parser.node import CrupyParserNodeBase
-from crupydsl.parser.base import CrupyParserBase
+from crupydsl.parser._lexer._operation.op_base import CrupyDSLLexerOpBase
+from crupydsl.parser._lexer.exception import CrupyDSLLexerException
+from crupydsl.parser.exception import CrupyDSLParserBaseException
+from crupydsl.parser.node import CrupyDSLParserNodeBase
+from crupydsl.parser.base import CrupyDSLParserBase
 from crupydsl.parser._lexer._operation.op_builtin import (
-    CrupyLexerOpBuiltin,
+    CrupyDSLLexerOpBuiltin,
 )
 #---
 # Public
@@ -23,24 +23,24 @@ from crupydsl.parser._lexer._operation.op_builtin import (
 # allow to few methods and unused private methods
 # pylint: disable=locally-disabled,R0903,W0238
 
-class CrupyParserNodeLexBetween(CrupyParserNodeBase):
+class CrupyDSLParserNodeLexBetween(CrupyDSLParserNodeBase):
     """ between token information """
-    captured_start:     CrupyParserNodeBase
+    captured_start:     CrupyDSLParserNodeBase
     captured_middle:    str
-    captured_end:       CrupyParserNodeBase
+    captured_end:       CrupyDSLParserNodeBase
 
-class CrupyLexerOpBetweenException(CrupyLexerException):
+class CrupyDSLLexerOpBetweenException(CrupyDSLLexerException):
     """ class exception for seq operation """
     validated_operation: int
     original_reason: str
 
-class CrupyLexerOpBetween(CrupyLexerOpBase):
+class CrupyDSLLexerOpBetween(CrupyDSLLexerOpBase):
     """ execute sequence of lexer operation
     """
     def __init__(
         self,
-        startop: CrupyLexerOpBase,
-        endop: CrupyLexerOpBase,
+        startop: CrupyDSLLexerOpBase,
+        endop: CrupyDSLLexerOpBase,
         with_newline: bool,
     ) -> None:
         super().__init__()
@@ -48,13 +48,13 @@ class CrupyLexerOpBetween(CrupyLexerOpBase):
         self._endop = endop
         self._with_newline = with_newline
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
+    def __call__(self, parser: CrupyDSLParserBase) -> CrupyDSLParserNodeBase:
         """ execute all lexer operation
         """
         if self._with_newline:
-            anyop = CrupyLexerOpBuiltin('any_newline')
+            anyop = CrupyDSLLexerOpBuiltin('any_newline')
         else:
-            anyop = CrupyLexerOpBuiltin('any')
+            anyop = CrupyDSLLexerOpBuiltin('any')
         validated_operation = 0
         with parser.stream as context:
             try:
@@ -66,12 +66,12 @@ class CrupyLexerOpBetween(CrupyLexerOpBase):
                         captured_end = self._endop(parser)
                         validated_operation = 2
                         break
-                    except CrupyParserBaseException as err:
+                    except CrupyDSLParserBaseException as err:
                         if err.reason == 'reached end-of-file':
                             validated_operation = 2
                             raise err
                     captured_middle += anyop(parser).text
-            except CrupyParserBaseException as err:
+            except CrupyDSLParserBaseException as err:
                 context.index = err.context.index
                 context.lineno = err.context.lineno
                 context.column = err.context.column
@@ -81,13 +81,13 @@ class CrupyLexerOpBetween(CrupyLexerOpBase):
                     reason = 'unable to validate the middle request: '
                 else:
                     reason = 'unable to validate the enclosing request: '
-                raise CrupyLexerOpBetweenException(
+                raise CrupyDSLLexerOpBetweenException(
                     context             = context,
                     validated_operation = validated_operation,
                     original_reason     = err.reason,
                     reason              = f"{reason}{err.reason}",
                 ) from err
-            return CrupyParserNodeLexBetween(
+            return CrupyDSLParserNodeLexBetween(
                 context         = context.validate(),
                 captured_start  = captured_start,
                 captured_middle = captured_middle,

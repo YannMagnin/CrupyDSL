@@ -5,13 +5,13 @@ __all__ = [
     'json_test_parser_nullable',
 ]
 
-from crupydsl.parser import CrupyParserBase
+from crupydsl.parser import CrupyDSLParserBase
 
 #---
 # Public
 #---
 
-def json_test_parser_nullable(parser: CrupyParserBase) -> None:
+def json_test_parser_nullable(parser: CrupyDSLParserBase) -> None:
     """ test `nullable` production
     """
     print('-= check nullable =-')

@@ -2,29 +2,29 @@
 crupydsl.grammar._dsl._parser.group  - DSL group hook
 """
 __all__ = [
-    'CrupyParserNodeDslGroup',
+    'CrupyDSLParserNodeDslGroup',
     'dsl_group_hook',
     'dsl_group_hook_error',
 ]
 from typing import Union, NoReturn
 
-from crupydsl.parser import CrupyParserNodeBase
-from crupydsl.parser.exception import CrupyParserBaseException
+from crupydsl.parser import CrupyDSLParserNodeBase
+from crupydsl.parser.exception import CrupyDSLParserBaseException
 from crupydsl.grammar._dsl._parser.exception import (
-    CrupyDslParserException,
+    CrupyDSLParserException,
 )
 
 #---
 # Public
 #---
 
-class CrupyParserNodeDslGroup(CrupyParserNodeBase):
+class CrupyDSLParserNodeDslGroup(CrupyDSLParserNodeBase):
     """ group node """
     lookahead:  Union[str,None]
-    statement:  CrupyParserNodeBase
+    statement:  CrupyDSLParserNodeBase
     operation:  Union[str,None]
 
-def dsl_group_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
+def dsl_group_hook(node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
     """ handle "group" node
     """
     assert node.type == 'lex_seq'
@@ -56,24 +56,24 @@ def dsl_group_hook(node: CrupyParserNodeBase) -> CrupyParserNodeBase:
             operation = 'one_plus'
         if node.seq[6].seq[0].text == '?':
             operation = 'optional'
-    return CrupyParserNodeDslGroup(
+    return CrupyDSLParserNodeDslGroup(
         parent_node = node,
         lookahead   = lookahead,
         statement   = node.seq[3],
         operation   = operation,
     )
 
-def dsl_group_hook_error(err: CrupyParserBaseException) -> NoReturn:
+def dsl_group_hook_error(err: CrupyDSLParserBaseException) -> NoReturn:
     """ error hook
     """
     assert err.type == 'lexer_op_seq'
     if err.validated_operation == 0:
-        raise CrupyDslParserException(err, 'missing opening parenthesis')
+        raise CrupyDSLParserException(err, 'missing opening parenthesis')
     if err.validated_operation in (2, 3, 4):
         raise err
     if err.validated_operation == 5:
-        raise CrupyDslParserException(err, 'missing enclosing parenthesis')
-    raise CrupyDslParserException(
+        raise CrupyDSLParserException(err, 'missing enclosing parenthesis')
+    raise CrupyDSLParserException(
         err,
         '[internal error] unsupported sequence, too many validated '
         f"operation ({err.validated_operation} > 2)"

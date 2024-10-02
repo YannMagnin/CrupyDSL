@@ -5,17 +5,17 @@ __all__ = [
     'CSV_PARSER_OBJ',
 ]
 
-from crupydsl.parser import CrupyParserBase
+from crupydsl.parser import CrupyDSLParserBase
 from crupydsl.parser._lexer import (
-    CrupyLexerOpSeq,
-    CrupyLexerOpText,
-    CrupyLexerOpRep1N,
-    CrupyLexerOpRep0N,
-    CrupyLexerOpOr,
-    CrupyLexerOpProductionCall,
-    CrupyLexerOpBuiltin,
-    CrupyLexerOpBetween,
-    CrupyLexerAssertLookaheadNegative,
+    CrupyDSLLexerOpSeq,
+    CrupyDSLLexerOpText,
+    CrupyDSLLexerOpRep1N,
+    CrupyDSLLexerOpRep0N,
+    CrupyDSLLexerOpOr,
+    CrupyDSLLexerOpProductionCall,
+    CrupyDSLLexerOpBuiltin,
+    CrupyDSLLexerOpBetween,
+    CrupyDSLLexerAssertLookaheadNegative,
 )
 
 from crupycsv._parser.prod_csv import csv_parser_prod_csv_hook
@@ -29,32 +29,32 @@ from crupycsv._parser.prod_field import csv_parser_prod_field_hook
 # the CSV grammar defined should generate the following parser object
 # @note
 # - the following hardcoded parser is used to validate the
-# `CrupyParserBase` design
-CSV_PARSER_OBJ = CrupyParserBase({
+# `CrupyDSLParserBase` design
+CSV_PARSER_OBJ = CrupyDSLParserBase({
     #
     # production entry
     # > cvs ::= (<record> :newline:)+ :eof:
     #
     'csv' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpRep1N(
-                CrupyLexerOpSeq(
-                    CrupyLexerOpProductionCall('record'),
-                    CrupyLexerOpBuiltin('newline'),
+        CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpRep1N(
+                CrupyDSLLexerOpSeq(
+                    CrupyDSLLexerOpProductionCall('record'),
+                    CrupyDSLLexerOpBuiltin('newline'),
                 ),
             ),
-            CrupyLexerOpBuiltin('eof'),
+            CrupyDSLLexerOpBuiltin('eof'),
         ),
     #
     # CSV record
     # > record ::= <field> ("," <field>)*
     #
     'record' : \
-        CrupyLexerOpSeq(
-            CrupyLexerOpProductionCall('field'),
-            CrupyLexerOpRep0N(
-                CrupyLexerOpText(','),
-                CrupyLexerOpProductionCall('field'),
+        CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpProductionCall('field'),
+            CrupyDSLLexerOpRep0N(
+                CrupyDSLLexerOpText(','),
+                CrupyDSLLexerOpProductionCall('field'),
             ),
         ),
     #
@@ -62,18 +62,18 @@ CSV_PARSER_OBJ = CrupyParserBase({
     # > field ::= <quoted_content> | <simple_content>
     #
     'field' : \
-        CrupyLexerOpOr(
-            CrupyLexerOpProductionCall('field_quoted'),
-            CrupyLexerOpProductionCall('field_simple'),
+        CrupyDSLLexerOpOr(
+            CrupyDSLLexerOpProductionCall('field_quoted'),
+            CrupyDSLLexerOpProductionCall('field_simple'),
         ),
     #
     # CSV quoted field
     # > quoted_field ::= '"'...'"'
     #
     'field_quoted' : \
-        CrupyLexerOpBetween(
-            startop         = CrupyLexerOpText('"'),
-            endop           = CrupyLexerOpText('"'),
+        CrupyDSLLexerOpBetween(
+            startop         = CrupyDSLLexerOpText('"'),
+            endop           = CrupyDSLLexerOpText('"'),
             with_newline    = False,
         ),
     #
@@ -81,15 +81,15 @@ CSV_PARSER_OBJ = CrupyParserBase({
     # > simple_field ::= ((?!,)(<letter>|<digit>|<symbol>))*
     #
     'field_simple' : \
-        CrupyLexerOpRep0N(
-            CrupyLexerOpSeq(
-                CrupyLexerAssertLookaheadNegative(
-                    CrupyLexerOpText(','),
+        CrupyDSLLexerOpRep0N(
+            CrupyDSLLexerOpSeq(
+                CrupyDSLLexerAssertLookaheadNegative(
+                    CrupyDSLLexerOpText(','),
                 ),
-                CrupyLexerOpOr(
-                    CrupyLexerOpBuiltin('alpha'),
-                    CrupyLexerOpBuiltin('digit'),
-                    CrupyLexerOpBuiltin('symbol'),
+                CrupyDSLLexerOpOr(
+                    CrupyDSLLexerOpBuiltin('alpha'),
+                    CrupyDSLLexerOpBuiltin('digit'),
+                    CrupyDSLLexerOpBuiltin('symbol'),
                 ),
             ),
         ),

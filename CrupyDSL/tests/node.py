@@ -1,23 +1,23 @@
 """
 tests.stream.stream     - stream object unittest
 """
-from crupydsl.parser._stream.stream import CrupyStream
-from crupydsl.parser import CrupyParserNodeBase
+from crupydsl.parser._stream.stream import CrupyDSLStream
+from crupydsl.parser import CrupyDSLParserNodeBase
 
 #---
 # Public
 #---
 
-class CrupyParserNodeTest(CrupyParserNodeBase):
+class CrupyDSLParserNodeTest(CrupyDSLParserNodeBase):
     """ node test """
     name:   str
 
 def test_simple() -> None:
     """ simply check the read/peek
     """
-    stream = CrupyStream.from_any('abcd')
+    stream = CrupyDSLStream.from_any('abcd')
     with stream as context:
-        node = CrupyParserNodeTest(
+        node = CrupyDSLParserNodeTest(
             context = context.validate(),
         )
         assert node is not None
@@ -25,9 +25,9 @@ def test_simple() -> None:
 def test_custom() -> None:
     """ custom tests
     """
-    stream = CrupyStream.from_any('abcd')
+    stream = CrupyDSLStream.from_any('abcd')
     with stream as context:
-        node = CrupyParserNodeTest(
+        node = CrupyDSLParserNodeTest(
             context = context.validate(),
             name    = 'coucou',
         )

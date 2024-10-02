@@ -5,13 +5,13 @@ __all__ = [
     'json_test_parser_string',
 ]
 
-from crupydsl.parser import CrupyParserBase
+from crupydsl.parser import CrupyDSLParserBase
 
 #---
 # Public
 #---
 
-def json_test_parser_string(parser: CrupyParserBase) -> None:
+def json_test_parser_string(parser: CrupyDSLParserBase) -> None:
     """ test `string` production
     """
     print('-= check string =-')

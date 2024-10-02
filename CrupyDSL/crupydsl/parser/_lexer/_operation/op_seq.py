@@ -2,18 +2,18 @@
 crupydsl.parser._lexer._operation.seq - sequence operation
 """
 __all__ = [
-    'CrupyLexerOpSeq',
-    'CrupyLexerOpSeqException',
-    'CrupyParserNodeLexSeq',
+    'CrupyDSLLexerOpSeq',
+    'CrupyDSLLexerOpSeqException',
+    'CrupyDSLParserNodeLexSeq',
 ]
 from typing import Union, Any, cast
 
-from crupydsl.parser._lexer._operation.op_base import CrupyLexerOpBase
-from crupydsl.parser._lexer._assert.base import CrupyLexerAssertBase
-from crupydsl.parser._lexer.exception import CrupyLexerException
-from crupydsl.parser.exception import CrupyParserBaseException
-from crupydsl.parser.base import CrupyParserBase
-from crupydsl.parser.node import CrupyParserNodeBase
+from crupydsl.parser._lexer._operation.op_base import CrupyDSLLexerOpBase
+from crupydsl.parser._lexer._assert.base import CrupyDSLLexerAssertBase
+from crupydsl.parser._lexer.exception import CrupyDSLLexerException
+from crupydsl.parser.exception import CrupyDSLParserBaseException
+from crupydsl.parser.base import CrupyDSLParserBase
+from crupydsl.parser.node import CrupyDSLParserNodeBase
 from crupydsl.exception import CrupyDSLCoreException
 
 #---
@@ -23,28 +23,30 @@ from crupydsl.exception import CrupyDSLCoreException
 # allow to few methods and unused private methods
 # pylint: disable=locally-disabled,R0903,W0238
 
-class CrupyParserNodeLexSeq(CrupyParserNodeBase):
+class CrupyDSLParserNodeLexSeq(CrupyDSLParserNodeBase):
     """ sequence token information """
-    seq: list[CrupyParserNodeBase]
+    seq: list[CrupyDSLParserNodeBase]
 
-class CrupyLexerOpSeqException(CrupyLexerException):
+class CrupyDSLLexerOpSeqException(CrupyDSLLexerException):
     """ class exception for seq operation """
     validated_operation: int
 
-class CrupyLexerOpSeq(CrupyLexerOpBase):
+class CrupyDSLLexerOpSeq(CrupyDSLLexerOpBase):
     """ execute sequence of lexer operation
     """
     def __init__(self, *args: Any) -> None:
         super().__init__()
-        self._seq: list[Union[CrupyLexerOpBase,CrupyLexerAssertBase]] = []
+        self._seq: list[
+            Union[CrupyDSLLexerOpBase,CrupyDSLLexerAssertBase]
+        ] = []
         for i, arg in enumerate(args):
             if (
-                    CrupyLexerOpBase not in type(arg).mro()
-                and CrupyLexerAssertBase not in type(arg).mro()
+                    CrupyDSLLexerOpBase not in type(arg).mro()
+                and CrupyDSLLexerAssertBase not in type(arg).mro()
             ):
                 raise CrupyDSLCoreException(
                     f"Unable to initialise the {type(self).__name__} "
-                    f"because the argument {i} is not of type CrupyLexer "
+                    f"because the argument {i} is not of type CrupyDSLLexer "
                     f"({type(arg).mro()})"
                 )
             self._seq.append(arg)
@@ -54,17 +56,17 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
                 'not sequence has been presented'
             )
 
-    def __call__(self, parser: CrupyParserBase) -> CrupyParserNodeBase:
+    def __call__(self, parser: CrupyDSLParserBase) -> CrupyDSLParserNodeBase:
         """ execute all lexer operation
         """
         with parser.stream as context:
-            token_list: list[CrupyParserNodeBase] = []
+            token_list: list[CrupyDSLParserNodeBase] = []
             for i, lexer in enumerate(self._seq):
                 try:
-                    if issubclass(type(lexer), CrupyLexerAssertBase):
-                        assert_op = cast(CrupyLexerAssertBase, lexer)
+                    if issubclass(type(lexer), CrupyDSLLexerAssertBase):
+                        assert_op = cast(CrupyDSLLexerAssertBase, lexer)
                         if not assert_op(parser):
-                            raise CrupyLexerOpSeqException(
+                            raise CrupyDSLLexerOpSeqException(
                                 context             = context,
                                 validated_operation = i,
                                 reason              = \
@@ -73,19 +75,19 @@ class CrupyLexerOpSeq(CrupyLexerOpBase):
                             )
                         continue
                     token_list.append(
-                        cast(CrupyLexerOpBase, lexer)(parser)
+                        cast(CrupyDSLLexerOpBase, lexer)(parser)
                     )
-                except CrupyParserBaseException as err:
+                except CrupyDSLParserBaseException as err:
                     context.index = err.context.index
                     context.lineno = err.context.lineno
                     context.column = err.context.column
-                    raise CrupyLexerOpSeqException(
+                    raise CrupyDSLLexerOpSeqException(
                         context             = context,
                         validated_operation = i,
                         reason              = err.reason,
                         message             = err.message,
                     ) from err
-            return CrupyParserNodeLexSeq(
+            return CrupyDSLParserNodeLexSeq(
                 context = context.validate(),
                 seq     = token_list,
             )

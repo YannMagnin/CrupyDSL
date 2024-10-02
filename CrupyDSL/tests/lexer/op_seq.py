@@ -1,11 +1,11 @@
 """
-tests.lexer.op_seq  - test the CrupyLexerOpSeq
+tests.lexer.op_seq  - test the CrupyDSLLexerOpSeq
 """
-from crupydsl.parser import CrupyParserBase
+from crupydsl.parser import CrupyDSLParserBase
 from crupydsl.parser._lexer import (
-    CrupyLexerOpSeq,
-    CrupyLexerOpSeqException,
-    CrupyLexerOpText,
+    CrupyDSLLexerOpSeq,
+    CrupyDSLLexerOpSeqException,
+    CrupyDSLLexerOpText,
 )
 
 #---
@@ -15,11 +15,11 @@ from crupydsl.parser._lexer import (
 def test_simple_success() -> None:
     """ simple valid case
     """
-    parser = CrupyParserBase({
-        'entry' : CrupyLexerOpSeq(
-            CrupyLexerOpText('abc'),
-            CrupyLexerOpText('def'),
-            CrupyLexerOpText('ij'),
+    parser = CrupyDSLParserBase({
+        'entry' : CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpText('abc'),
+            CrupyDSLLexerOpText('def'),
+            CrupyDSLLexerOpText('ij'),
         ),
     })
     parser.register_stream('abcdefijkl')
@@ -37,25 +37,25 @@ def test_simple_success() -> None:
 def test_simple_fail() -> None:
     """ simple fail
     """
-    parser = CrupyParserBase({
-        'entry' : CrupyLexerOpSeq(
-            CrupyLexerOpText('abc'),
-            CrupyLexerOpText('dex'),
-            CrupyLexerOpText('ijkl'),
+    parser = CrupyDSLParserBase({
+        'entry' : CrupyDSLLexerOpSeq(
+            CrupyDSLLexerOpText('abc'),
+            CrupyDSLLexerOpText('dex'),
+            CrupyDSLLexerOpText('ijkl'),
         ),
     })
     try:
         parser.register_stream('abcdef ijkl')
         parser.execute('entry')
         raise AssertionError('rule entry executed')
-    except CrupyLexerOpSeqException as err:
+    except CrupyDSLLexerOpSeqException as err:
         assert str(err) == (
             'Lexer parsing error occured:\n'
             '\n'
             'Stream: line 1, column 6\n'
             'abcdef ijkl\n'
             '   ~~^\n'
-            'CrupyLexerOpTextException: Unable to match the text \'dex\''
+            'CrupyDSLLexerOpTextException: Unable to match the text \'dex\''
         )
         assert err.validated_operation == 1
         assert err.reason == 'unable to match the text \'dex\''
