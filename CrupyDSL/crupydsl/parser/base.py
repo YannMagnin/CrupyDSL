@@ -9,6 +9,7 @@ __all__ = [
     'CrupyDSLParserBase',
 ]
 from typing import Optional, IO, Any, NoReturn, TYPE_CHECKING, cast
+from pathlib import Path
 from collections.abc import Callable
 
 from crupydsl.exception import CrupyDSLCoreException
@@ -163,13 +164,13 @@ class CrupyDSLParserBase():
                 f"Error during {production_name} production handling"
             ) from err
 
-    def register_stream(self, stream: CrupyDSLStream|IO[str]|str) -> None:
+    def register_stream(
+        self,
+        stream: Path|IO[str]|str|CrupyDSLStream,
+    ) -> None:
         """ register a stream
         """
-        if isinstance(stream, CrupyDSLStream):
-            self._stream = stream
-        else:
-            self._stream = CrupyDSLStream.from_any(stream)
+        self._stream = CrupyDSLStream.from_any(stream)
 
     def register_post_hook(
         self,

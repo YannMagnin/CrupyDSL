@@ -32,6 +32,7 @@ def dsl_alternative_hook(
             'dsl_group',
             'dsl_string',
             'dsl_builtin',
+            'dsl_between',
         ]
         node_seq.append(seq[1])
     return CrupyDSLParserNodeDslAlternative(

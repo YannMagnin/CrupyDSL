@@ -2,7 +2,7 @@
 crupydsl.grammar.exception    - general grammar exception class
 """
 __all__ = [
-    'CrupyDSLGrammarException',
+    'CrupyDSLGrammarBaseException',
 ]
 
 from crupydsl.exception import CrupyDSLCoreException
@@ -17,5 +17,5 @@ from crupydsl._utils import crupynamedclass
     regex           = \
         '^(_)*CrupyDSLGrammar(?P<type>([A-Z][a-z]+)+)Exception$',
 )
-class CrupyDSLGrammarException(CrupyDSLCoreException):
+class CrupyDSLGrammarBaseException(CrupyDSLCoreException):
     """ general crupy grammar exception class """

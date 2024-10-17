@@ -7,7 +7,7 @@ __all__ = [
     'CrupyDSLParserNodeBase',
     'CrupyDSLParserBase',
     'CrupyDSLGrammarBase',
-    'CrupyDSLGrammarException',
+    'CrupyDSLGrammarBaseException',
 ]
 from crupydsl.exception import CrupyDSLCoreException
 from crupydsl.parser import (
@@ -17,5 +17,5 @@ from crupydsl.parser import (
 )
 from crupydsl.grammar import (
     CrupyDSLGrammarBase,
-    CrupyDSLGrammarException,
+    CrupyDSLGrammarBaseException,
 )

@@ -43,8 +43,8 @@ class _CrupyNamedClass():
         if not info:
             if error == 'None':
                 error  = f"subclass name '{self.__class__.__name__}' is "
-                error += f"malformated to be compliant with {class_origin} "
-                error += f"that require to match with '{regex}'"
+                error += f"malformated to be compliant with '{class_origin}'"
+                error += f" that require to match with '{regex}'"
             raise CrupyDSLCoreException(error)
         class_type = ''
         if generate_type:

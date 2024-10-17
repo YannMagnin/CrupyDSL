@@ -10,6 +10,7 @@ __all__ = [
     'CrupyDSLStream',
 ]
 from typing import Any, IO
+from pathlib import Path
 from mmap import mmap, ACCESS_READ, ACCESS_WRITE
 from dataclasses import dataclass
 
@@ -51,22 +52,45 @@ class CrupyDSLStream():
         return CrupyDSLStream(memory_area)
 
     @classmethod
-    def from_file(cls, file: IO[str]) -> CrupyDSLStream:
+    def from_io(cls, stream: IO[str]) -> CrupyDSLStream:
         """ create a CrupyDSLStream for a file """
         return CrupyDSLStream(
             mmap(
-                fileno  = file.fileno(),
+                fileno  = stream.fileno(),
                 length  = 0,
                 access  = ACCESS_READ
             ),
         )
 
     @classmethod
-    def from_any(cls, stream: IO[str]|str) -> CrupyDSLStream:
-        """ nexus for file or string """
+    def from_file(cls, stream: Path) -> CrupyDSLStream:
+        """ create a CrupyDSLStream for a file """
+        if not stream.exists():
+            raise CrupyDSLStreamException(
+                f"unable to find the file '{str(stream)}'"
+            )
+        try:
+            with open(stream, 'r', encoding='utf-8') as stream_fd:
+                return cls.from_io(stream_fd)
+        except PermissionError as err:
+            raise CrupyDSLStreamException(
+                f"unable to open the file '{str(stream)}'"
+            ) from err
+
+    @classmethod
+    def from_any(
+        cls,
+        stream: Path|IO[str]|str|CrupyDSLStream,
+    ) -> CrupyDSLStream:
+        """ nexus for file, IO, string or itself
+        """
+        if isinstance(stream, CrupyDSLStream):
+            return stream
         if isinstance(stream, str):
             return cls.from_string(stream)
-        return cls.from_file(stream)
+        if isinstance(stream, Path):
+            return cls.from_file(stream)
+        return cls.from_io(stream)
 
     #---
     # Object magic

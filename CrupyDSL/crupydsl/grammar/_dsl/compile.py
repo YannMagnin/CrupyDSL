@@ -29,7 +29,7 @@ from crupydsl.grammar._dsl._parser.prod_statement import (
 from crupydsl.grammar._dsl._parser.prod_alternative import (
     CrupyDSLParserNodeDslAlternative,
 )
-from crupydsl.grammar.exception import CrupyDSLGrammarException
+from crupydsl.grammar.exception import CrupyDSLGrammarBaseException
 
 #---
 # Internals
@@ -53,9 +53,11 @@ def _dsl_compil_grammar_operation(
     if operation.type == 'dsl_string':
         return CrupyDSLLexerOpText(operation.text)
     if operation.type == 'dsl_between':
+        startop = dsl_compil_grammar_statement(operation.opening)
+        endop = dsl_compil_grammar_statement(operation.closing)
         return CrupyDSLLexerOpBetween(
-            startop         = operation.opening,
-            endop           = operation.closing,
+            startop         = startop,
+            endop           = endop,
             with_newline    = operation.kind == 'newline',
         )
     if operation.type == 'dsl_group':
@@ -65,6 +67,8 @@ def _dsl_compil_grammar_operation(
                 return CrupyDSLLexerAssertLookaheadPositive(*lexerop._seq)
             if operation.lookahead == 'negative':
                 return CrupyDSLLexerAssertLookaheadNegative(*lexerop._seq)
+            if operation.operation is None:
+                return lexerop
             if operation.operation == 'zero_plus':
                 return CrupyDSLLexerOpRep0N(*lexerop._seq)
             if operation.operation == 'one_plus':
@@ -76,15 +80,17 @@ def _dsl_compil_grammar_operation(
                 return CrupyDSLLexerAssertLookaheadPositive(lexerop)
             if operation.lookahead == 'negative':
                 return CrupyDSLLexerAssertLookaheadNegative(lexerop)
+            if operation.operation is None:
+                return lexerop
             if operation.operation == 'zero_plus':
                 return CrupyDSLLexerOpRep0N(lexerop)
             if operation.operation == 'one_plus':
                 return CrupyDSLLexerOpRep1N(lexerop)
             if operation.operation == 'optional':
                 return CrupyDSLLexerOpOptional(lexerop)
-        raise CrupyDSLGrammarException(
+        raise CrupyDSLGrammarBaseException(
             f"dsl_group: operation '{operation.operation}' not supported")
-    raise CrupyDSLGrammarException(
+    raise CrupyDSLGrammarBaseException(
         f"unable to translate the DSL operation '{operation.type}'"
         f" ({operation})"
     )
@@ -128,13 +134,13 @@ def dsl_compil_grammar_statement(
             ),
         )
     if not alt_list:
-        raise CrupyDSLGrammarException(
+        raise CrupyDSLGrammarBaseException(
             'unable to translate the statement: missing alternatives'
         )
     if len(alt_list) > 1:
         return CrupyDSLLexerOpOr(*alt_list)
     if isinstance(alt_list[0], CrupyDSLLexerAssertBase):
-        raise CrupyDSLGrammarException(
+        raise CrupyDSLGrammarBaseException(
             'unable to translate the statement: missing lexer operation '
             '(only a assert operation as been detected)'
         )

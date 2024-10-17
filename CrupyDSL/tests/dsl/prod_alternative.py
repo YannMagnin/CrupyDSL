@@ -30,6 +30,15 @@ def test_string() -> None:
     assert node.seq[0].type == 'dsl_string'
     assert node.seq[0].text == '667ekip'
 
+def test_between() -> None:
+    """ test
+    """
+    CRUPY_DSL_PARSER_OBJ.register_stream(':any:..."i"')
+    node = CRUPY_DSL_PARSER_OBJ.execute('alternative')
+    assert node.type == 'dsl_alternative'
+    assert len(node.seq) == 1
+    assert node.seq[0].type == 'dsl_between'
+
 def test_builtin() -> None:
     """ test
     """

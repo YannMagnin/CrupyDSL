@@ -23,7 +23,9 @@ class CrupyDSLParserNodeDslBuiltin(CrupyDSLParserNodeBase):
     """
     kind:   str
 
-def dsl_builtin_hook(node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
+def dsl_builtin_hook(
+    node: CrupyDSLParserNodeBase,
+) -> CrupyDSLParserNodeBase:
     """ handle "builtin" node
     """
     assert node.type == 'lex_seq'

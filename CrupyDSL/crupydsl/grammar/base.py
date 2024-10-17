@@ -11,7 +11,7 @@ from typing import Optional, Any, IO
 from pathlib import Path
 
 from crupydsl._utils import crupynamedclass
-from crupydsl.grammar.exception import CrupyDSLGrammarException
+from crupydsl.grammar.exception import CrupyDSLGrammarBaseException
 from crupydsl.grammar._dsl import (
     CRUPY_DSL_PARSER_OBJ,
     dsl_compil_grammar_statement,
@@ -28,7 +28,6 @@ from crupydsl.parser import (
 @crupynamedclass(
     generate_type   = False,
     regex           = '^(_)*CrupyDSLGrammar(?P<type>([A-Z][a-z]+)+)$',
-    error           = 'malformated grammar subclass',
 )
 class CrupyDSLGrammarBase():
     """
@@ -41,20 +40,15 @@ class CrupyDSLGrammarBase():
     #---
 
     grammar:            str
-    production_entry:   Optional[str]
+    production_entry:   Optional[str] = None
 
     def __init_subclass__(cls, /, **kwargs: Any) -> None:
         """ ensure that critical information are provided
         """
         super().__init_subclass__(**kwargs)
         if not cls.grammar:
-            raise CrupyDSLGrammarException(
+            raise CrupyDSLGrammarBaseException(
                 'Missing the `grammar` class attribute in subclass '
-                f"{cls.__name__}"
-            )
-        if not cls.production_entry:
-            raise CrupyDSLGrammarException(
-                'Missing `production_entry` class attribute in subclass'
                 f"{cls.__name__}"
             )
 
@@ -79,7 +73,7 @@ class CrupyDSLGrammarBase():
         assert node_tree.type == 'dsl_entry'
         for prod in node_tree.productions:
             if prod.production_name in self._target_parser.production_book:
-                raise CrupyDSLGrammarException(
+                raise CrupyDSLGrammarBaseException(
                     'unable to generate the production '
                     f"'{prod.production_name}': already defined"
                 )
@@ -106,26 +100,33 @@ class CrupyDSLGrammarBase():
         content += self._target_parser.show()
         return content
 
-    def parse(self, stream_origin: Path|IO[str]|str) -> CrupyDSLParserNodeBase:
+    def parse(
+        self,
+        stream: Optional[Path|IO[str]|str] = None,
+    ) -> CrupyDSLParserNodeBase:
         """ parse the stream using the current grammar state
         """
         if not self._production_entry:
-            raise CrupyDSLGrammarException('missing production entry')
-        stream_content: Any = stream_origin
-        if isinstance(stream_origin, Path):
-            if not stream_origin.exists():
-                raise CrupyDSLGrammarException(
-                    f"unable to find the file '{str(stream_origin)}'"
-                )
-            try:
-                with open(stream_origin, 'r', encoding='utf-8') as stream_fd:
-                    stream_content = stream_fd.read()
-            except PermissionError as err:
-                raise CrupyDSLGrammarException(
-                    f"unable to open the file '{stream_origin}'"
-                ) from err
-        self._target_parser.register_stream(stream_content)
+            raise CrupyDSLGrammarBaseException('missing production entry')
+        if stream:
+            self._target_parser.register_stream(stream)
         return self._target_parser.execute(self._production_entry)
+
+    def execute(
+        self,
+        production: str,
+        stream: Optional[Path|IO[str]|str] = None,
+    ) -> CrupyDSLParserNodeBase:
+        """ try to execute a particular production
+        """
+        if stream:
+            self._target_parser.register_stream(stream)
+        return self._target_parser.execute(production)
+
+    def register_stream(self, stream: Path|IO[str]|str) -> None:
+        """ register a stream
+        """
+        self._target_parser.register_stream(stream)
 
     def grammar_update(self, grammar_shard: CrupyDSLGrammarBase) -> None:
         """ aggregate the current grammar with an other piece of grammar
