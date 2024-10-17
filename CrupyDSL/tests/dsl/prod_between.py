@@ -3,6 +3,15 @@ tests.dsl.between - test between production
 """
 from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
 from crupydsl.parser.exception import CrupyDSLParserBaseException
+from crupydsl.grammar._dsl import dsl_compil_grammar_node
+from crupydsl.parser._lexer import (
+    CrupyDSLLexerOpBetween,
+    CrupyDSLLexerOpBuiltin,
+    CrupyDSLLexerOpText,
+)
+
+# to ensure that the DSL node translation has been correctly done
+# pylint: disable=locally-disabled,W0212
 
 #---
 # Public
@@ -19,6 +28,13 @@ def test_simple_success_0() -> None:
     assert node0.kind == 'no_newline'
     assert node0.opening.type == 'dsl_builtin'
     assert node0.closing.type == 'dsl_string'
+    operation = dsl_compil_grammar_node(node0)
+    assert isinstance(operation, CrupyDSLLexerOpBetween)
+    assert isinstance(operation._startop, CrupyDSLLexerOpBuiltin)
+    assert isinstance(operation._endop, CrupyDSLLexerOpText)
+    assert operation._with_newline is False
+    assert operation._startop._operation == 'digit'
+    assert operation._endop._text == '\''
 
 def test_simple_success_1() -> None:
     """ valid case

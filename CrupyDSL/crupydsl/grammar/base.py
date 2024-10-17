@@ -14,12 +14,13 @@ from crupydsl._utils import crupynamedclass
 from crupydsl.grammar.exception import CrupyDSLGrammarBaseException
 from crupydsl.grammar._dsl import (
     CRUPY_DSL_PARSER_OBJ,
-    dsl_compil_grammar_statement,
+    dsl_compil_grammar_node,
 )
 from crupydsl.parser import (
     CrupyDSLParserBase,
     CrupyDSLParserNodeBase,
 )
+from crupydsl.parser._lexer._operation.op_base import CrupyDSLLexerOpBase
 
 #---
 # Public
@@ -72,14 +73,22 @@ class CrupyDSLGrammarBase():
         node_tree = self._dsl_parser.execute('crupy_dsl')
         assert node_tree.type == 'dsl_entry'
         for prod in node_tree.productions:
+            assert prod.type == 'dsl_production'
             if prod.production_name in self._target_parser.production_book:
                 raise CrupyDSLGrammarBaseException(
                     'unable to generate the production '
                     f"'{prod.production_name}': already defined"
                 )
+            operation = dsl_compil_grammar_node(prod.statement)
+            if not isinstance(operation, CrupyDSLLexerOpBase):
+                raise CrupyDSLGrammarBaseException(
+                    'unable to generate the production '
+                    f"'{prod.production_name}': cannot be a simple "
+                    'assertion'
+                )
             self._target_parser.production_book[
                 prod.production_name
-            ] = dsl_compil_grammar_statement(prod.statement)
+            ] = operation
 
     def _grammar_update_hook(self, grammar: CrupyDSLGrammarBase) -> None:
         """ scan the grammar shard and check if there are production hook

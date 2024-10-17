@@ -7,6 +7,7 @@ from crupydsl.parser._lexer import (
     CrupyDSLLexerOpSeq,
     CrupyDSLLexerOpBetween,
     CrupyDSLLexerOpBetweenException,
+    CrupyDSLLexerAssertLookaheadPositive,
 )
 
 #---
@@ -162,6 +163,34 @@ def test_nl_success_2() -> None:
     assert node.captured_middle == 'this \nis \r\na test no\n'
     assert node.captured_end.type == 'lex_text'
     assert node.captured_end.text == '"'
+
+## valid - with assertions
+
+def test_assert_success_0() -> None:
+    """ valid test
+    """
+    parser = CrupyDSLParserBase({
+        'entry' : \
+            CrupyDSLLexerOpBetween(
+                startop         = \
+                    CrupyDSLLexerAssertLookaheadPositive(
+                        CrupyDSLLexerOpText('a'),
+                        CrupyDSLLexerOpText('b'),
+                    ),
+                endop           = \
+                    CrupyDSLLexerAssertLookaheadPositive(
+                        CrupyDSLLexerOpText('g'),
+                        CrupyDSLLexerOpText('h'),
+                    ),
+                with_newline    = True,
+            ),
+    })
+    parser.register_stream('abcdefghij')
+    node = parser.execute('entry')
+    assert node.type == 'lex_between'
+    assert node.captured_start is True
+    assert node.captured_end is True
+    assert node.captured_middle == 'abcdef'
 
 ## error - no newline
 

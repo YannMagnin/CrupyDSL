@@ -7,8 +7,10 @@ __all__ = [
     'CrupyDSLLexerOpBetweenException',
     'CrupyDSLParserNodeLexBetween',
 ]
+from typing import Union
 
 from crupydsl.parser._lexer._operation.op_base import CrupyDSLLexerOpBase
+from crupydsl.parser._lexer._assert.base import CrupyDSLLexerAssertBase
 from crupydsl.parser._lexer.exception import CrupyDSLLexerException
 from crupydsl.parser.exception import CrupyDSLParserBaseException
 from crupydsl.parser.node import CrupyDSLParserNodeBase
@@ -39,8 +41,8 @@ class CrupyDSLLexerOpBetween(CrupyDSLLexerOpBase):
     """
     def __init__(
         self,
-        startop: CrupyDSLLexerOpBase,
-        endop: CrupyDSLLexerOpBase,
+        startop: Union[CrupyDSLLexerOpBase, CrupyDSLLexerAssertBase],
+        endop: Union[CrupyDSLLexerOpBase, CrupyDSLLexerAssertBase],
         with_newline: bool,
     ) -> None:
         super().__init__()
@@ -48,7 +50,10 @@ class CrupyDSLLexerOpBetween(CrupyDSLLexerOpBase):
         self._endop = endop
         self._with_newline = with_newline
 
-    def __call__(self, parser: CrupyDSLParserBase) -> CrupyDSLParserNodeBase:
+    def __call__(
+        self,
+        parser: CrupyDSLParserBase,
+    ) -> CrupyDSLParserNodeBase:
         """ execute all lexer operation
         """
         if self._with_newline:
@@ -59,13 +64,28 @@ class CrupyDSLLexerOpBetween(CrupyDSLLexerOpBase):
         with parser.stream as context:
             try:
                 captured_start = self._startop(parser)
+                if (
+                        isinstance(self._startop, CrupyDSLLexerAssertBase)
+                    and captured_start is False
+                ):
+                    raise CrupyDSLParserBaseException(
+                        reason  = 'invalid input stream',
+                        context = context,
+                    )
                 validated_operation = 1
                 captured_middle = ''
                 while True:
                     try:
                         captured_end = self._endop(parser)
-                        validated_operation = 2
-                        break
+                        if not isinstance(
+                            self._endop,
+                            CrupyDSLLexerAssertBase,
+                        ):
+                            validated_operation = 2
+                            break
+                        if captured_end:
+                            validated_operation = 2
+                            break
                     except CrupyDSLParserBaseException as err:
                         if err.reason == 'reached end-of-file':
                             validated_operation = 2
@@ -93,6 +113,7 @@ class CrupyDSLLexerOpBetween(CrupyDSLLexerOpBase):
                 captured_middle = captured_middle,
                 captured_end    = captured_end,
             )
+
     #---
     # Public methods
     #---

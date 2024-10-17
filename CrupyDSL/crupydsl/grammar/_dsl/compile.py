@@ -2,9 +2,9 @@
 crupydsl.grammar._dsl.compil  - compil a grammar shard
 """
 __all__ = [
-    'dsl_compil_grammar_statement',
+    'dsl_compil_grammar_node',
 ]
-from typing import Union, Any, cast
+from typing import Union
 
 from crupydsl.parser._lexer._operation import (
     CrupyDSLLexerOpBase,
@@ -23,13 +23,8 @@ from crupydsl.parser._lexer._assert import (
     CrupyDSLLexerAssertLookaheadPositive,
     CrupyDSLLexerAssertLookaheadNegative,
 )
-from crupydsl.grammar._dsl._parser.prod_statement import (
-    CrupyDSLParserNodeDslStatement,
-)
-from crupydsl.grammar._dsl._parser.prod_alternative import (
-    CrupyDSLParserNodeDslAlternative,
-)
 from crupydsl.grammar.exception import CrupyDSLGrammarBaseException
+from crupydsl.parser import CrupyDSLParserNodeBase
 
 #---
 # Internals
@@ -37,12 +32,12 @@ from crupydsl.grammar.exception import CrupyDSLGrammarBaseException
 
 # allow too many branches to simplify the tranlation (can be cleaned later)
 # also allow access to a private attribute to simplify some operation like
-# `CrupyDSLLexerOpRep0N,CrupyDSLLexerAssertLookaheadPositive,...` that support
-# multiple operations without explicit `CrupyDSLLexerOpSeq`
+# `CrupyDSLLexerOpRep0N,CrupyDSLLexerAssertLookaheadPositive,...` that
+# support multiple operations without explicit `CrupyDSLLexerOpSeq`
 # pylint: disable=locally-disabled,W0212,R0911,R0912
 
 def _dsl_compil_grammar_operation(
-    operation: Any,
+    operation: CrupyDSLParserNodeBase,
 ) -> Union[CrupyDSLLexerOpBase,CrupyDSLLexerAssertBase]:
     """ DSL grammar operation handling
     """
@@ -53,15 +48,15 @@ def _dsl_compil_grammar_operation(
     if operation.type == 'dsl_string':
         return CrupyDSLLexerOpText(operation.text)
     if operation.type == 'dsl_between':
-        startop = dsl_compil_grammar_statement(operation.opening)
-        endop = dsl_compil_grammar_statement(operation.closing)
+        startop = dsl_compil_grammar_node(operation.opening)
+        endop = dsl_compil_grammar_node(operation.closing)
         return CrupyDSLLexerOpBetween(
             startop         = startop,
             endop           = endop,
             with_newline    = operation.kind == 'newline',
         )
     if operation.type == 'dsl_group':
-        lexerop = dsl_compil_grammar_statement(operation.statement)
+        lexerop = _dsl_compil_grammar_statement(operation.statement)
         if isinstance(lexerop, CrupyDSLLexerOpSeq):
             if operation.lookahead == 'possitive':
                 return CrupyDSLLexerAssertLookaheadPositive(*lexerop._seq)
@@ -96,7 +91,7 @@ def _dsl_compil_grammar_operation(
     )
 
 def _dsl_compil_grammar_alternative(
-    alternative: CrupyDSLParserNodeDslAlternative,
+    alternative: CrupyDSLParserNodeBase,
 ) -> Union[CrupyDSLLexerOpBase,CrupyDSLLexerAssertBase]:
     """ DSL grammar alternative handling
 
@@ -113,12 +108,8 @@ def _dsl_compil_grammar_alternative(
         return op_list[0]
     return CrupyDSLLexerOpSeq(*op_list)
 
-#---
-# Public
-#---
-
-def dsl_compil_grammar_statement(
-    statement: CrupyDSLParserNodeDslStatement,
+def _dsl_compil_grammar_statement(
+    statement: CrupyDSLParserNodeBase,
 ) -> CrupyDSLLexerOpBase:
     """ DSL grammar compilation
 
@@ -129,9 +120,7 @@ def dsl_compil_grammar_statement(
     alt_list: list[Union[CrupyDSLLexerOpBase,CrupyDSLLexerAssertBase]] = []
     for alternative in statement.alternatives:
         alt_list.append(
-            _dsl_compil_grammar_alternative(
-                cast(CrupyDSLParserNodeDslAlternative, alternative),
-            ),
+            _dsl_compil_grammar_alternative(alternative),
         )
     if not alt_list:
         raise CrupyDSLGrammarBaseException(
@@ -145,3 +134,18 @@ def dsl_compil_grammar_statement(
             '(only a assert operation as been detected)'
         )
     return alt_list[0]
+
+#---
+# Public
+#---
+
+def dsl_compil_grammar_node(
+    node: CrupyDSLParserNodeBase,
+) -> Union[CrupyDSLLexerOpBase,CrupyDSLLexerAssertBase]:
+    """ translate any DSL node into fonctional lexer operation/assertion
+    """
+    if node.type == 'dsl_statement':
+        return _dsl_compil_grammar_statement(node)
+    if node.type == 'dsl_alternative':
+        return _dsl_compil_grammar_alternative(node)
+    return _dsl_compil_grammar_operation(node)
