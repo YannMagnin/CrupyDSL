@@ -1,10 +1,27 @@
 """
 tests.dsl.group - test group productions
 """
-from crupydsl.grammar._dsl._parser import (
-    CRUPY_DSL_PARSER_OBJ,
-    CrupyDSLParserException,
+from crupydsl.parser.exception import CrupyDSLParserBaseException
+from crupydsl.parser._lexer import (
+    CrupyDSLLexerOpProductionCall,
+    CrupyDSLLexerOpSeq,
+    CrupyDSLLexerOpText,
+    CrupyDSLLexerOpBuiltin,
+    CrupyDSLLexerOpOr,
+    CrupyDSLLexerOpRep0N,
+    CrupyDSLLexerOpRep1N,
+    CrupyDSLLexerOpOptional,
+    CrupyDSLLexerAssertLookaheadNegative,
+    CrupyDSLLexerAssertLookaheadPositive,
 )
+from crupydsl.grammar._dsl import (
+    CRUPY_DSL_PARSER_OBJ,
+    dsl_compil_grammar_node,
+)
+
+# allow access private members to ensure that the DSL node translation has
+# been correctly done
+# pylint: disable=locally-disabled,W0212
 
 #---
 # Public
@@ -22,6 +39,9 @@ def test_simple() -> None:
     assert node.operation is None
     assert node.statement.type == 'dsl_statement'
     assert len(node.statement.alternatives) == 1
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerOpProductionCall)
+    assert operation._production_name == 'test_oui'
 
 def test_simple_group() -> None:
     """ simple valid case
@@ -33,6 +53,13 @@ def test_simple_group() -> None:
     assert node.operation is None
     assert node.statement.type == 'dsl_statement'
     assert len(node.statement.alternatives) == 1
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerOpSeq)
+    assert len(operation._seq) == 2
+    assert isinstance(operation._seq[0], CrupyDSLLexerOpProductionCall)
+    assert isinstance(operation._seq[1], CrupyDSLLexerOpText)
+    assert operation._seq[0]._production_name == 'test_oui'
+    assert operation._seq[1]._text == 'non'
 
 def test_group_lookahead_negative() -> None:
     """ lookahead tests
@@ -44,6 +71,11 @@ def test_group_lookahead_negative() -> None:
     assert node.operation is None
     assert node.statement.type == 'dsl_statement'
     assert len(node.statement.alternatives) == 1
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerAssertLookaheadNegative)
+    assert len(operation._seq) == 1
+    assert isinstance(operation._seq[0], CrupyDSLLexerOpText)
+    assert operation._seq[0]._text == 'oui'
 
 def test_group_lookahead_positive() -> None:
     """ lookahead tests
@@ -55,6 +87,11 @@ def test_group_lookahead_positive() -> None:
     assert node.operation is None
     assert node.statement.type == 'dsl_statement'
     assert len(node.statement.alternatives) == 1
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerAssertLookaheadPositive)
+    assert len(operation._seq) == 1
+    assert isinstance(operation._seq[0], CrupyDSLLexerOpProductionCall)
+    assert operation._seq[0]._production_name == 'space_opt'
 
 def test_group_operation_zero_plus() -> None:
     """ operation zero plus
@@ -66,6 +103,13 @@ def test_group_operation_zero_plus() -> None:
     assert node.operation == 'zero_plus'
     assert node.statement.type == 'dsl_statement'
     assert len(node.statement.alternatives) == 1
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerOpRep0N)
+    assert len(operation._seq) == 2
+    assert isinstance(operation._seq[0], CrupyDSLLexerOpProductionCall)
+    assert isinstance(operation._seq[1], CrupyDSLLexerOpBuiltin)
+    assert operation._seq[0]._production_name == 'space_opt'
+    assert operation._seq[1]._operation == 'any'
 
 def test_group_operation_one_plus() -> None:
     """ operation one plus
@@ -77,6 +121,15 @@ def test_group_operation_one_plus() -> None:
     assert node.operation == 'one_plus'
     assert node.statement.type == 'dsl_statement'
     assert len(node.statement.alternatives) == 2
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerOpRep1N)
+    assert len(operation._seq) == 1
+    assert isinstance(operation._seq[0], CrupyDSLLexerOpOr)
+    assert len(operation._seq[0]._seq) == 2
+    assert isinstance(operation._seq[0]._seq[0], CrupyDSLLexerOpBuiltin)
+    assert isinstance(operation._seq[0]._seq[1], CrupyDSLLexerOpText)
+    assert operation._seq[0]._seq[0]._operation == 'any'
+    assert operation._seq[0]._seq[1]._text == '2617'
 
 def test_group_operation_optional() -> None:
     """ operation optional
@@ -88,6 +141,25 @@ def test_group_operation_optional() -> None:
     assert node.operation == 'optional'
     assert node.statement.type == 'dsl_statement'
     assert len(node.statement.alternatives) == 2
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerOpOptional)
+    assert len(operation._seq) == 1
+    assert isinstance(operation._seq[0], CrupyDSLLexerOpOr)
+    assert len(operation._seq[0]._seq) == 2
+    assert isinstance(operation._seq[0]._seq[0], CrupyDSLLexerOpBuiltin)
+    assert isinstance(operation._seq[0]._seq[1], CrupyDSLLexerOpSeq)
+    assert operation._seq[0]._seq[0]._operation == 'any'
+    assert len(operation._seq[0]._seq[1]._seq) == 2
+    assert isinstance(
+        operation._seq[0]._seq[1]._seq[0],
+        CrupyDSLLexerOpText,
+    )
+    assert isinstance(
+        operation._seq[0]._seq[1]._seq[1],
+        CrupyDSLLexerOpProductionCall,
+    )
+    assert operation._seq[0]._seq[1]._seq[0]._text == '2617'
+    assert operation._seq[0]._seq[1]._seq[1]._production_name == 'rte'
 
 ## error
 
@@ -97,7 +169,7 @@ def test_error_start() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('oui_non)')
         CRUPY_DSL_PARSER_OBJ.execute('group')
         raise AssertionError('production \'group\' executed')
-    except CrupyDSLParserException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'
@@ -115,7 +187,7 @@ def test_error_close() -> None:
         CRUPY_DSL_PARSER_OBJ.register_stream('(:space:')
         CRUPY_DSL_PARSER_OBJ.execute('group')
         raise AssertionError('production \'group\' executed')
-    except CrupyDSLParserException as err:
+    except CrupyDSLParserBaseException as err:
         assert str(err) == (
             'DSL parsing exception occured:\n'
             '\n'

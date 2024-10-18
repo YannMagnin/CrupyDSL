@@ -14,13 +14,12 @@ from crupydsl._utils import crupynamedclass
 from crupydsl.grammar.exception import CrupyDSLGrammarBaseException
 from crupydsl.grammar._dsl import (
     CRUPY_DSL_PARSER_OBJ,
-    dsl_compil_grammar_node,
+    dsl_compil_grammar_entry,
 )
 from crupydsl.parser import (
     CrupyDSLParserBase,
     CrupyDSLParserNodeBase,
 )
-from crupydsl.parser._lexer._operation.op_base import CrupyDSLLexerOpBase
 
 #---
 # Public
@@ -70,25 +69,18 @@ class CrupyDSLGrammarBase():
         """ add the defined grammar shard to the current grammar
         """
         self._dsl_parser.register_stream(grammar.grammar)
-        node_tree = self._dsl_parser.execute('crupy_dsl')
-        assert node_tree.type == 'dsl_entry'
-        for prod in node_tree.productions:
-            assert prod.type == 'dsl_production'
-            if prod.production_name in self._target_parser.production_book:
+        production_book_shard = dsl_compil_grammar_entry(
+            self._dsl_parser.execute('crupy_dsl')
+        )
+        for prod_name, prod_operation in production_book_shard.items():
+            if prod_name in self._target_parser.production_book:
                 raise CrupyDSLGrammarBaseException(
                     'unable to generate the production '
-                    f"'{prod.production_name}': already defined"
-                )
-            operation = dsl_compil_grammar_node(prod.statement)
-            if not isinstance(operation, CrupyDSLLexerOpBase):
-                raise CrupyDSLGrammarBaseException(
-                    'unable to generate the production '
-                    f"'{prod.production_name}': cannot be a simple "
-                    'assertion'
+                    f"'{prod_name}': already defined"
                 )
             self._target_parser.production_book[
-                prod.production_name
-            ] = operation
+                prod_name
+            ] = prod_operation
 
     def _grammar_update_hook(self, grammar: CrupyDSLGrammarBase) -> None:
         """ scan the grammar shard and check if there are production hook

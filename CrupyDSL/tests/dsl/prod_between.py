@@ -8,9 +8,12 @@ from crupydsl.parser._lexer import (
     CrupyDSLLexerOpBetween,
     CrupyDSLLexerOpBuiltin,
     CrupyDSLLexerOpText,
+    CrupyDSLLexerOpOr,
+    CrupyDSLLexerOpProductionCall,
 )
 
-# to ensure that the DSL node translation has been correctly done
+# allow access private members to ensure that the DSL node translation has
+# been correctly done
 # pylint: disable=locally-disabled,W0212
 
 #---
@@ -45,6 +48,17 @@ def test_simple_success_1() -> None:
     assert node0.kind == 'newline'
     assert node0.opening.type == 'dsl_production_name'
     assert node0.closing.type == 'dsl_group'
+    operation = dsl_compil_grammar_node(node0)
+    assert isinstance(operation, CrupyDSLLexerOpBetween)
+    assert isinstance(operation._startop, CrupyDSLLexerOpProductionCall)
+    assert isinstance(operation._endop, CrupyDSLLexerOpOr)
+    assert operation._with_newline is True
+    assert operation._startop._production_name == 'test_oui'
+    assert len(operation._endop._seq) == 2
+    assert isinstance(operation._endop._seq[0], CrupyDSLLexerOpText)
+    assert isinstance(operation._endop._seq[1], CrupyDSLLexerOpBuiltin)
+    assert operation._endop._seq[0]._text == 'aa'
+    assert operation._endop._seq[1]._operation == 'newline'
 
 ## error
 

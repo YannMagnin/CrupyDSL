@@ -1,8 +1,20 @@
 """
 tests.dsl.dsl - test dsl productions
 """
-from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
-from crupydsl.parser import CrupyDSLParserBaseException
+from crupydsl.grammar._dsl import (
+    CRUPY_DSL_PARSER_OBJ,
+    dsl_compil_grammar_entry,
+)
+from crupydsl.parser.exception import CrupyDSLParserBaseException
+from crupydsl.parser._lexer import (
+    CrupyDSLLexerOpText,
+    CrupyDSLLexerOpProductionCall,
+    CrupyDSLLexerOpSeq,
+)
+
+# allow access private members to ensure that the DSL node translation has
+# been correctly done
+# pylint: disable=locally-disabled,W0212
 
 #---
 # Public
@@ -19,6 +31,15 @@ def test_simple_dsl() -> None:
     assert len(node.productions) == 1
     assert node.productions[0].type == 'dsl_production'
     assert node.productions[0].production_name == 'entry'
+    book = dsl_compil_grammar_entry(node)
+    assert len(book) == 1
+    assert 'entry' in book
+    assert isinstance(book['entry'], CrupyDSLLexerOpSeq)
+    assert len(book['entry']._seq) == 2
+    assert isinstance(book['entry']._seq[0], CrupyDSLLexerOpText)
+    assert isinstance(book['entry']._seq[1], CrupyDSLLexerOpProductionCall)
+    assert book['entry']._seq[0]._text == 'yes'
+    assert book['entry']._seq[1]._production_name == 'test'
 
 def test_simple_dsl_with_spaces() -> None:
     """ simple valid case
@@ -31,6 +52,15 @@ def test_simple_dsl_with_spaces() -> None:
     assert len(node.productions) == 1
     assert node.productions[0].type == 'dsl_production'
     assert node.productions[0].production_name == 'entry'
+    book = dsl_compil_grammar_entry(node)
+    assert len(book) == 1
+    assert 'entry' in book
+    assert isinstance(book['entry'], CrupyDSLLexerOpSeq)
+    assert len(book['entry']._seq) == 2
+    assert isinstance(book['entry']._seq[0], CrupyDSLLexerOpText)
+    assert isinstance(book['entry']._seq[1], CrupyDSLLexerOpProductionCall)
+    assert book['entry']._seq[0]._text == 'yes'
+    assert book['entry']._seq[1]._production_name == 'test'
 
 def test_multiline_dsl() -> None:
     """ simple valid case
@@ -46,6 +76,18 @@ def test_multiline_dsl() -> None:
     assert node.productions[0].production_name == 'entry'
     assert node.productions[1].type == 'dsl_production'
     assert node.productions[1].production_name == 'test'
+    book = dsl_compil_grammar_entry(node)
+    assert len(book) == 2
+    assert 'entry' in book
+    assert 'test' in book
+    assert isinstance(book['entry'], CrupyDSLLexerOpSeq)
+    assert len(book['entry']._seq) == 2
+    assert isinstance(book['entry']._seq[0], CrupyDSLLexerOpText)
+    assert isinstance(book['entry']._seq[1], CrupyDSLLexerOpProductionCall)
+    assert book['entry']._seq[0]._text == 'yes'
+    assert book['entry']._seq[1]._production_name == 'test'
+    assert isinstance(book['test'], CrupyDSLLexerOpText)
+    assert book['test']._text == 'test'
 
 ## error
 

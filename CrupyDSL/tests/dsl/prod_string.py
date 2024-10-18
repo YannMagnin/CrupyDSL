@@ -1,8 +1,16 @@
 """
 tests.dsl.string_fix - test string productions
 """
-from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
 from crupydsl.parser.exception import CrupyDSLParserBaseException
+from crupydsl.parser._lexer import CrupyDSLLexerOpText
+from crupydsl.grammar._dsl import (
+    CRUPY_DSL_PARSER_OBJ,
+    dsl_compil_grammar_node,
+)
+
+# allow access private members to ensure that the DSL node translation has
+# been correctly done
+# pylint: disable=locally-disabled,W0212
 
 #---
 # Public
@@ -15,6 +23,9 @@ def test_dquote_simple() -> None:
     node = CRUPY_DSL_PARSER_OBJ.execute('string')
     assert node.type == 'dsl_string'
     assert node.text == r'667 oui ~# \ dslk'
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerOpText)
+    assert operation._text == r'667 oui ~# \ dslk'
 
 def test_dquote_escape() -> None:
     """ test escaping
@@ -23,6 +34,9 @@ def test_dquote_escape() -> None:
     node = CRUPY_DSL_PARSER_OBJ.execute('string')
     assert node.type == 'dsl_string'
     assert node.text == '"\\'
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerOpText)
+    assert operation._text == node.text
 
 def test_quote_simple() -> None:
     """ simple valid case
@@ -31,6 +45,9 @@ def test_quote_simple() -> None:
     node = CRUPY_DSL_PARSER_OBJ.execute('string')
     assert node.type == 'dsl_string'
     assert node.text == r'667 oui ~# \ dslk'
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerOpText)
+    assert operation._text == node.text
 
 def test_quote_escape() -> None:
     """ test escaping
@@ -39,6 +56,9 @@ def test_quote_escape() -> None:
     node = CRUPY_DSL_PARSER_OBJ.execute('string')
     assert node.type == 'dsl_string'
     assert node.text == "'\\"
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerOpText)
+    assert operation._text == node.text
 
 def test_error_enclose() -> None:
     """ test error handling

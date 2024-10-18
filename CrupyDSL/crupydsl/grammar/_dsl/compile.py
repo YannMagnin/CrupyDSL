@@ -3,6 +3,7 @@ crupydsl.grammar._dsl.compil  - compil a grammar shard
 """
 __all__ = [
     'dsl_compil_grammar_node',
+    'dsl_compil_grammar_entry',
 ]
 from typing import Union
 
@@ -25,6 +26,12 @@ from crupydsl.parser._lexer._assert import (
 )
 from crupydsl.grammar.exception import CrupyDSLGrammarBaseException
 from crupydsl.parser import CrupyDSLParserNodeBase
+from crupydsl.grammar._dsl._parser.prod_dsl import (
+    CrupyDSLParserNodeDslEntry,
+)
+from crupydsl.grammar._dsl._parser.prod_production import (
+    CrupyDSLParserNodeDslProduction,
+)
 
 #---
 # Internals
@@ -58,7 +65,7 @@ def _dsl_compil_grammar_operation(
     if operation.type == 'dsl_group':
         lexerop = _dsl_compil_grammar_statement(operation.statement)
         if isinstance(lexerop, CrupyDSLLexerOpSeq):
-            if operation.lookahead == 'possitive':
+            if operation.lookahead == 'positive':
                 return CrupyDSLLexerAssertLookaheadPositive(*lexerop._seq)
             if operation.lookahead == 'negative':
                 return CrupyDSLLexerAssertLookaheadNegative(*lexerop._seq)
@@ -71,7 +78,7 @@ def _dsl_compil_grammar_operation(
             if operation.operation == 'optional':
                 return CrupyDSLLexerOpOptional(*lexerop._seq)
         else:
-            if operation.lookahead == 'possitive':
+            if operation.lookahead == 'positive':
                 return CrupyDSLLexerAssertLookaheadPositive(lexerop)
             if operation.lookahead == 'negative':
                 return CrupyDSLLexerAssertLookaheadNegative(lexerop)
@@ -143,9 +150,45 @@ def dsl_compil_grammar_node(
     node: CrupyDSLParserNodeBase,
 ) -> Union[CrupyDSLLexerOpBase,CrupyDSLLexerAssertBase]:
     """ translate any DSL node into fonctional lexer operation/assertion
+
+    @note
+    - all node are translated except for the `dsl_entry`
     """
     if node.type == 'dsl_statement':
         return _dsl_compil_grammar_statement(node)
     if node.type == 'dsl_alternative':
         return _dsl_compil_grammar_alternative(node)
     return _dsl_compil_grammar_operation(node)
+
+def dsl_compil_grammar_entry(
+    node: CrupyDSLParserNodeBase,
+) -> dict[str,CrupyDSLLexerOpBase]:
+    """ translate the DSL entry node
+    """
+    if not isinstance(node, CrupyDSLParserNodeDslEntry):
+        raise CrupyDSLGrammarBaseException(
+            'unable to generate the production book: root node should be '
+            f"of type '{CrupyDSLParserNodeDslEntry}' got '{type(node)}'"
+        )
+    production_book: dict[str,CrupyDSLLexerOpBase] = {}
+    for prod in node.productions:
+        if not isinstance(prod, CrupyDSLParserNodeDslProduction):
+            raise CrupyDSLGrammarBaseException(
+                'unable to generate the production book: fatal node type '
+                f"got '{type(prod)}' instead of "
+                '\'CrupyDSLParserNodeDslProduction\''
+            )
+        if prod.production_name in production_book:
+            raise CrupyDSLGrammarBaseException(
+                'unable to generate the production '
+                f"'{prod.production_name}': already defined"
+            )
+        operation = dsl_compil_grammar_node(prod.statement)
+        if not isinstance(operation, CrupyDSLLexerOpBase):
+            raise CrupyDSLGrammarBaseException(
+                'unable to generate the production '
+                f"'{prod.production_name}': cannot be a simple "
+                'assertion'
+            )
+        production_book[prod.production_name] = operation
+    return production_book

@@ -1,8 +1,20 @@
 """
 tests.dsl.production - test production productions
 """
-from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
 from crupydsl.parser.exception import CrupyDSLParserBaseException
+from crupydsl.parser._lexer import (
+    CrupyDSLLexerOpText,
+    CrupyDSLLexerOpProductionCall,
+    CrupyDSLLexerOpSeq,
+)
+from crupydsl.grammar._dsl import (
+    CRUPY_DSL_PARSER_OBJ,
+    dsl_compil_grammar_node,
+)
+
+# allow access private members to ensure that the DSL node translation has
+# been correctly done
+# pylint: disable=locally-disabled,W0212
 
 #---
 # Public
@@ -17,6 +29,9 @@ def test_simple_test() -> None:
     assert node.production_name == 'entry'
     assert node.statement.type == 'dsl_statement'
     assert len(node.statement.alternatives) == 1
+    operation = dsl_compil_grammar_node(node.statement)
+    assert isinstance(operation, CrupyDSLLexerOpText)
+    assert operation._text == 'allo?'
 
 def test_simple_test_with_space() -> None:
     """ simple valid case
@@ -29,6 +44,9 @@ def test_simple_test_with_space() -> None:
     assert node.production_name == 'entry'
     assert node.statement.type == 'dsl_statement'
     assert len(node.statement.alternatives) == 1
+    operation = dsl_compil_grammar_node(node.statement)
+    assert isinstance(operation, CrupyDSLLexerOpText)
+    assert operation._text == 'allo?'
 
 def test_multiple_production() -> None:
     """ simple valid case
@@ -42,11 +60,21 @@ def test_multiple_production() -> None:
     assert node.production_name == 'entry'
     assert node.statement.type == 'dsl_statement'
     assert len(node.statement.alternatives) == 1
+    operation = dsl_compil_grammar_node(node.statement)
+    assert isinstance(operation, CrupyDSLLexerOpSeq)
+    assert len(operation._seq) == 2
+    assert isinstance(operation._seq[0], CrupyDSLLexerOpText)
+    assert isinstance(operation._seq[1], CrupyDSLLexerOpProductionCall)
+    assert operation._seq[0]._text == 'allo?'
+    assert operation._seq[1]._production_name == 'oui'
     node = CRUPY_DSL_PARSER_OBJ.execute('production')
     assert node.type == 'dsl_production'
     assert node.production_name == 'oui'
     assert node.statement.type == 'dsl_statement'
     assert len(node.statement.alternatives) == 1
+    operation = dsl_compil_grammar_node(node.statement)
+    assert isinstance(operation, CrupyDSLLexerOpText)
+    assert operation._text == 'non'
 
 ## error
 

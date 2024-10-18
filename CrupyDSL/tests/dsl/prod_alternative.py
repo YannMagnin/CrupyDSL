@@ -2,7 +2,20 @@
 tests.dsl.alternative - test alternative productions
 """
 from crupydsl.grammar._dsl._parser import CRUPY_DSL_PARSER_OBJ
+from crupydsl.grammar._dsl import dsl_compil_grammar_node
 from crupydsl.parser.exception import CrupyDSLParserBaseException
+from crupydsl.parser._lexer import (
+    CrupyDSLLexerOpBetween,
+    CrupyDSLLexerOpBuiltin,
+    CrupyDSLLexerOpText,
+    CrupyDSLLexerOpProductionCall,
+    CrupyDSLLexerOpSeq,
+    CrupyDSLLexerAssertLookaheadNegative,
+)
+
+# allow access private members to ensure that the DSL node translation has
+# been correctly done
+# pylint: disable=locally-disabled,W0212
 
 #---
 # Public
@@ -19,6 +32,9 @@ def test_prodname() -> None:
     assert len(node.seq) == 1
     assert node.seq[0].type == 'dsl_production_name'
     assert node.seq[0].production_name == 'test_oui'
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerOpProductionCall)
+    assert operation._production_name == 'test_oui'
 
 def test_string() -> None:
     """ test
@@ -29,6 +45,9 @@ def test_string() -> None:
     assert len(node.seq) == 1
     assert node.seq[0].type == 'dsl_string'
     assert node.seq[0].text == '667ekip'
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerOpText)
+    assert operation._text == '667ekip'
 
 def test_between() -> None:
     """ test
@@ -38,6 +57,12 @@ def test_between() -> None:
     assert node.type == 'dsl_alternative'
     assert len(node.seq) == 1
     assert node.seq[0].type == 'dsl_between'
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerOpBetween)
+    assert isinstance(operation._startop, CrupyDSLLexerOpBuiltin)
+    assert isinstance(operation._endop, CrupyDSLLexerOpText)
+    assert operation._startop._operation == 'any'
+    assert operation._endop._text == 'i'
 
 def test_builtin() -> None:
     """ test
@@ -48,6 +73,9 @@ def test_builtin() -> None:
     assert len(node.seq) == 1
     assert node.seq[0].type == 'dsl_builtin'
     assert node.seq[0].kind == 'any'
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerOpBuiltin)
+    assert operation._operation == 'any'
 
 def test_simple_success() -> None:
     """ simple valid case
@@ -68,6 +96,22 @@ def test_simple_success() -> None:
     assert node.seq[3].lookahead == 'negative'
     assert node.seq[3].operation == 'optional'
     assert node.seq[3].statement.type == 'dsl_statement'
+    operation = dsl_compil_grammar_node(node)
+    assert isinstance(operation, CrupyDSLLexerOpSeq)
+    assert len(operation._seq) == 4
+    assert isinstance(operation._seq[0], CrupyDSLLexerOpProductionCall)
+    assert isinstance(operation._seq[1], CrupyDSLLexerOpText)
+    assert isinstance(operation._seq[2], CrupyDSLLexerOpBuiltin)
+    assert isinstance(
+        operation._seq[3],
+        CrupyDSLLexerAssertLookaheadNegative,
+    )
+    assert operation._seq[0]._production_name == 'test_oui'
+    assert operation._seq[1]._text == 'test'
+    assert operation._seq[2]._operation == 'number'
+    assert len(operation._seq[3]._seq) == 1
+    assert isinstance(operation._seq[3]._seq[0], CrupyDSLLexerOpText)
+    assert operation._seq[3]._seq[0]._text == 'oui?'
 
 ## error
 
