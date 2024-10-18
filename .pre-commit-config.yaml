@@ -1,0 +1,59 @@
+default_language_version:
+    python: python3.9
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: check-docstring-first
+      - id: check-toml
+      - id: check-yaml
+      - id: mixed-line-ending
+      - id: end-of-file-fixer
+  - repo: local
+    hooks:
+
+      - id: check-pytest
+        name: check-pytest
+        entry: pytest --tb=no
+        language: system
+        pass_filenames: false
+
+      - id: check-crupycsv
+        name: check-crupycsv
+        entry: crupycsv tests
+        language: system
+        pass_filenames: false
+
+      - id: check-crupyjson
+        name: check-crupyjson
+        entry: crupyjson tests
+        language: system
+        pass_filenames: false
+
+      - id: check-pyimportcheck
+        name: check-pyimportcheck
+        entry: pyimportcheck
+        language: system
+        pass_filenames: false
+        args:
+          - CrupyDSL/crupydsl
+          - CrupyDSL/examples/crupyjson
+          - CrupyDSL/examples/crupycsv
+
+      - id: check-mypy
+        name: check-mypy
+        entry: mypy --strict
+        language: system
+        types: [python]
+
+      - id: check-pylint
+        name: check-pylint
+        entry: pylint -d R0903,R0801
+        language: system
+        types: [python]

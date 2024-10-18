@@ -4,6 +4,10 @@
 > Do not expect PyPI package, documentation (other than those present in
 > docstrings) or complete examples at this stage (although planned for the
 > next release).
+>
+> If you want to know what I plan to do with this project, you can check
+> the [Roadmap](https://github.com/YannMagnin/CrupyDSL/issues/1) issue
+> that evolves with time
 
 This project provides a Domain-Specific Language (DSL) with help on
 rewriting Abstract Syntax Tree (AST).

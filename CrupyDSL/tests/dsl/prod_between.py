@@ -9,7 +9,9 @@ from crupydsl.parser._lexer import (
     CrupyDSLLexerOpBuiltin,
     CrupyDSLLexerOpText,
     CrupyDSLLexerOpOr,
+    CrupyDSLLexerOpRep1N,
     CrupyDSLLexerOpProductionCall,
+    CrupyDSLLexerAssertLookaheadPositive,
 )
 
 # allow access private members to ensure that the DSL node translation has
@@ -59,6 +61,41 @@ def test_simple_success_1() -> None:
     assert isinstance(operation._endop._seq[1], CrupyDSLLexerOpBuiltin)
     assert operation._endop._seq[0]._text == 'aa'
     assert operation._endop._seq[1]._operation == 'newline'
+
+def test_simple_success_2() -> None:
+    """ valid case
+    """
+    CRUPY_DSL_PARSER_OBJ.register_stream(
+        '("akc" :any:)+.!.(?=("aa"|:newline:))'
+    )
+    node0 = CRUPY_DSL_PARSER_OBJ.execute('between')
+    assert node0.type == 'dsl_between'
+    assert node0.kind == 'newline'
+    assert node0.opening.type == 'dsl_group'
+    assert node0.closing.type == 'dsl_group'
+    operation = dsl_compil_grammar_node(node0)
+    assert isinstance(operation, CrupyDSLLexerOpBetween)
+    assert isinstance(operation._startop, CrupyDSLLexerOpRep1N)
+    assert isinstance(operation._endop, CrupyDSLLexerAssertLookaheadPositive)
+    assert operation._with_newline is True
+    assert len(operation._startop._seq) == 2
+    assert isinstance(operation._startop._seq[0], CrupyDSLLexerOpText)
+    assert isinstance(operation._startop._seq[1], CrupyDSLLexerOpBuiltin)
+    assert operation._startop._seq[0]._text == 'akc'
+    assert operation._startop._seq[1]._operation == 'any'
+    assert len(operation._endop._seq) == 1
+    assert isinstance(operation._endop._seq[0], CrupyDSLLexerOpOr)
+    assert len(operation._endop._seq[0]._seq) == 2
+    assert isinstance(
+        operation._endop._seq[0]._seq[0],
+        CrupyDSLLexerOpText,
+    )
+    assert isinstance(
+        operation._endop._seq[0]._seq[1],
+        CrupyDSLLexerOpBuiltin,
+    )
+    assert operation._endop._seq[0]._seq[0]._text == 'aa'
+    assert operation._endop._seq[0]._seq[1]._operation == 'newline'
 
 ## error
 
