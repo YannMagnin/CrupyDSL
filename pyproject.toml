@@ -1,6 +1,6 @@
 [tool.poetry]
 name        = 'crupydsl'
-version     = '0.0.4'
+version     = '0.0.5'
 description = 'Crupy DSL'
 readme      = 'README.md'
 authors     = [
@@ -31,7 +31,6 @@ pylint          = '*'
 mypy            = '*'
 pyimportcheck   = '*'
 pytest          = '*'
-coverage        = '*'
 pre-commit      = "4.*"
 
 ## pytests configuration

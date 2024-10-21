@@ -163,3 +163,15 @@ class CrupyDSLStreamContext():
         """ validate the current context
         """
         return self._stream.context_validate(self)
+
+    ## debug
+
+    def show(self, _indent: int = 0) -> str:
+        """ pretty print information
+        """
+        content  = f"{type(self).__name__}("
+        for attr in ['index_start', 'index', 'lineno', 'column']:
+            content += f"{attr}={getattr(self, attr)}"
+            if attr != 'column':
+                content += ','
+        return content + ')'
