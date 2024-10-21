@@ -16,7 +16,10 @@ from crupydsl.exception import CrupyDSLCoreException
 from crupydsl.parser._stream.stream import CrupyDSLStream
 from crupydsl.parser.exception import CrupyDSLParserBaseException
 from crupydsl.parser.node import CrupyDSLParserNodeBase
-from crupydsl._utils import crupynamedclass
+from crupydsl._utils import (
+    crupynamedclass,
+    crupy_traceback_find,
+)
 
 # @note : Design mistake
 #
@@ -117,10 +120,10 @@ class CrupyDSLParserBase():
             raise CrupyDSLParserBaseException(
                 context = args[0].context,
                 reason  = \
-                    f"{args[0].context.generate_error_log()}\n"
-                    '\n'
+                    f"{args[0].context.generate_error_log()}\n\n"
                     f"Exception durring '{production_name}' hook, abort\n"
-                    f"{err}"
+                    f"{err}\n"
+                    f"{crupy_traceback_find()}"
             ) from err
 
     #---
