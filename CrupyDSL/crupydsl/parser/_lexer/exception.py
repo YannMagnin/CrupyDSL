@@ -28,6 +28,11 @@ from crupydsl._utils import (
 )
 class CrupyDSLLexerException(CrupyDSLParserBaseException):
     """ Crupy lexer exception class
+
+    @notes
+    - force disable the `__repr__` and `__str__` magic methods provided by
+        my own dataclass, because I want to have the default behaviours of
+        exception class when used like `str(err)`
     """
     def __init__(
         self,

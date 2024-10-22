@@ -70,6 +70,10 @@ class _CrupyDataclass():
         if hook_init is not None:
             hook_init(self, *args, **new_kwargs)
 
+    #---
+    # Magic methods
+    #---
+
     def __str__(self) -> str:
         """ generate the string information about the object
         """
@@ -111,6 +115,67 @@ class _CrupyDataclass():
             f"{self.__class__.__name__}"
         )
 
+    #---
+    # Internals methods
+    #---
+
+    def __debug_show_tweak(self, obj: Any, indent: int) -> str:
+        """ try to handle pretty print for laest type has possible
+
+        @notes
+        - assume that if the object expose a `debug_show` is a class that
+            use our own dataclass implementation
+        """
+        if getattr(obj, 'debug_show', None):
+            return f"{obj.debug_show(indent)}"
+        if isinstance(obj, str):
+            return repr(obj)
+        if isinstance(obj, list):
+            padding0 = '    ' * (indent + 0)
+            padding1 = '    ' * (indent + 1)
+            content = f"[\t# {len(obj)} entries\n"
+            for i, entry in enumerate(obj):
+                content += f"{padding1}"
+                content += f"<{i}>"
+                content += f"{self.__debug_show_tweak(entry, indent + 1)},\n"
+            content += f"{padding0}]"
+            return content
+        if isinstance(obj, dict):
+            padding0 = '    ' * (indent + 0)
+            padding1 = '    ' * (indent + 1)
+            content = '{' + f"\t# {len(obj)} entries\n"
+            for i, (key, value) in enumerate(obj.items()):
+                content += f"{padding1}<{i}>"
+                content += f"{self.__debug_show_tweak(key, indent + 1)} : "
+                content += f"{self.__debug_show_tweak(value, indent + 1)},\n"
+            content += f"{padding0}" + '}'
+            return content
+        return str(obj)
+
+    def debug_show(self, indent: int = 0) -> str:
+        """ pretty print the AST (ignore attached parent information)
+
+        @note
+        - force `type` and `context` field to be first
+        """
+        padding0 = '    ' * (indent + 0)
+        padding1 = '    ' * (indent + 1)
+        content  = f"{type(self).__name__}(\n"
+        for attr in ['type', 'context']:
+            obj = getattr(self, attr)
+            content += f"{padding1}{attr}\t= "
+            content += f"{self.__debug_show_tweak(obj, indent + 1)},\n"
+        for attr in self.__dict__:
+            if attr in ['type', 'context']:
+                continue
+            if attr.startswith('_'):
+                continue
+            obj = getattr(self, attr)
+            content += f"{padding1}{attr}\t= "
+            content += f"{self.__debug_show_tweak(obj, indent + 1)},\n"
+        content += f"{padding0})"
+        return content.expandtabs(4)
+
 #---
 # Public
 #---
@@ -123,6 +188,7 @@ def crupydataclass(
     enable_getattr: bool    = True,
     enable_getitem: bool    = True,
     enable_repr: bool       = True,
+    enable_debug_show: bool = True,
 ) -> Any:
     """ decorator to convert fields defined in the class to properties
 
@@ -155,6 +221,22 @@ def crupydataclass(
         if enable_repr:
             origin_class.__repr__ = _CrupyDataclass.__repr__
             origin_class.__str__ = _CrupyDataclass.__str__
+        if enable_debug_show:
+            for sym in ['debug_show', '_CrupyDataclass__debug_show_tweak']:
+                if sym in origin_class.__dict__:
+                    raise CrupyDSLCoreException(
+                        f"{origin_class.__name__} must not define the "
+                        f"symbol '{sym}', because the '@crupydataclass' "
+                        'will inject a custom one which will override the '
+                        'user defined one'
+                    )
+                if  sym not in _CrupyDataclass.__dict__:
+                    raise CrupyDSLCoreException(
+                        f"_CrupyDataclass do not exposes the '{sym}' "
+                        'method required by the class injector '
+                        '\'@crupydataclass\''
+                    )
+                setattr(origin_class, sym, _CrupyDataclass.__dict__[sym])
         return origin_class
     if origin_class is None:
         return wrap

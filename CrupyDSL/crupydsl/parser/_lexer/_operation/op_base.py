@@ -43,6 +43,6 @@ class CrupyDSLLexerOpBase():
     #---
 
     @abstractmethod
-    def show(self, indent: int = 0) -> str:
+    def debug_show(self, indent: int = 0) -> str:
         """ display a generic information
         """

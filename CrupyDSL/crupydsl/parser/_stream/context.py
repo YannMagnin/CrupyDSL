@@ -166,7 +166,7 @@ class CrupyDSLStreamContext():
 
     ## debug
 
-    def show(self, _indent: int = 0) -> str:
+    def debug_show(self, _indent: int = 0) -> str:
         """ pretty print information
         """
         content  = f"{type(self).__name__}("

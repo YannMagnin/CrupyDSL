@@ -96,12 +96,12 @@ class CrupyDSLLexerOpSeq(CrupyDSLLexerOpBase):
     # Public methods
     #---
 
-    def show(self, indent: int = 0) -> str:
+    def debug_show(self, indent: int = 0) -> str:
         """ display a generic information
         """
         content = f"{' ' * indent}{type(self).__name__}(\n"
         for alternative in self._seq:
-            content += alternative.show(indent + 1)
+            content += alternative.debug_show(indent + 1)
             content += ',\n'
         content += f"{' ' * indent})"
         return content

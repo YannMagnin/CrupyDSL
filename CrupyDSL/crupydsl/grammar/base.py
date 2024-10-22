@@ -98,7 +98,7 @@ class CrupyDSLGrammarBase():
         """ display the full grammar information
         """
         content  = ''
-        content += self._target_parser.show()
+        content += self._target_parser.debug_show()
         return content
 
     def parse(

@@ -80,14 +80,14 @@ def test_show() -> None:
     )
     ctxstr = \
         'CrupyDSLStreamContext(index_start=0,index=0,lineno=1,column=1)'
-    assert node0.show() == (
+    assert node0.debug_show() == (
          '_CrupyDSLParserNodeTest(\n'
          '    type    = \'test\',\n'
         f'    context = {ctxstr},\n'
          '    name    = \'coucou\',\n'
          ')'
     )
-    assert node1.show() == (
+    assert node1.debug_show() == (
          '_CrupyDSLParserNodeSibling(\n'
          '    type    = \'sibling\',\n'
         f'    context = {ctxstr},\n'
@@ -103,14 +103,14 @@ def test_show() -> None:
          '    ),\n'
          ')'
     )
-    assert node2.show() == (
+    assert node2.debug_show() == (
         '_CrupyDSLParserNodeList(\n'
          '    type    = \'list\',\n'
         f'    context = {ctxstr},\n'
          '    list_test   = [ # 3 entries\n'
-         '        0,\n'
-         '        \'ekip\',\n'
-         '        _CrupyDSLParserNodeTest(\n'
+         '        <0>0,\n'
+         '        <1>\'ekip\',\n'
+         '        <2>_CrupyDSLParserNodeTest(\n'
          '            type    = \'test\',\n'
         f'            context = {ctxstr},\n'
          '            name    = \'coucou\',\n'
@@ -118,14 +118,14 @@ def test_show() -> None:
          '    ],\n'
          ')'
     )
-    assert node3.show() == (
+    assert node3.debug_show() == (
         '_CrupyDSLParserNodeDict(\n'
          '    type    = \'dict\',\n'
         f'    context = {ctxstr},\n'
          '    dict_test   = { # 3 entries\n'
-         '        \'0\' : 0,\n'
-         '        \'1\' : \'ekip\',\n'
-         '        \'test\' : _CrupyDSLParserNodeTest(\n'
+         '        <0>\'0\' : 0,\n'
+         '        <1>\'1\' : \'ekip\',\n'
+         '        <2>\'test\' : _CrupyDSLParserNodeTest(\n'
          '            type    = \'test\',\n'
         f'            context = {ctxstr},\n'
          '            name    = \'coucou\',\n'

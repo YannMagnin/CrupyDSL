@@ -118,11 +118,11 @@ class CrupyDSLLexerOpBetween(CrupyDSLLexerOpBase):
     # Public methods
     #---
 
-    def show(self, indent: int = 0) -> str:
+    def debug_show(self, indent: int = 0) -> str:
         """ display a generic information
         """
         content  = ' ' * indent
-        content += self._startop.show()
+        content += self._startop.debug_show()
         content += '.!.' if self._with_newline else '...'
-        content += self._endop.show()
+        content += self._endop.debug_show()
         return content

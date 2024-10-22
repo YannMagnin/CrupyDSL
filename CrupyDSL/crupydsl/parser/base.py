@@ -44,7 +44,6 @@ if TYPE_CHECKING:
 @crupynamedclass(
     generate_type   = False,
     regex           = '^(_)*CrupyDSLParser(?P<type>([A-Z][a-z]+)+)$',
-    error           = 'malformated parser subclass',
 )
 class CrupyDSLParserBase():
     """ Crupy parser class
@@ -130,26 +129,6 @@ class CrupyDSLParserBase():
     # Public methods
     #---
 
-    def show(self, indent: int = 0) -> str:
-        """ display production information
-        """
-        content = ''
-        for production_info in self._production_book.items():
-            if production_info[0] in self._hook_error_book:
-                hook: Any = None
-                for hook in self._hook_error_book[production_info[0]]:
-                    hook = hook.__func__.__qualname__
-                    content += f"{' ' * indent}@error({hook})\n"
-            if production_info[0] in self._hook_postprocess_book:
-                for hook in self._hook_postprocess_book[production_info[0]]:
-                    hook = hook.__func__.__qualname__
-                    content += f"{' ' * indent}@posthook({hook})\n"
-            content += f"{' ' * indent}{production_info[0]}: \\\n"
-            content += production_info[1].show(indent + 1)
-            content += '\n'
-            content += '\n'
-        return content[:-2]
-
     def execute(self, production_name: str) -> CrupyDSLParserNodeBase:
         """ execute a particular production name
         """
@@ -206,3 +185,25 @@ class CrupyDSLParserBase():
         if production_name not in self._hook_error_book:
             self._hook_error_book[production_name] = []
         self._hook_error_book[production_name].append(hook)
+
+    def debug_show(self, indent: int = 0) -> str:
+        """ display production information
+        """
+        content = ''
+        for production_info in self._production_book.items():
+            if production_info[0] in self._hook_error_book:
+                hook: Any = None
+                for hook in self._hook_error_book[production_info[0]]:
+                    hook = hook.__func__.__qualname__
+                    content += f"{' ' * indent}@error({hook})\n"
+            if production_info[0] in self._hook_postprocess_book:
+                for hook in self._hook_postprocess_book[
+                    production_info[0]
+                ]:
+                    hook = hook.__func__.__qualname__
+                    content += f"{' ' * indent}@posthook({hook})\n"
+            content += f"{' ' * indent}{production_info[0]}: \\\n"
+            content += production_info[1].debug_show(indent + 1)
+            content += '\n'
+            content += '\n'
+        return content[:-2]

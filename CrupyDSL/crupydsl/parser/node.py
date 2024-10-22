@@ -19,15 +19,11 @@ from crupydsl._utils import (
 # Public
 #---
 
-# Allow too few public methods
-# pylint: disable=locally-disabled,R0903
-
 @crupydataclass
 @crupyabstractclass
 @crupynamedclass(
     generate_type   = True,
     regex           = '^(_)*CrupyDSLParserNode(?P<type>([A-Z][a-z]+)+)$',
-    error           = 'malformated parser node subclass',
 )
 class CrupyDSLParserNodeBase():
     """ Crupy parser node abstraction
@@ -94,72 +90,22 @@ class CrupyDSLParserNodeBase():
         """
 
     #---
-    # Internals
-    #---
-
-    def __show_tweak(self, obj: Any, indent: int) -> str:
-        """ try to handle pretty print for laest type has possible
-        """
-        if isinstance(obj, (CrupyDSLParserNodeBase, CrupyDSLStreamContext)):
-            return f"{obj.show(indent)}"
-        if isinstance(obj, str):
-            return repr(obj)
-        if isinstance(obj, list):
-            padding0 = '    ' * (indent + 0)
-            padding1 = '    ' * (indent + 1)
-            content = f"[\t# {len(obj)} entries\n"
-            for entry in obj:
-                content += f"{padding1}"
-                content += f"{self.__show_tweak(entry, indent + 1)},\n"
-            content += f"{padding0}]"
-            return content
-        if isinstance(obj, dict):
-            padding0 = '    ' * (indent + 0)
-            padding1 = '    ' * (indent + 1)
-            content = '{' + f"\t# {len(obj)} entries\n"
-            for key, value in obj.items():
-                content += f"{padding1}"
-                content += f"{self.__show_tweak(key, indent + 1)} : "
-                content += f"{self.__show_tweak(value, indent + 1)},\n"
-            content += f"{padding0}" + '}'
-            return content
-        return str(obj)
-
-    #---
     # Public methods
     #---
 
-    def show(self, indent: int = 0) -> str:
-        """ pretty print the AST (ignore attached parent information)
-
-        @note
-        - force `type` and `context` field to be first
-        """
-        padding0 = '    ' * (indent + 0)
-        padding1 = '    ' * (indent + 1)
-        content  = f"{type(self).__name__}(\n"
-        for attr in ['type', 'context']:
-            obj = getattr(self, attr)
-            content += f"{padding1}{attr}\t= "
-            content += f"{self.__show_tweak(obj, indent + 1)},\n"
-        for attr in self.__dict__:
-            if attr in ['type', 'context']:
-                continue
-            obj = getattr(self, attr)
-            content += f"{padding1}{attr}\t= "
-            content += f"{self.__show_tweak(obj, indent + 1)},\n"
-        content += f"{padding0})"
-        return content.expandtabs(4)
-
-    def workaround_linter(self) -> None:
+    def workaround_linter_0(self) -> None:
         """ this method do nothing
 
         This method has been implemented to remove generic warnings with
-        pylint/mypy which require at least two public methods for a class. I
-        know that we can remove theses warnings with some configuration
+        pylint/mypy which require at least two public methods for a class.
+        I know that we can remove theses warnings with some configuration
         flags, but I want to avoid at most of possible to indicate to the
         user "you need to properly configure your tools to work with my
         project".
 
         This is not acceptable, so yes, expose a fake symbol to avoid that
+        """
+
+    def workaround_linter_1(self) -> None:
+        """ this method do nothing (same as workaround_linter_0)
         """
