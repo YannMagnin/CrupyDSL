@@ -8,7 +8,7 @@ from __future__ import annotations
 __all__ = [
     'CrupyDSLParserBase',
 ]
-from typing import Optional, IO, Any, NoReturn, TYPE_CHECKING, cast
+from typing import Optional, IO, Any, TYPE_CHECKING
 from pathlib import Path
 from collections.abc import Callable
 
@@ -58,11 +58,21 @@ class CrupyDSLParserBase():
             self._production_book = production_book
         self._hook_postprocess_book: dict[
             str,
-            list[Callable[[CrupyDSLParserNodeBase], CrupyDSLParserNodeBase]],
+            list[
+                Callable[
+                    [CrupyDSLParserNodeBase],
+                    CrupyDSLParserNodeBase,
+                ],
+            ],
         ]= {}
         self._hook_error_book: dict[
             str,
-            list[Callable[[CrupyDSLParserBaseException], NoReturn]],
+            list[
+                Callable[
+                    [CrupyDSLParserBaseException],
+                    CrupyDSLParserBaseException
+                ],
+            ],
         ]= {}
 
 
@@ -86,44 +96,31 @@ class CrupyDSLParserBase():
     # Internal methods
     #---
 
-    def _execute_hook(
+    def _execute_hook_postprocess(
         self,
-        target: str,
         production_name: str,
-        *args: Any,
+        node: CrupyDSLParserNodeBase,
     ) -> CrupyDSLParserNodeBase:
-        """ execute a hook if available
+        """ execute a postprocess hook if available
         """
-        hook_book = getattr(self, f"_hook_{target}_book")
-        if production_name not in hook_book:
-            if target == 'postprocess':
-                return cast(CrupyDSLParserNodeBase, args[0])
-            raise args[0]
-        try:
-            node = None
-            for hook in hook_book[production_name]:
-                node = cast(CrupyDSLParserNodeBase, hook(*args))
-            if node is None:
-                raise CrupyDSLParserBaseException(
-                    context = args[0].context,
-                    reason  = \
-                    f"{args[0].context.generate_error_log()}\n"
-                    '\n'
-                    f"Exception durring '{production_name}' hook, abort\n"
-                    'Missing hooks'
-                )
+        if production_name not in self._hook_postprocess_book:
             return node
-        except Exception as err:
-            if target == 'error':
-                raise err
-            raise CrupyDSLParserBaseException(
-                context = args[0].context,
-                reason  = \
-                    f"{args[0].context.generate_error_log()}\n\n"
-                    f"Exception durring '{production_name}' hook, abort\n"
-                    f"{err}\n"
-                    f"{crupy_traceback_find()}"
-            ) from err
+        for hook in self._hook_postprocess_book[production_name]:
+            node = hook(node)
+        return node
+
+    def _execute_hook_error(
+        self,
+        production_name: str,
+        error: CrupyDSLParserBaseException,
+    ) -> CrupyDSLParserBaseException:
+        """ execute all error hook for the current production
+        """
+        if production_name not in self._hook_error_book:
+            return error
+        for hook in self._hook_error_book[production_name]:
+            error = hook(error)
+        return error
 
     #---
     # Public methods
@@ -139,12 +136,17 @@ class CrupyDSLParserBase():
             )
         try:
             node = self._production_book[production_name](self)
-            return self._execute_hook('postprocess', production_name, node)
+            return self._execute_hook_postprocess(production_name, node)
         except CrupyDSLParserBaseException as err:
-            self._execute_hook('error', production_name, err)
-            raise CrupyDSLCoreException(
-                f"Error during {production_name} production handling"
-            ) from err
+            try:
+                error = self._execute_hook_error(production_name, err)
+            except Exception as err2:
+                raise CrupyDSLCoreException(
+                    f"Exception durring '{production_name}' hook, abort\n"
+                    f"{err2}\n"
+                    f"{crupy_traceback_find()}"
+                ) from err2
+        raise error
 
     def register_stream(
         self,
@@ -157,7 +159,10 @@ class CrupyDSLParserBase():
     def register_post_hook(
         self,
         production_name: str,
-        hook: Callable[[CrupyDSLParserNodeBase],CrupyDSLParserNodeBase],
+        hook: Callable[
+            [CrupyDSLParserNodeBase],
+            CrupyDSLParserNodeBase,
+        ],
     ) -> None:
         """ register a new hook for a production
         """
@@ -173,7 +178,10 @@ class CrupyDSLParserBase():
     def register_error_hook(
         self,
         production_name: str,
-        hook: Callable[[CrupyDSLParserBaseException],NoReturn],
+        hook: Callable[
+            [CrupyDSLParserBaseException],
+            CrupyDSLParserBaseException,
+        ],
     ) -> None:
         """ register a new hook for a production in case of error
         """

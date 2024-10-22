@@ -6,8 +6,6 @@ __all__ = [
     'dsl_production_name_hook',
     'dsl_production_name_hook_error',
 ]
-from typing import NoReturn
-
 from crupydsl.parser import CrupyDSLParserNodeBase
 from crupydsl.parser.exception import CrupyDSLParserBaseException
 from crupydsl.grammar._dsl._parser.exception import (
@@ -49,21 +47,21 @@ def dsl_production_name_hook(
 
 def dsl_production_name_hook_error(
     err: CrupyDSLParserBaseException,
-) -> NoReturn:
+) -> CrupyDSLParserBaseException:
     """ string error hook
     """
     assert err.type == 'lexer_op_seq'
     if err.validated_operation == 0:
-        raise CrupyDSLParserException(err, 'missing opening chevron')
+        return CrupyDSLParserException(err, 'missing opening chevron')
     if err.validated_operation == 1:
-        raise CrupyDSLParserException(
+        return CrupyDSLParserException(
             err,
             'production name should only contain alphanumerical and '
             'underscore characters',
         )
     if err.validated_operation == 2:
-        raise CrupyDSLParserException(err, 'missing enclosing chevron')
-    raise CrupyDSLParserException(
+        return CrupyDSLParserException(err, 'missing enclosing chevron')
+    return CrupyDSLParserException(
         err,
         '[internal error] unsupported sequence, too many validated '
         f"operation ({err.validated_operation} > 2)"

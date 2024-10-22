@@ -6,8 +6,6 @@ __all__ = [
     'dsl_error_hook',
     'dsl_error_hook_error',
 ]
-from typing import NoReturn
-
 from crupydsl.parser import CrupyDSLParserNodeBase
 from crupydsl.parser.exception import CrupyDSLParserBaseException
 from crupydsl.grammar._dsl._parser.exception import (
@@ -43,27 +41,29 @@ def dsl_error_hook(node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
         kind        = 'error' if node.seq[1].text == 'error' else 'hook',
     )
 
-def dsl_error_hook_error(err: CrupyDSLParserBaseException) -> NoReturn:
+def dsl_error_hook_error(
+    err: CrupyDSLParserBaseException,
+) -> CrupyDSLParserBaseException:
     """ string error hook
     """
     assert err.type == 'lexer_op_seq'
     if err.validated_operation == 0:
-        raise CrupyDSLParserException(
+        return CrupyDSLParserException(
             err,
             'manual error must start with "@"',
         )
     if err.validated_operation == 1:
-        raise CrupyDSLParserException(
+        return CrupyDSLParserException(
             err,
             'only \'error\' and \'error_hook\' are currently supported',
         )
     if err.validated_operation == 2:
-        raise CrupyDSLParserException(err, 'missing opening parenthesis')
+        return CrupyDSLParserException(err, 'missing opening parenthesis')
     if err.validated_operation == 3:
-        raise err
+        return err
     if err.validated_operation == 4:
-        raise CrupyDSLParserException(err, 'missing enclosing parenthesis')
-    raise CrupyDSLParserException(
+        return CrupyDSLParserException(err, 'missing enclosing parenthesis')
+    return CrupyDSLParserException(
         err,
         '[internal error] unsupported sequence '
         f"({err.validated_operation})"

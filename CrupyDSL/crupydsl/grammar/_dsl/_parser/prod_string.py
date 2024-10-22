@@ -6,8 +6,6 @@ __all__ = [
     'dsl_string_hook',
     'dsl_string_hook_error'
 ]
-from typing import NoReturn
-
 from crupydsl.parser.node import CrupyDSLParserNodeBase
 from crupydsl.parser.exception import CrupyDSLParserBaseException
 from crupydsl.grammar._dsl._parser.exception import (
@@ -22,7 +20,9 @@ class CrupyDSLParserNodeDslString(CrupyDSLParserNodeBase):
     """ DSL "string" node """
     text:   str
 
-def dsl_string_hook(node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
+def dsl_string_hook(
+    node: CrupyDSLParserNodeBase,
+) -> CrupyDSLParserNodeBase:
     """ handle `string` node
     """
     assert node.type == 'lex_seq'
@@ -43,22 +43,24 @@ def dsl_string_hook(node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
         text        = text,
     )
 
-def dsl_string_hook_error(err: CrupyDSLParserBaseException) -> NoReturn:
+def dsl_string_hook_error(
+    err: CrupyDSLParserBaseException,
+) -> CrupyDSLParserBaseException:
     """ string error hook
     """
     assert err.type == 'lexer_op_or'
     err = err.deepest_error
     assert err.type == 'lexer_op_seq'
     if err.validated_operation == 0:
-        raise CrupyDSLParserException(err, 'missing starting quote')
+        return CrupyDSLParserException(err, 'missing starting quote')
     if err.validated_operation == 1:
-        raise CrupyDSLParserException(
+        return CrupyDSLParserException(
             err,
             'unable to capture string content',
         )
     if err.validated_operation == 2:
-        raise CrupyDSLParserException(err, 'missing enclosing quote')
-    raise CrupyDSLParserException(
+        return CrupyDSLParserException(err, 'missing enclosing quote')
+    return CrupyDSLParserException(
         err,
         '[internal error] unsupported sequence, too many validated '
         f"operation ({err.validated_operation} > 2)"

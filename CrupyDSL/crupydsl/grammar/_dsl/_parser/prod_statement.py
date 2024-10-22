@@ -16,7 +16,9 @@ class CrupyDSLParserNodeDslStatement(CrupyDSLParserNodeBase):
     """ statement node """
     alternatives:    list[CrupyDSLParserNodeBase]
 
-def dsl_statement_hook(node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
+def dsl_statement_hook(
+    node: CrupyDSLParserNodeBase,
+) -> CrupyDSLParserNodeBase:
     """ handle "statement" node
     """
     assert node.type == 'lex_seq'

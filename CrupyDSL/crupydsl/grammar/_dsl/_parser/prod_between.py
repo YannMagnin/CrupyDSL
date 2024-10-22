@@ -6,8 +6,6 @@ __all__ = [
     'dsl_between_hook',
     'dsl_between_hook_error',
 ]
-from typing import NoReturn
-
 from crupydsl.parser import (
     CrupyDSLParserNodeBase,
     CrupyDSLParserBaseException,
@@ -43,23 +41,23 @@ def dsl_between_hook(node: CrupyDSLParserNodeBase) -> CrupyDSLParserNodeBase:
 
 def dsl_between_hook_error(
     err: CrupyDSLParserBaseException,
-) -> NoReturn:
+) -> CrupyDSLParserBaseException:
     """ error hook
     """
     assert getattr(err, 'validated_operation', None) is not None
     if err.validated_operation == 0:
-        raise CrupyDSLParserException(
+        return CrupyDSLParserException(
             error   = err,
             reason  = 'unable to validate the opening request',
         )
     if err.validated_operation == 1:
-        raise CrupyDSLParserException(
+        return CrupyDSLParserException(
             error   = err,
             reason  = \
                 'unable to validate the type of between operation '
                 'requested',
         )
-    raise CrupyDSLParserException(
+    return CrupyDSLParserException(
         error   = err,
         reason  = 'unable to validate the enclosing request',
     )

@@ -6,8 +6,6 @@ __all__ = [
     'dsl_builtin_hook',
     'dsl_builtin_hook_error',
 ]
-from typing import NoReturn
-
 from crupydsl.parser import CrupyDSLParserNodeBase
 from crupydsl.parser.exception import CrupyDSLParserBaseException
 from crupydsl.grammar._dsl._parser.exception import (
@@ -45,17 +43,19 @@ def dsl_builtin_hook(
         kind        = kind,
     )
 
-def dsl_builtin_hook_error(err: CrupyDSLParserBaseException) -> NoReturn:
+def dsl_builtin_hook_error(
+    err: CrupyDSLParserBaseException,
+) -> CrupyDSLParserBaseException:
     """ builtin error hook
     """
     assert err.type == 'lexer_op_seq'
     if err.validated_operation == 0:
-        raise CrupyDSLParserException(err, 'missing starting colon')
+        return CrupyDSLParserException(err, 'missing starting colon')
     if err.validated_operation == 1:
-        raise CrupyDSLParserException(err, 'missing builtin name')
+        return CrupyDSLParserException(err, 'missing builtin name')
     if err.validated_operation == 2:
-        raise CrupyDSLParserException(err, 'missing enclosing colon')
-    raise CrupyDSLParserException(
+        return CrupyDSLParserException(err, 'missing enclosing colon')
+    return CrupyDSLParserException(
         err,
         '[internal error] unsupported sequence, too many validated '
         f"operation ({err.validated_operation} > 2)"
